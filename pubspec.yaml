@@ -31,10 +31,29 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+
+  # The following enable the use of Firebase services in your app. 
+  # It's a prerequisite for other Firebase plugins.
+  firebase_core: ^2.24.2
+
+  # The following provides easy-to-use authentication 
+  # methods and integrates with Firebase services.
+  firebase_auth: ^4.16.0
+
+  # The following allows us to have database for mobile, web,
+  # and server development from Firebase and Google Cloud Platform.
+  cloud_firestore: ^4.14.0
+
+  # The following is a state management library for Flutter 
+  # that provides a simple way to manage app state
+  get: ^4.6.5
+
+  # The following allows you to create Flutter layouts that 
+  # adapt to different screen sizes and orientations.
+  flutter_screenutil: ^5.9.0
 
 dev_dependencies:
   flutter_test:

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "215331565495",
+    "project_id": "ispproj",
+    "storage_bucket": "ispproj.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215331565495:android:edcf4b101d8f17b6d70232",
+        "android_client_info": {
+          "package_name": "com.example.isp_application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbDSd0wBK2_fHSuYGy-AV29qMU8wAVbBs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

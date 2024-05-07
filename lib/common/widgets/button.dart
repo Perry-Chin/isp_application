@@ -1,7 +1,8 @@
 // Main button for the app
 
 import 'package:flutter/material.dart';
-import 'package:isp_application/common/style/color.dart';
+
+import '../values/values.dart';
 
 class ApplyButton extends StatelessWidget {
   // Define properties for the button

@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import '../register/index.dart';
+import '../login/index.dart';
 import 'index.dart';
 
-class LoginBinding implements Bindings {
+class RegisterBinding implements Bindings {
   @override
   void dependencies() {
     Get.lazyPut<RegisterController>(() => RegisterController());

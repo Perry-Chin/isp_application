@@ -7,7 +7,7 @@ import 'package:isp_application/screens/login/index.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/button.dart';
 import '../../common/widgets/textfield.dart';
-
+import '../register/index.dart';
 
 class LoginPage extends GetView<LoginController> {
   const LoginPage({super.key});
@@ -108,12 +108,12 @@ class LoginPage extends GetView<LoginController> {
                     ),  
                     TextButton(
                       onPressed: () {
-                        // Navigate to the login screen
+                        // Navigate to the register screen
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return const LoginPage();
+                              return const RegisterPage();
                             },
                         ));
                       },

@@ -5,6 +5,7 @@ class UserData {
   final String? id;
   final String? username;
   final String? email;
+  final int? phoneNo;
   final String? photourl;
   final String? address;
   final String? rating;
@@ -14,6 +15,7 @@ class UserData {
     this.id,
     this.username,
     this.email,
+    this.phoneNo,
     this.photourl,
     this.address,
     this.rating,
@@ -29,6 +31,7 @@ class UserData {
       id: data?['user_id'],
       username: data?['username'],
       email: data?['email'],
+      phoneNo: data?['phone_number'],
       photourl: data?['photourl'],
       address: data?['address'],
       rating: data?['rating'],
@@ -41,6 +44,7 @@ class UserData {
       if (id != null) "user_id": id,
       if (username != null) "username": username,
       if (email != null) "email": email,
+      if (phoneNo != null) "phone_number": phoneNo,
       if (photourl != null) "photourl": photourl,
       if (address != null) "address": address,
       if (rating != null) "rating": rating,

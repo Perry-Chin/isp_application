@@ -55,7 +55,13 @@ dependencies:
   # adapt to different screen sizes and orientations.
   flutter_screenutil: ^5.9.0
 
+  # The following allows you to store key-value 
+  # pairs persistently across app restarts.
   shared_preferences: ^2.2.2
+
+  # The following provides a simple way to add a page 
+  # indicator for ViewPager-like widgets in Flutter.
+  dots_indicator: ^3.0.0
 
 dev_dependencies:
   flutter_test:

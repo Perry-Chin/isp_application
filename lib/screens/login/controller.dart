@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/data/user.dart';
+import '../../common/routes/routes.dart';
 import '../../common/storage/user.dart';
+import 'index.dart';
 
 class LoginController extends GetxController {
   LoginController();
+
+  final state = LoginState();
   final emailController = TextEditingController();
   final pwdController = TextEditingController();
   final db = FirebaseFirestore.instance;
@@ -36,9 +40,11 @@ class LoginController extends GetxController {
       // Successful login
       UserLoginResponseEntity userProfile = UserLoginResponseEntity();
       userProfile.email = emailController.text;
-      userProfile.accessToken = userCredential.user!.uid;
+      userProfile.accessToken = userCredential.user?.uid;
       UserStore.to.saveProfile(userProfile);
-      // Get.offAndToNamed(AppRoutes.application);
+
+      // Redirect to Navbar
+      Get.offAndToNamed(AppRoutes.navbar);
     } 
     catch (error) {
       // Dismiss loading dialog

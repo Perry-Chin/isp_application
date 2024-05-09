@@ -1,9 +1,10 @@
 //Navbar View
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/storage/storage.dart';
+import '../profile/index.dart';
+import '../request/index.dart';
 import 'index.dart';
 
 class NavbarPage extends GetView<NavbarController> {
@@ -20,30 +21,73 @@ class NavbarPage extends GetView<NavbarController> {
         children: const [
           Center(child: Text("Home Page")),
           Center(child: Text("Schedule Page")),
-          Center(child: Text("Request Page")),
           Center(child: Text("Message Page")),
-          Center(child: Text("Profile Page")),
+          ProfilePage(),
         ],
       );
     }
 
-    Widget buildBottomNavigationBar() {
-      return Obx(
-        () => BottomNavigationBar(
-          items: controller.bottomTabs,
-          currentIndex: controller.state.page,
-          type: BottomNavigationBarType.fixed,
-          onTap: controller.handleNavBarTap,
-          showUnselectedLabels: true,
-          showSelectedLabels: true,
-          unselectedItemColor: Colors.red,
-          selectedItemColor: Colors.blue,
-        )
+    Widget buildBottomNavigationBar() { 
+      return BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              icon: Obx(() => Icon(
+                Icons.home,
+                color: controller.state.page == 0 ? Colors.amber : Colors.black45,
+              )),
+              onPressed: () => controller.handleNavBarTap(0),
+            ),
+            IconButton(
+              icon: Obx(() => Icon(
+                Icons.calendar_month,
+                color: controller.state.page == 1 ? Colors.amber : Colors.black45,
+              )),
+              onPressed: () => controller.handleNavBarTap(1),
+            ),
+            const SizedBox(width: 48.0), // Space for FAB
+            IconButton(
+              icon: Obx(() => Icon(
+                Icons.contact_page,
+                color: controller.state.page == 2 ? Colors.amber : Colors.black45,
+              )),
+              onPressed: () => controller.handleNavBarTap(2),
+            ),
+            IconButton(
+              icon: Obx(() => Icon(
+                Icons.person,
+                color: controller.state.page == 3 ? Colors.amber : Colors.black45,
+              )),
+              onPressed: () => controller.handleNavBarTap(3),
+            ),
+          ],
+        ),
       );
-    }
+    } 
 
+    
     return Scaffold(
       body: buildPageView(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+        onPressed: () {
+          // Navigate to the login screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const RequestPage(),
+          ));
+        },
+        child: const Icon(
+          Icons.add,
+          color: Colors.black,
+        ),
+      ),
       bottomNavigationBar: buildBottomNavigationBar(),
     );
   }

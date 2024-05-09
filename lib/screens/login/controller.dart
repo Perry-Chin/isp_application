@@ -28,7 +28,12 @@ class LoginController extends GetxController {
     try {
       // Check if email and password fields are not empty
       if (emailController.text.isEmpty || pwdController.text.isEmpty) {
-        throw 'Please enter your email and password';
+        throw 'Please fill in all fields.';
+      }
+
+      // Check for valid email
+      if (!RegExp(r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+').hasMatch(emailController.text)) {
+        throw 'Please enter a valid email address.';
       }
 
       // Attempt to sign in with email and password

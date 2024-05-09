@@ -7,4 +7,5 @@ class AppRoutes {
   static const message = '/message';
   static const chat = '/chat';
   static const welcome = '/welcome';
+  static const profile = '/profile';
 }

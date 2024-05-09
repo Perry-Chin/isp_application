@@ -31,8 +31,8 @@ class RegisterPage extends GetView<RegisterController> {
                 MyTextField(
                   hinttext: 'Your username', 
                   labeltext: 'Name', 
+                  prefixicon: Icons.person,
                   obscuretext: false, 
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
                   controller: controller.usernameController
                 ),
                 const SizedBox(height: 10),
@@ -40,17 +40,17 @@ class RegisterPage extends GetView<RegisterController> {
                 MyTextField(
                   hinttext: 'Your email', 
                   labeltext: 'Email', 
+                  prefixicon: Icons.email,
                   obscuretext: false, 
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
                   controller: controller.emailController
                 ),
                 const SizedBox(height: 10),
                 // Text field for email input
                 MyTextField(
                   hinttext: 'Your phone number', 
-                  labeltext: 'Phone Number', 
+                  labeltext: 'Phone Number',
+                  prefixicon: Icons.phone, 
                   obscuretext: false, 
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
                   controller: controller.phoneNoController
                 ),
                 const SizedBox(height: 10),
@@ -58,8 +58,8 @@ class RegisterPage extends GetView<RegisterController> {
                 MyTextField(
                   hinttext: 'Your password', 
                   labeltext: 'Password', 
+                  prefixicon: Icons.key,
                   obscuretext: true, 
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
                   controller: controller.pwdController
                 ),
                 const SizedBox(height: 10),
@@ -67,8 +67,8 @@ class RegisterPage extends GetView<RegisterController> {
                 MyTextField(
                   hinttext: 'Your password', 
                   labeltext: 'Confirm Password', 
+                  prefixicon: Icons.key,
                   obscuretext: true, 
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
                   controller: controller.confirmpwdController
                 ),
                 const SizedBox(

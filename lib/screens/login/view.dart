@@ -70,20 +70,20 @@ class LoginPage extends GetView<LoginController> {
                     ),
                   ]
                 ),
-                const SizedBox(height: 35),
+                const SizedBox(height: 40),
                 MyTextField(
                   hinttext: 'Your email', 
                   labeltext: 'Email', 
+                  prefixicon: Icons.mail,
                   obscuretext: false, 
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
                   controller: controller.emailController
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 30),
                 MyTextField(
                   hinttext: 'Your password', 
                   labeltext: 'Password', 
+                  prefixicon: Icons.key,
                   obscuretext: true, 
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
                   controller: controller.pwdController
                 ),
                 const SizedBox(height: 40),

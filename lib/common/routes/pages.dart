@@ -43,7 +43,6 @@ class AppPages {
       name: AppRoutes.register,
       page: () => const RegisterPage(),
       binding: RegisterBinding()
-    ),
-    
+    ), 
   ];
 }

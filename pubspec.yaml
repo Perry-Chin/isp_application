@@ -62,6 +62,7 @@ dependencies:
   # The following provides a simple way to add a page 
   # indicator for ViewPager-like widgets in Flutter.
   dots_indicator: ^3.0.0
+  animate_do: ^3.0.2
 
 dev_dependencies:
   flutter_test:

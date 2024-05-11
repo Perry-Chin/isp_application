@@ -11,6 +11,7 @@ class UserData {
   final String? rating;
   final String? account;
 
+  //Constructor
   UserData({
     this.id,
     this.username,
@@ -22,6 +23,7 @@ class UserData {
     this.account,
   });
 
+  // Create UserData object from Firestore document snapshot
   factory UserData.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
       SnapshotOptions? options,
@@ -39,6 +41,7 @@ class UserData {
     );
   }
 
+  // Convert UserData object to Firestore document data
   Map<String, dynamic> toFirestore() {
     return {
       if (id != null) "user_id": id,
@@ -57,20 +60,25 @@ class UserData {
 class UserLoginResponseEntity {
   String? accessToken;
   String? email;
+  String? username;
 
+  //Constructor
   UserLoginResponseEntity({
     this.accessToken,
     this.email,
+    this.username
   });
 
   factory UserLoginResponseEntity.fromJson(Map<String, dynamic> json) =>
     UserLoginResponseEntity(
       accessToken: json["access_token"],
       email: json["email"],
+      username: json["name"]
     );
 
   Map<String, dynamic> toJson() => {
     "access_token": accessToken,
     "email": email,
+    "name": username
   };
 }

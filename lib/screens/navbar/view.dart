@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/storage/storage.dart';
+import '../home/index.dart';
 import '../profile/index.dart';
 import '../request/index.dart';
 import 'index.dart';
@@ -19,7 +20,7 @@ class NavbarPage extends GetView<NavbarController> {
         controller: controller.pageController,
         onPageChanged: controller.handlePageChanged,
         children: const [
-          Center(child: Text("Home Page")),
+          HomePage(),
           Center(child: Text("Schedule Page")),
           Center(child: Text("Message Page")),
           ProfilePage(),
@@ -30,7 +31,7 @@ class NavbarPage extends GetView<NavbarController> {
     Widget buildBottomNavigationBar() { 
       return BottomAppBar(
         shape: const CircularNotchedRectangle(),
-        notchMargin: 8.0,
+        notchMargin: 10.0,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -52,7 +53,7 @@ class NavbarPage extends GetView<NavbarController> {
             const SizedBox(width: 48.0), // Space for FAB
             IconButton(
               icon: Obx(() => Icon(
-                Icons.contact_page,
+                Icons.message,
                 color: controller.state.page == 2 ? Colors.amber : Colors.black45,
               )),
               onPressed: () => controller.handleNavBarTap(2),
@@ -71,6 +72,7 @@ class NavbarPage extends GetView<NavbarController> {
 
     
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: buildPageView(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(

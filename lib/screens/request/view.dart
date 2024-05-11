@@ -1,8 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+// Request Service View
 
-import '../../common/widgets/button.dart';
-import '../../common/widgets/textfield.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:isp_application/common/widgets/button.dart';
+import 'package:lottie/lottie.dart';
+
+import '../../common/values/values.dart';
 import 'index.dart';
 
 class RequestPage extends GetView<RequestController> {
@@ -13,88 +17,108 @@ class RequestPage extends GetView<RequestController> {
       elevation: 0,
       centerTitle: true,
       title: const Text("Request service"),
-      backgroundColor: Colors.amber,
+      backgroundColor: AppColor.secondaryColor,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+    return WillPopScope(
+      onWillPop: () async {
+        // Reset the form when the back button is pressed
+        controller.resetForm();
+        return true; //Allow the back navigation
+      },
+      child: Scaffold(
+        appBar: _buildAppBar(),
+        body: Obx(() {
+          //Request submitted successfully
+          if(controller.requestCompleted.value) {
+            return Stack(
               children: [
-                MyTextField(
-                  hinttext: 'Your service', 
-                  labeltext: 'Service', 
-                  prefixicon: Icons.room_service,
-                  obscuretext: false, 
-                  controller: controller.usernameController
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(25.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Request submitted!",
+                          style: TextStyle(
+                            color: AppColor.secondaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24.sp
+                          )
+                        ),
+                        Lottie.asset(
+                          'assets/animations/success.json',
+                          width: 250,
+                          height: 250,
+                          repeat: false
+                        ),
+                        const SizedBox(height: 20),
+                        ApplyButton(
+                          onPressed: () {
+                            controller.resetForm();
+                          }, 
+                          buttonText: "Reset", 
+                          buttonWidth: double.infinity
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 20),
-                MyTextField(
-                  hinttext: 'Your location', 
-                  labeltext: 'Location', 
-                  prefixicon: Icons.add_location_alt_outlined,
-                  obscuretext: false, 
-                  controller: controller.usernameController
-                ),
-                const SizedBox(height: 20),
-                MyTextField(
-                  hinttext: 'Your rate', 
-                  labeltext: 'Rate', 
-                  prefixicon: Icons.price_change,
-                  obscuretext: false, 
-                  controller: controller.usernameController
-                ),
-                const SizedBox(height: 20),
-                MyTextField(
-                  hinttext: 'Your date', 
-                  labeltext: 'Date', 
-                  prefixicon: Icons.price_change,
-                  obscuretext: false, 
-                  controller: controller.usernameController
-                ),
-                const SizedBox(height: 20),
-                MyTextField(
-                  hinttext: 'Start date', 
-                  labeltext: 'Rate', 
-                  prefixicon: Icons.price_change,
-                  obscuretext: false, 
-                  controller: controller.usernameController
-                ),
-                const SizedBox(height: 20),
-                MyTextField(
-                  hinttext: 'Your rate', 
-                  labeltext: 'Description', 
-                  prefixicon: Icons.price_change,
-                  obscuretext: false, 
-                  controller: controller.usernameController
-                ),
-                const SizedBox(height: 20),
-                MyTextField(
-                  hinttext: 'Your rate', 
-                  labeltext: 'Rate', 
-                  prefixicon: Icons.price_change,
-                  obscuretext: false, 
-                  controller: controller.usernameController
-                ),
-                // Button to create account
-                ApplyButton(  // button.dart
-                  onPressed: () {
-                    // controller.handleRegister(context);
-                  }, 
-                  buttonText: "Confirm", 
-                  buttonWidth: double.infinity
-                ),
+                Lottie.asset(
+                  "assets/animations/confetti.json",
+                  width: MediaQuery.sizeOf(context).height,
+                  height: MediaQuery.sizeOf(context).width,
+                  fit: BoxFit.cover,
+                )
               ],
-            ),
-          ),
-        ),
+            );
+          }
+          else {
+            return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: const ColorScheme.light(
+                  primary: AppColor.secondaryColor
+                )
+              ),
+              child: Stepper(
+                steps: controller.getSteps(),
+                currentStep: controller.state.currentStep.value,
+                onStepContinue: controller.isLastStep ? () 
+                  => controller.confirmRequest(context) //If current step is last
+                  : controller.moveToNextStep, //Move 1 step forward
+                onStepCancel: controller.cancelStep, //Move 1 step back
+                onStepTapped: (index) => controller.setStep(index), //Move to step selected
+                controlsBuilder: (BuildContext context, ControlsDetails controls) {
+                  return Container(
+                    margin: const EdgeInsets.only(top: 15),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: controls.onStepContinue,
+                            child: Text(controller.isLastStep ? 'CONFIRM' : 'NEXT')
+                          )
+                        ),
+                        const SizedBox(width: 12),
+                        if (controller.state.currentStep.value != 0)  
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: controls.onStepCancel,
+                              child: const Text('BACK')
+                            )
+                          )
+                      ],
+                    ),
+                  );
+                }
+              )
+            );
+          }
+        })
       ),
     );
   }

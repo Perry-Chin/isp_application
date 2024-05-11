@@ -42,6 +42,9 @@ dependencies:
   # The following provides easy-to-use authentication 
   # methods and integrates with Firebase services.
   firebase_auth: ^4.16.0
+  
+  # # The following enables Firebase Cloud Storage functionality in your app.
+  firebase_storage: ^11.6.0
 
   # The following allows us to have database for mobile, web,
   # and server development from Firebase and Google Cloud Platform.
@@ -62,7 +65,29 @@ dependencies:
   # The following provides a simple way to add a page 
   # indicator for ViewPager-like widgets in Flutter.
   dots_indicator: ^3.0.0
+
+  # The following adds an animation package inspired in Animate.css, 
+  # built using only Flutter animations, with zero dependencies
   animate_do: ^3.0.2
+
+  # The following adds a highly customizable searchfield widget. 
+  # Allows you to search and select a suggestion.
+  searchfield: ^1.0.1
+
+  # The following provides a flutter scroll component 
+  # with drop-down refresh and pull up load
+  pull_to_refresh_flutter3: ^2.0.2
+
+  # The following provides functionality to select 
+  # images from the device's gallery or camera.
+  image_picker: ^1.0.7
+
+  # The following provides functionality to 
+  # access the device's file system paths
+  path_provider: ^2.1.2
+
+  # The following adds support for Lottie animations in your Flutter app.
+  lottie: ^2.6.0
 
 dev_dependencies:
   flutter_test:
@@ -90,6 +115,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/animations/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

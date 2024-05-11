@@ -32,7 +32,7 @@ class LoginPage extends GetView<LoginController> {
                 Text(
                   "Welcome Back!",
                   style: TextStyle(
-                    color: AppColor.primaryColor,
+                    color: AppColor.secondaryColor,
                     fontSize: 24.sp,
                     fontFamily: "Sitka Display"
                   ),
@@ -51,7 +51,7 @@ class LoginPage extends GetView<LoginController> {
                         Text(
                           "BuzzBuddy",
                           style: TextStyle(
-                            color: AppColor.primaryColor,
+                            color: AppColor.secondaryColor,
                             fontSize: 16.sp,
                             fontFamily: "Sitka Display"
                           ),
@@ -122,7 +122,7 @@ class LoginPage extends GetView<LoginController> {
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
-                          color: AppColor.primaryColor,
+                          color: AppColor.secondaryColor,
                         ),
                       ),
                     ),                   

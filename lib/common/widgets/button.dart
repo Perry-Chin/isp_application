@@ -25,7 +25,7 @@ class ApplyButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed, // Action to be performed when pressed
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColor.primaryColor, // Use primary color for background
+          backgroundColor: AppColor.secondaryColor, // Use primary color for background
           elevation: 4, // Small shadow
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10), // Apply rounded corners

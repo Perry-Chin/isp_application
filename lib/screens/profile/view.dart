@@ -9,7 +9,7 @@ class ProfilePage extends GetView<ProfileController> {
   AppBar _buildAppBar() {
     return AppBar(
       elevation: 0,
-      centerTitle: false,
+      centerTitle: true,
       title: const Text("Profile"),
       backgroundColor: Colors.amber,
     );
@@ -19,7 +19,7 @@ class ProfilePage extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: UserProfilePage(), // Using UserProfilePage here
+      body: UserProfilePage(),
     );
   }
 }
@@ -31,25 +31,35 @@ class UserProfilePage extends StatelessWidget {
       children: [
         Container(
           padding: EdgeInsets.all(16),
-          alignment: Alignment.centerLeft, // Aligning the content to the left
+          alignment: Alignment.centerLeft,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.start, // Align to left
                 children: [
-                  Icon(Icons.person, size: 100),
-                  SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Username', style: TextStyle(fontSize: 24)),
-                      SizedBox(height: 4),
-                      Text('BuzzBuddy accumulated points: 20'),
-                    ],
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.grey.shade200, // Light gray background
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(Icons.person, size: 70, color: Colors.grey),
+                    ),
                   ),
                 ],
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 16), // Spacing between icon and text
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Username', style: TextStyle(fontSize: 18)),
+                  SizedBox(height: 4),
+                  Text('BuzzBuddy accumulated points: 20'),
+                ],
+              ),
+              SizedBox(height: 16), // Spacing after text
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -71,8 +81,7 @@ class UserProfilePage extends StatelessWidget {
           child: Column(
             children: [
               TabBar(
-                labelColor:
-                    Colors.black, // Changing text color of the selected tab
+                labelColor: Colors.black,
                 tabs: [
                   Tab(text: 'Your Listings'),
                   Tab(text: 'Reviews'),

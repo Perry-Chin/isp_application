@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 
 import '../../common/widgets/button.dart';
 import '../../common/widgets/textfield.dart';
-import '../login/index.dart';
-import 'index.dart';
+import '../login/login_index.dart';
+import 'register_index.dart';
 
 class RegisterPage extends GetView<RegisterController> {
   const RegisterPage({super.key});

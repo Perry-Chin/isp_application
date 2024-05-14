@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import '../login/index.dart';
-import 'index.dart';
+import '../register/register_index.dart';
+import 'login_index.dart';
 
-class RegisterBinding implements Bindings {
+class LoginBinding implements Bindings {
   @override
   void dependencies() {
     // Lazy initialization of controller to instantiate it only when needed.

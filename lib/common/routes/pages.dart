@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 
 import 'routes.dart';
 import '../middlewares/middlewares.dart';
-import '../../screens/login/index.dart';
-import '../../screens/register/index.dart';
-import '../../screens/navbar/index.dart';
-import '../../screens/welcome/index.dart';
+import '../../screens/login/login_index.dart';
+import '../../screens/register/register_index.dart';
+import '../../screens/navbar/navbar_index.dart';
+import '../../screens/welcome/welcome_index.dart';
 
 //Basic structure for managing routes using the GetX package
 class AppPages {

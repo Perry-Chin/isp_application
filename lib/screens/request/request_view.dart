@@ -7,7 +7,7 @@ import 'package:isp_application/common/widgets/button.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../common/values/values.dart';
-import 'index.dart';
+import 'request_index.dart';
 
 class RequestPage extends GetView<RequestController> {
   const RequestPage({super.key});

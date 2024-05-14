@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import '../../common/data/user.dart';
 import '../../common/routes/routes.dart';
 import '../../common/storage/user.dart';
-import 'index.dart';
+import 'login_index.dart';
 
 class LoginController extends GetxController {
   LoginController();

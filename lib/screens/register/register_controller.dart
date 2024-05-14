@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../login/index.dart';
+import '../login/login_index.dart';
 
 class RegisterController extends GetxController {
   RegisterController();

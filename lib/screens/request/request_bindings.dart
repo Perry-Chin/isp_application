@@ -2,7 +2,7 @@
 
 import 'package:get/get.dart';
 
-import 'index.dart';
+import 'request_index.dart';
 
 class RequestBinding implements Bindings {
   @override

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import '../../common/values/values.dart';
-import 'index.dart';
+import 'home_index.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({super.key});
@@ -74,7 +73,7 @@ class HomePage extends GetView<HomeController> {
           children: [
             searchBar(),
             const SizedBox(height: 15),
-            SizedBox(
+            const SizedBox(
               height: 440,
               child: HomeList(),
             )

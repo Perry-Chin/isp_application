@@ -4,7 +4,7 @@ import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import '../../common/data/service.dart';
 import '../../common/storage/storage.dart';
-import 'index.dart';
+import 'home_index.dart';
 
 class HomeController extends GetxController {
   HomeController();
@@ -18,7 +18,6 @@ class HomeController extends GetxController {
 
   //The dependency requires this 2 functions to work
   void onRefresh() {
-      print(token);
     asyncLoadAllData().then((_){
       refreshController.refreshCompleted(resetFooterState: true);
     }).catchError((_){
@@ -36,15 +35,15 @@ class HomeController extends GetxController {
   //
 
   asyncLoadAllData() async {
-    var req_services = await db.collection("service").withConverter(
+    var reqServices = await db.collection("service").withConverter(
       fromFirestore: ServiceData.fromFirestore, 
       toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore()
-    ).where("requester_uid", isEqualTo: token).get();
+    ).where("requester_uid", isNotEqualTo: token).get();
 
     state.serviceList.clear();
 
-    if(req_services.docs.isNotEmpty) {
-      state.serviceList.assignAll(req_services.docs);
+    if(reqServices.docs.isNotEmpty) {
+      state.serviceList.assignAll(reqServices.docs);
     } 
   }
 }

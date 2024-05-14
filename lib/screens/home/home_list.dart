@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 import '../../common/data/service.dart';
 import '../../common/values/values.dart';
-import 'index.dart';
+import 'home_index.dart';
 
 class HomeList extends GetView<HomeController> {
   const HomeList({super.key});
@@ -37,18 +37,53 @@ class HomeList extends GetView<HomeController> {
           child: Column(
             children: [
               ListTile(
-                horizontalTitleGap: 14,
-                leading: CircleAvatar(
+                horizontalTitleGap: 12,
+                leading: const CircleAvatar(
                   radius: 28,
                   backgroundImage: AssetImage("assets/images/profile.png"),
                   backgroundColor: Colors.transparent
                 ),
-                title: Text(
-                  item.data().reqUsername ?? "",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17
-                  ),
+                title: Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: Row(
+                    children: [
+                      Text(
+                        item.data().reqUsername ?? "",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.amber)
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "\$${item.data().rate?.toString() ?? "0"}/h",
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(width: 3), // Add spacing between star icon and rating
+                            const Icon(
+                              Icons.star,
+                              color: Colors.yellow,
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ), 
                 ),
                 subtitle: Text(
                   item.data().date ?? ""
@@ -63,6 +98,7 @@ class HomeList extends GetView<HomeController> {
                       Icons.location_on,
                       color: AppColor.secondaryColor,
                     ),
+                    const SizedBox(width: 2),
                     Text(item.data().location ?? ""),
                   ],
                 ),

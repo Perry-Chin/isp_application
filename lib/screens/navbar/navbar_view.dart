@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/storage/storage.dart';
-import '../home/index.dart';
-import '../profile/index.dart';
-import '../request/index.dart';
-import 'index.dart';
+import '../home/home_index.dart';
+import '../profile/profile_index.dart';
+import '../request/request_index.dart';
+import 'navbar_index.dart';
 
 class NavbarPage extends GetView<NavbarController> {
   NavbarPage({super.key});

@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import 'index.dart';
+import 'profile_index.dart';
 
 class NavbarBinding implements Bindings {
   @override

@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 
 import '../../common/routes/routes.dart';
 import '../../common/storage/storage.dart';
-import 'state.dart';
+import 'welcome_state.dart';
 
 class WelcomeController extends GetxController {
   final state = WelcomeState();

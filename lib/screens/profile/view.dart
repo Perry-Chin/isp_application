@@ -43,24 +43,24 @@ class UserProfilePage extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: Colors.grey.shade200, // Light gray background
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Icon(Icons.person, size: 70, color: Colors.grey),
                     ),
                   ),
-                  Spacer(), // Pushes the icons to the far right
+                  const Spacer(), // Pushes the icons to the far right
                   IconButton(
-                    icon: Icon(Icons.settings),
+                    icon: const Icon(Icons.settings),
                     onPressed: () {},
                   ),
                   IconButton(
-                    icon: Icon(Icons.edit),
+                    icon: const Icon(Icons.edit),
                     onPressed: () {},
                   ),
                 ],
               ),
-              SizedBox(height: 16), // Spacing between icon and text
-              Column(
+              const SizedBox(height: 16), // Spacing between icon and text
+              const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Username', style: TextStyle(fontSize: 18)),
@@ -68,7 +68,7 @@ class UserProfilePage extends StatelessWidget {
                   Text('BuzzBuddy accumulated points: 20'),
                 ],
               ),
-              SizedBox(height: 16), // Spacing after text
+              const SizedBox(height: 16), // Spacing after text
             ],
           ),
         ),
@@ -76,18 +76,18 @@ class UserProfilePage extends StatelessWidget {
           length: 2,
           child: Column(
             children: [
-              TabBar(
+              const TabBar(
                 labelColor: Colors.black,
                 tabs: [
                   Tab(text: 'Your Listings'),
                   Tab(text: 'Reviews'),
                 ],
               ),
-              Container(
+              SizedBox(
                 height: 400, // Adjust height as needed
                 child: TabBarView(
                   children: [
-                    Center(child: Text('All Provider Requester')),
+                    const Center(child: Text('All Provider Requester')),
                     _buildReviewsTab(), // Build the Reviews tab content
                   ],
                 ),
@@ -105,7 +105,7 @@ class UserProfilePage extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            margin: EdgeInsets.all(16),
+            margin: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(25.0),
@@ -114,7 +114,7 @@ class UserProfilePage extends StatelessWidget {
                   color: Colors.black.withOpacity(0.1),
                   spreadRadius: 0,
                   blurRadius: 6,
-                  offset: Offset(0, 3), // x=0, y=3
+                  offset: const Offset(0, 3), // x=0, y=3
                 ),
               ],
             ),
@@ -129,7 +129,7 @@ class UserProfilePage extends StatelessWidget {
                     color: Colors.black.withOpacity(0.2),
                     spreadRadius: 0,
                     blurRadius: 14,
-                    offset: Offset(0, 4), // x=0, y=4
+                    offset: const Offset(0, 4), // x=0, y=4
                   ),
                 ],
               ),
@@ -140,7 +140,7 @@ class UserProfilePage extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(
+          const Expanded(
             child: TabBarView(
               children: [
                 Center(child: Text('All Reviews')),

@@ -24,16 +24,16 @@ class RequestController extends GetxController {
   RequestController();
 
   bool validateFields() {
-    return 
-      serviceController.text.isNotEmpty &&
-      descriptionController.text.isNotEmpty &&
-      rateController.text.isNotEmpty &&
-      imageController.text.isNotEmpty &&
-      locationController.text.isNotEmpty &&
-      dateController.text.isNotEmpty &&
-      timeController.text.isNotEmpty &&
-      durationController.text.isNotEmpty;
+    return serviceController.text.isNotEmpty &&
+        descriptionController.text.isNotEmpty &&
+        rateController.text.isNotEmpty &&
+        imageController.text.isNotEmpty &&
+        locationController.text.isNotEmpty &&
+        dateController.text.isNotEmpty &&
+        timeController.text.isNotEmpty &&
+        durationController.text.isNotEmpty;
   }
+
   final state = RequestState();
   File? photo;
   var doc_id = null;
@@ -51,15 +51,15 @@ class RequestController extends GetxController {
   //Grab the last step, called in the view
   bool get isLastStep => state.currentStep.value == getSteps().length - 1;
 
-  void moveToNextStep() {  
+  void moveToNextStep() {
     // Check if current step is less then the total steps
     if (state.currentStep < getSteps().length - 1) {
       // Check if the last step
       state.currentStep.value++;
       update(); // Notify GetBuilder to rebuild
     }
-  } 
-  
+  }
+
   void cancelStep() {
     if (state.currentStep > 0) {
       state.currentStep.value -= 1;
@@ -85,8 +85,8 @@ class RequestController extends GetxController {
     durationController.clear();
 
     // Reset the current step
-    state.currentStep.value = 0; 
-    
+    state.currentStep.value = 0;
+
     // Set requestCompleted to true
     requestCompleted.value = false;
   }
@@ -94,117 +94,110 @@ class RequestController extends GetxController {
   List<Step> getSteps() {
     return [
       Step(
-        state: state.currentStep > 0 ? StepState.complete : StepState.indexed,
-        isActive: state.currentStep >= 0,
-        title: const Text('Details'), 
-        content: Column(
-          children: [
-            const SizedBox(height: 5),
-            // Service Name
-            MyTextField(
-              hinttext: 'Your Service', 
-              labeltext: 'Service', 
-              prefixicon: Icons.room_service,
-              obscuretext: false, 
-              controller: serviceController
-            ),
-            MySearchField(
-              
-            )
-            const SizedBox(height: 20),
-            // Description
-            MyTextField(
-              hinttext: 'Your Service', 
-              labeltext: 'Description', 
-              prefixicon: Icons.edit_document,
-              obscuretext: false, 
-              controller: descriptionController,
-              maxLines: 8,
-            ),
-            const SizedBox(height: 20),
-            // Rate/hour (int)
-            MyTextField(
-              hinttext: 'Your rate', 
-              labeltext: 'Rate', 
-              prefixicon: Icons.price_change,
-              obscuretext: false, 
-              controller: rateController
-            ),
-            const SizedBox(height: 20),
-            // Image (img)
-            MyTextField(
-              hinttext: 'Select image', 
-              labeltext: 'Image', 
-              prefixicon: Icons.image,
-              obscuretext: false,
-              controller: imageController,
-              readOnly: true,
-              onTap: () => showImagePicker(Get.context!, (selectedImage) {
-                photo = selectedImage; // Update the photo
-                // If user has selected an image, update the textfield
-                if (selectedImage != null) {
-                  imageController.text = "Image uploaded successfully";
-                }
-                update(); // Notify GetX to rebuild the UI
-              }),
-            ),
-          ],
-        )
-      ),
+          state: state.currentStep > 0 ? StepState.complete : StepState.indexed,
+          isActive: state.currentStep >= 0,
+          title: const Text('Details'),
+          content: Column(
+            children: [
+              const SizedBox(height: 5),
+              // Service Name
+              MyTextField(
+                  hinttext: 'Your Service',
+                  labeltext: 'Service',
+                  prefixicon: Icons.room_service,
+                  obscuretext: false,
+                  controller: serviceController),
+              // MySearchField(
+
+              // )
+              const SizedBox(height: 20),
+              // Description
+              MyTextField(
+                hinttext: 'Your Service',
+                labeltext: 'Description',
+                prefixicon: Icons.edit_document,
+                obscuretext: false,
+                controller: descriptionController,
+                maxLines: 8,
+              ),
+              const SizedBox(height: 20),
+              // Rate/hour (int)
+              MyTextField(
+                  hinttext: 'Your rate',
+                  labeltext: 'Rate',
+                  prefixicon: Icons.price_change,
+                  obscuretext: false,
+                  controller: rateController),
+              const SizedBox(height: 20),
+              // Image (img)
+              MyTextField(
+                hinttext: 'Select image',
+                labeltext: 'Image',
+                prefixicon: Icons.image,
+                obscuretext: false,
+                controller: imageController,
+                readOnly: true,
+                onTap: () => showImagePicker(Get.context!, (selectedImage) {
+                  photo = selectedImage; // Update the photo
+                  // If user has selected an image, update the textfield
+                  if (selectedImage != null) {
+                    imageController.text = "Image uploaded successfully";
+                  }
+                  update(); // Notify GetX to rebuild the UI
+                }),
+              ),
+            ],
+          )),
       Step(
-        state: state.currentStep > 1 ? StepState.complete : StepState.indexed,
-        isActive: state.currentStep >= 1,
-        title: const Text('Personal'), 
-        content: Column(
-          children: [
+          state: state.currentStep > 1 ? StepState.complete : StepState.indexed,
+          isActive: state.currentStep >= 1,
+          title: const Text('Personal'),
+          content: Column(children: [
             const SizedBox(height: 5),
             //Location
             MyTextField(
-              hinttext: 'Your location', 
-              labeltext: 'Location', 
-              prefixicon: Icons.add_location_alt_outlined,
-              obscuretext: false, 
-              controller: locationController
-            ),
+                hinttext: 'Your location',
+                labeltext: 'Location',
+                prefixicon: Icons.add_location_alt_outlined,
+                obscuretext: false,
+                controller: locationController),
             const SizedBox(height: 20),
             //Date (YYYY-MM-DD)
             MyTextField(
-              hinttext: 'Select date', 
-              labeltext: 'Date', 
-              prefixicon: Icons.calendar_month, 
-              controller: dateController, 
-              obscuretext: false, 
+              hinttext: 'Select date',
+              labeltext: 'Date',
+              prefixicon: Icons.calendar_month,
+              controller: dateController,
+              obscuretext: false,
               readOnly: true,
-              onTap: () => Get.find<RequestController>().selectDate(Get.context!),
+              onTap: () =>
+                  Get.find<RequestController>().selectDate(Get.context!),
             ),
             //Time (AM/PM)
             const SizedBox(height: 20),
             MyTextField(
-              hinttext: 'Select time', 
-              labeltext: 'Time', 
+              hinttext: 'Select time',
+              labeltext: 'Time',
               prefixicon: Icons.alarm,
-              obscuretext: false, 
+              obscuretext: false,
               controller: timeController,
               readOnly: true,
-              onTap: () => Get.find<RequestController>().selectTime(Get.context!),
+              onTap: () =>
+                  Get.find<RequestController>().selectTime(Get.context!),
             ),
             const SizedBox(height: 20),
             // Rate/hour (int)
             MyTextField(
-              hinttext: 'Duration of service', 
-              labeltext: 'Duration', 
-              prefixicon: Icons.timelapse,
-              obscuretext: false, 
-              controller: durationController
-            ),
-          ]
-        )
-      ),
+                hinttext: 'Duration of service',
+                labeltext: 'Duration',
+                prefixicon: Icons.timelapse,
+                obscuretext: false,
+                controller: durationController),
+          ])),
       Step(
-        isActive: state.currentStep >= 2,
-        title: const Text('Complete'), 
-        content: Container()
-      ),
+          isActive: state.currentStep >= 2,
+          title: const Text('Complete'),
+          content: Container()),
     ];
   }
 
@@ -239,7 +232,7 @@ class RequestController extends GetxController {
       dateController.text = pickedDate.toString().split(" ")[0];
     }
   }
-  
+
   // Function to select a time from the time picker
   Future<void> selectTime(BuildContext context) async {
     TimeOfDay? pickedTime = await showTimePicker(
@@ -247,7 +240,7 @@ class RequestController extends GetxController {
       initialTime: TimeOfDay.now(),
       // Customizing the appearance of the time picker
       builder: (BuildContext context, Widget? child) {
-      return Theme(
+        return Theme(
           data: ThemeData.light().copyWith(
             // Customize colors of date picker
             colorScheme: const ColorScheme.light(
@@ -272,14 +265,16 @@ class RequestController extends GetxController {
 
   // Function to get the download URL of an image from Firebase Storage
   Future getImgUrl(String name) async {
-    final spaceRef = FirebaseStorage.instance.ref("service").child(name); // Reference
-    var str = await spaceRef.getDownloadURL(); // Getting the download URL of the image
+    final spaceRef =
+        FirebaseStorage.instance.ref("service").child(name); // Reference
+    var str = await spaceRef
+        .getDownloadURL(); // Getting the download URL of the image
     return str;
   }
 
   // Function to upload a file to Firebase Storage
   Future uploadFile() async {
-    if(photo == null) return;
+    if (photo == null) return;
     // Generating a unique file name for the uploaded file
     final fileName = getRandomString(15) + extension(photo!.path);
 
@@ -288,12 +283,11 @@ class RequestController extends GetxController {
       final uploadTask = ref.putFile(photo!);
       // Wait for the upload task to complete
       final snapshot = await uploadTask;
-      
+
       // Get the download URL
       final imgUrl = await snapshot.ref.getDownloadURL();
       return imgUrl;
-    }
-    catch(e) {
+    } catch (e) {
       print("There's an error $e");
     }
   }
@@ -327,8 +321,7 @@ class RequestController extends GetxController {
       await createServiceDocument();
 
       Navigator.of(context).pop();
-    } 
-    catch (error) {
+    } catch (error) {
       // Dismiss loading dialog
       Navigator.pop(context);
 
@@ -360,7 +353,8 @@ class RequestController extends GetxController {
 
   Future<void> createServiceDocument() async {
     String profile = await UserStore.to.getProfile();
-    UserLoginResponseEntity userdata = UserLoginResponseEntity.fromJson(jsonDecode(profile));
+    UserLoginResponseEntity userdata =
+        UserLoginResponseEntity.fromJson(jsonDecode(profile));
 
     // Upload the file and get the image URL
     final imgUrl = await uploadFile();
@@ -369,40 +363,40 @@ class RequestController extends GetxController {
     String username = userdata.username ?? await getDisplayName();
 
     final serviceData = ServiceData(
-      serviceid: doc_id,
-      serviceName: serviceController.text,
-      description: descriptionController.text,
-      rate: int.tryParse(rateController.text),
-      image: imgUrl,
-      location: locationController.text,
-      date: dateController.text,
-      time: timeController.text,
-      duration: int.tryParse(durationController.text),
-      status: "Requested", //Default status
-      reqUserid: userdata.accessToken,
-      reqUsername: username,
-      provUserid: "",
-      provUsername: ""
-    );
+        serviceid: doc_id,
+        serviceName: serviceController.text,
+        description: descriptionController.text,
+        rate: int.tryParse(rateController.text),
+        image: imgUrl,
+        location: locationController.text,
+        date: dateController.text,
+        time: timeController.text,
+        duration: int.tryParse(durationController.text),
+        status: "Requested", //Default status
+        reqUserid: userdata.accessToken,
+        reqUsername: username,
+        provUserid: "",
+        provUsername: "");
 
     // Set data in Firestore document
     await FirebaseFirestore.instance.collection('service').doc(doc_id).set(
-      serviceData.toFirestore(),
-    );
-    
+          serviceData.toFirestore(),
+        );
+
     requestCompleted.value = true;
   }
 
   // Function to fetch username from Firestore
   Future<String> getDisplayName() async {
-  // Query Firestore to fetch user data based on userId
-  DocumentSnapshot<Map<String, dynamic>> userSnapshot = await FirebaseFirestore.instance.collection('users').doc(user_id).get();
+    // Query Firestore to fetch user data based on userId
+    DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+        await FirebaseFirestore.instance.collection('users').doc(user_id).get();
 
     // Check if the user exists and contains the username
     if (userSnapshot.exists) {
       Map<String, dynamic> userData = userSnapshot.data()!;
-      return userData['username']; 
-    } 
+      return userData['username'];
+    }
     // Safety null, If username is undefined
     else {
       return 'Unknown User';

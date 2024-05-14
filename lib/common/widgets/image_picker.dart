@@ -18,6 +18,18 @@ Future<void> imgFromGallery(Function(File?) onImageSelected) async {
   }
 }
 
+Future<void> imgFromCamera(Function(File?) onImageSelected) async {
+  final pickedImage = await ImagePicker().pickImage(source: ImageSource.camera);
+  if (pickedImage != null) {
+    final File imageFile = File(pickedImage.path);
+    onImageSelected(imageFile);
+  } 
+  else {
+    //Nothing happens
+    print("No image selected");
+  }
+}
+
 Future<void> showImagePicker(BuildContext context, Function(File?) onImageSelected) async {
   showModalBottomSheet(
     context: context, 
@@ -37,7 +49,8 @@ Future<void> showImagePicker(BuildContext context, Function(File?) onImageSelect
               leading: const Icon(Icons.photo_camera),
               title: const Text("Camera"),
               onTap: () {
-                
+                imgFromCamera(onImageSelected);
+                Get.back();
               },
             )
           ],

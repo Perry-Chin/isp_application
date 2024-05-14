@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import '../../common/values/values.dart';
 import 'index.dart';
@@ -67,17 +68,19 @@ class HomePage extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(25),
-          child: Column(
-            children: [
-              searchBar(), // Search bar widget
-              const SizedBox(height: 20),
-            ],
-          ),
-        ),
-      ),
+      body: Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            searchBar(),
+            const SizedBox(height: 15),
+            SizedBox(
+              height: 440,
+              child: HomeList(),
+            )
+          ],
+        )
+      )
     );
   }
 }

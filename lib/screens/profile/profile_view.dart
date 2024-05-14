@@ -42,6 +42,10 @@ class UserProfilePage extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.grey.shade200, // Light gray background
+                      border: Border.all(
+                        color: Colors.amber, // Yellow border color
+                        width: 4.0, // Border width
+                      ),
                     ),
                     child: const Padding(
                       padding: EdgeInsets.all(8.0),

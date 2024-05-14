@@ -133,7 +133,7 @@ class UserProfilePage extends StatelessWidget {
                   ),
                 ],
               ),
-              tabs: [
+              tabs: const [
                 Tab(text: 'All'),
                 Tab(text: 'Positive'),
                 Tab(text: 'Negative'),

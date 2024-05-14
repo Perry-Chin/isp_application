@@ -75,18 +75,7 @@ class UserProfilePage extends StatelessWidget {
                 children: [
                   Text('Username', style: TextStyle(fontSize: 18)),
                   SizedBox(height: 4),
-                  RichText(
-                    text: TextSpan(
-                      text: 'BuzzBuddy',
-                      style: TextStyle(color: Colors.amber, fontSize: 16),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: ' accumulated points: 20',
-                          style: TextStyle(color: Colors.black, fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  ),
+                  Text('BuzzBuddy accumulated points: 20'),
                 ],
               ),
               SizedBox(height: 16), // Spacing after text

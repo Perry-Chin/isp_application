@@ -36,7 +36,8 @@ class UserProfilePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start, // Align to left
+                crossAxisAlignment:
+                    CrossAxisAlignment.start, // Align items to the top
                 children: [
                   Container(
                     decoration: BoxDecoration(
@@ -48,6 +49,24 @@ class UserProfilePage extends StatelessWidget {
                       child: Icon(Icons.person, size: 70, color: Colors.grey),
                     ),
                   ),
+                  Spacer(), // Pushes the icons to the far right
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top:
+                            -9.0), // Adjust the top padding to move icons higher
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.settings),
+                          onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 16), // Spacing between icon and text
@@ -56,23 +75,21 @@ class UserProfilePage extends StatelessWidget {
                 children: [
                   Text('Username', style: TextStyle(fontSize: 18)),
                   SizedBox(height: 4),
-                  Text('BuzzBuddy accumulated points: 20'),
+                  RichText(
+                    text: TextSpan(
+                      text: 'BuzzBuddy',
+                      style: TextStyle(color: Colors.amber, fontSize: 16),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: ' accumulated points: 20',
+                          style: TextStyle(color: Colors.black, fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 16), // Spacing after text
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.settings),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
             ],
           ),
         ),
@@ -88,19 +105,73 @@ class UserProfilePage extends StatelessWidget {
                 ],
               ),
               Container(
-                height: 200,
+                height: 400, // Adjust height as needed
                 child: TabBarView(
                   children: [
                     Center(child: Text('All Provider Requester')),
-                    Center(child: Text('No Reviews Yet')),
+                    _buildReviewsTab(), // Build the Reviews tab content
                   ],
                 ),
               ),
             ],
           ),
         ),
-        // You can add more content here if needed
       ],
+    );
+  }
+
+  Widget _buildReviewsTab() {
+    return DefaultTabController(
+      length: 3,
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(25.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 6,
+                  offset: Offset(0, 3), // x=0, y=3
+                ),
+              ],
+            ),
+            child: TabBar(
+              labelColor: Colors.black,
+              unselectedLabelColor: Colors.grey,
+              indicator: BoxDecoration(
+                color: Colors.amber,
+                borderRadius: BorderRadius.circular(25.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    spreadRadius: 0,
+                    blurRadius: 14,
+                    offset: Offset(0, 4), // x=0, y=4
+                  ),
+                ],
+              ),
+              tabs: [
+                Tab(text: 'All'),
+                Tab(text: 'Provider'),
+                Tab(text: 'Requester'),
+              ],
+            ),
+          ),
+          Expanded(
+            child: TabBarView(
+              children: [
+                Center(child: Text('All Reviews')),
+                Center(child: Text('Provider Reviews')),
+                Center(child: Text('Requester Reviews')),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

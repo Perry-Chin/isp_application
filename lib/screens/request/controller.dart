@@ -16,8 +16,7 @@ import '../../common/data/user.dart';
 import '../../common/storage/storage.dart';
 import '../../common/utils/security.dart';
 import '../../common/values/values.dart';
-import '../../common/widgets/image_picker.dart';
-import '../../common/widgets/textfield.dart';
+import '../../common/widgets/widgets.dart';
 import 'index.dart';
 
 class RequestController extends GetxController {
@@ -100,16 +99,18 @@ class RequestController extends GetxController {
           content: Column(
             children: [
               const SizedBox(height: 5),
-              // Service Name
-              MyTextField(
-                  hinttext: 'Your Service',
-                  labeltext: 'Service',
-                  prefixicon: Icons.room_service,
-                  obscuretext: false,
-                  controller: serviceController),
               // MySearchField(
-
-              // )
+              MySearchField(
+                hinttext: 'Your Service', 
+                labeltext: 'Service', 
+                prefixicon: Icons.room_service,
+                suggestions: const [
+                  "Cleaning",
+                  "Housekeeping"
+                ], 
+                focusNode: FocusNode(), 
+                controller: serviceController
+              ),
               const SizedBox(height: 20),
               // Description
               MyTextField(

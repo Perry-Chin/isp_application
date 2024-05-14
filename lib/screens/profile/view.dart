@@ -72,7 +72,18 @@ class UserProfilePage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 4),
-              const Text('BuzzBuddy accumulated points: 20'),
+              RichText(
+                text: const TextSpan(
+                  style: TextStyle(color: Colors.black),
+                  children: [
+                    TextSpan(
+                      text: 'BuzzBuddy',
+                      style: TextStyle(color: Colors.amber),
+                    ),
+                    TextSpan(text: ' accumulated points: 20'),
+                  ],
+                ),
+              ),
               const SizedBox(height: 16), // Spacing after text
             ],
           ),
@@ -168,8 +179,8 @@ class UserProfilePage extends StatelessWidget {
               ),
               tabs: const [
                 Tab(text: 'All'),
-                Tab(text: 'Positive'),
-                Tab(text: 'Negative'),
+                Tab(text: 'Provider'),
+                Tab(text: 'Requester'),
               ],
             ),
           ),
@@ -177,8 +188,8 @@ class UserProfilePage extends StatelessWidget {
             child: TabBarView(
               children: [
                 Center(child: Text('All Reviews')),
-                Center(child: Text('Positive Reviews')),
-                Center(child: Text('Negative Reviews')),
+                Center(child: Text('Provider Reviews')),
+                Center(child: Text('Requester Reviews')),
               ],
             ),
           ),

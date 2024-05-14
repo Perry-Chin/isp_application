@@ -60,13 +60,29 @@ class UserProfilePage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16), // Spacing between icon and text
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Username', style: TextStyle(fontSize: 18)),
-                  SizedBox(height: 4),
-                  Text('BuzzBuddy accumulated points: 20'),
+                  const Text(
+                    'Username',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(width: 8),
+                  _buildRatingRectangle(),
                 ],
+              ),
+              const SizedBox(height: 4),
+              RichText(
+                text: const TextSpan(
+                  style: TextStyle(color: Colors.black),
+                  children: [
+                    TextSpan(
+                      text: 'BuzzBuddy',
+                      style: TextStyle(color: Colors.amber),
+                    ),
+                    TextSpan(text: ' accumulated points: 20'),
+                  ],
+                ),
               ),
               const SizedBox(height: 16), // Spacing after text
             ],
@@ -96,6 +112,34 @@ class UserProfilePage extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildRatingRectangle() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.amber,
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 7.0),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '4.6',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(width: 4),
+          Icon(
+            Icons.star,
+            color: Colors.white,
+            size: 16,
+          ),
+        ],
+      ),
     );
   }
 
@@ -135,8 +179,8 @@ class UserProfilePage extends StatelessWidget {
               ),
               tabs: const [
                 Tab(text: 'All'),
-                Tab(text: 'Positive'),
-                Tab(text: 'Negative'),
+                Tab(text: 'Provider'),
+                Tab(text: 'Requester'),
               ],
             ),
           ),
@@ -144,8 +188,8 @@ class UserProfilePage extends StatelessWidget {
             child: TabBarView(
               children: [
                 Center(child: Text('All Reviews')),
-                Center(child: Text('Positive Reviews')),
-                Center(child: Text('Negative Reviews')),
+                Center(child: Text('Provider Reviews')),
+                Center(child: Text('Requester Reviews')),
               ],
             ),
           ),

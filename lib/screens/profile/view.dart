@@ -60,14 +60,19 @@ class UserProfilePage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16), // Spacing between icon and text
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Username', style: TextStyle(fontSize: 18)),
-                  SizedBox(height: 4),
-                  Text('BuzzBuddy accumulated points: 20'),
+                  const Text(
+                    'Username',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(width: 8),
+                  _buildRatingRectangle(),
                 ],
               ),
+              const SizedBox(height: 4),
+              const Text('BuzzBuddy accumulated points: 20'),
               const SizedBox(height: 16), // Spacing after text
             ],
           ),
@@ -96,6 +101,34 @@ class UserProfilePage extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildRatingRectangle() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.amber,
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 7.0),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '4.6',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(width: 4),
+          Icon(
+            Icons.star,
+            color: Colors.white,
+            size: 16,
+          ),
+        ],
+      ),
     );
   }
 

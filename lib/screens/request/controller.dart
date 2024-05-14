@@ -108,6 +108,9 @@ class RequestController extends GetxController {
               obscuretext: false, 
               controller: serviceController
             ),
+            MySearchField(
+              
+            )
             const SizedBox(height: 20),
             // Description
             MyTextField(

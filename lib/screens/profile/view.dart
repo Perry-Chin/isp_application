@@ -36,8 +36,7 @@ class UserProfilePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start, // Align items to the top
+                mainAxisAlignment: MainAxisAlignment.start, // Align to left
                 children: [
                   Container(
                     decoration: BoxDecoration(
@@ -50,22 +49,13 @@ class UserProfilePage extends StatelessWidget {
                     ),
                   ),
                   Spacer(), // Pushes the icons to the far right
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top:
-                            -9.0), // Adjust the top padding to move icons higher
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.settings),
-                          onPressed: () {},
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
+                  IconButton(
+                    icon: Icon(Icons.settings),
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {},
                   ),
                 ],
               ),
@@ -145,8 +135,8 @@ class UserProfilePage extends StatelessWidget {
               ),
               tabs: [
                 Tab(text: 'All'),
-                Tab(text: 'Provider'),
-                Tab(text: 'Requester'),
+                Tab(text: 'Positive'),
+                Tab(text: 'Negative'),
               ],
             ),
           ),
@@ -154,8 +144,8 @@ class UserProfilePage extends StatelessWidget {
             child: TabBarView(
               children: [
                 Center(child: Text('All Reviews')),
-                Center(child: Text('Provider Reviews')),
-                Center(child: Text('Requester Reviews')),
+                Center(child: Text('Positive Reviews')),
+                Center(child: Text('Negative Reviews')),
               ],
             ),
           ),

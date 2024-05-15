@@ -11,20 +11,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
+      home: SchedulePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class SchedulePage extends StatefulWidget {
+  const SchedulePage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _MyHomePageState createState() => _MyHomePageState();
+  _SchedulePageState createState() => _SchedulePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _SchedulePageState extends State<SchedulePage> {
   List<String> selectedFilters = ['all']; // Initialize with a default filter
   List<String> selectedRating = ['all']; // Initialize with a default rating filter
 
@@ -101,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: TabBarView(
                   children: [
                     FilteredProviderCards(statusFilter: selectedFilters, ratingFilter: selectedRating),
-                    const RequesterCards(),
+                    RequesterProviderCards(statusFilter: selectedFilters, ratingFilter: selectedRating), 
                   ],
                 ),
               ),
@@ -477,6 +477,55 @@ class ProviderCard extends StatelessWidget {
   }
 }
 
+class RequesterProviderCards extends StatelessWidget{ 
+   final List<String> statusFilter;
+  final List<String> ratingFilter;
+
+  const RequesterProviderCards({Key? key, required this.statusFilter, required this.ratingFilter}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    List<RequesterCard> allProviderCards = [
+      const RequesterCard(rating: 4.5, starColor: Colors.white, status: 'finished'),
+      const RequesterCard(rating: 4.2, starColor: Colors.white, status: 'pending'),
+      const RequesterCard(rating: 3.9, starColor: Colors.white, status: 'cancelled'),
+      const RequesterCard(rating: 2, starColor: Colors.white, status: 'pending'),
+      // Add more ProviderCard widgets as needed
+    ];
+
+    List<RequesterCard> requesterProviderCards;
+
+    if (statusFilter.contains('all') && ratingFilter.contains('all')) {
+      // If both "all" status and "all" rating are selected, display all cards
+      requesterProviderCards = allProviderCards;
+    } else if (statusFilter.contains('all')) {
+      // If "all" status is selected, filter cards based on rating
+      requesterProviderCards = allProviderCards.where((card) {
+        return ratingFilter.contains('all') ||
+            ((ratingFilter.contains('3 - 5') && card.rating >= 3 && card.rating <= 5) ||
+                (ratingFilter.contains('1 - 3') && card.rating >= 1 && card.rating <= 3));
+      }).toList();
+    } else if (ratingFilter.contains('all')) {
+      // If "all" rating is selected, filter cards based on status
+      requesterProviderCards = allProviderCards.where((card) {
+        return statusFilter.contains('all') || statusFilter.contains(card.status.toLowerCase());
+      }).toList();
+    } else {
+      // Filter based on both status and rating filters
+      requesterProviderCards = allProviderCards.where((card) {
+        bool matchesStatus = statusFilter.contains(card.status.toLowerCase());
+        bool matchesRating =
+            (ratingFilter.contains('3 - 5') && card.rating >= 3 && card.rating <= 5) ||
+                (ratingFilter.contains('1 - 3') && card.rating >= 1 && card.rating <= 3);
+        return matchesStatus && matchesRating;
+      }).toList();
+    }
+
+    return ListView(
+      children: requesterProviderCards,
+    );
+  }
+}
 
 class FilteredProviderCards extends StatelessWidget {
   final List<String> statusFilter;

@@ -7,6 +7,7 @@ import '../home/home_index.dart';
 import '../profile/profile_index.dart';
 import '../request/request_index.dart';
 import 'navbar_index.dart';
+import '../schedule/schedule_index.dart';
 
 class NavbarPage extends GetView<NavbarController> {
   NavbarPage({super.key});
@@ -21,7 +22,7 @@ class NavbarPage extends GetView<NavbarController> {
         onPageChanged: controller.handlePageChanged,
         children: const [
           HomePage(),
-          Center(child: Text("Schedule Page")),
+          SchedulePage(),
           Center(child: Text("Message Page")),
           ProfilePage(),
         ],

@@ -76,25 +76,12 @@ class UserProfilePage extends StatelessWidget {
                   _buildRatingRectangle(),
                 ],
               ),
-              // const SizedBox(height: 4),
-              // RichText(
-              //   text: const TextSpan(
-              //     style: TextStyle(color: Colors.black),
-              //     children: [
-              //       TextSpan(
-              //         text: 'BuzzBuddy',
-              //         style: TextStyle(color: Colors.amber),
-              //       ),
-              //       TextSpan(text: ' accumulated points: 20'),
-              //     ],
-              //   ),
-              // ),
               const SizedBox(height: 16), // Spacing after text
             ],
           ),
         ),
         DefaultTabController(
-          length: 2,
+          length: 1,
           child: Column(
             children: [
               const TabBar(
@@ -107,7 +94,6 @@ class UserProfilePage extends StatelessWidget {
                 height: 400, // Adjust height as needed
                 child: TabBarView(
                   children: [
-                    const Center(child: Text('All Provider Requester')),
                     _buildReviewsTab(), // Build the Reviews tab content
                   ],
                 ),
@@ -148,57 +134,54 @@ class UserProfilePage extends StatelessWidget {
   }
 
   Widget _buildReviewsTab() {
-    return DefaultTabController(
-      length: 3,
-      child: Column(
-        children: [
-          Container(
-            margin: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(25.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                spreadRadius: 0,
+                blurRadius: 6,
+                offset: const Offset(0, 3), // x=0, y=3
+              ),
+            ],
+          ),
+          child: TabBar(
+            labelColor: Colors.black,
+            unselectedLabelColor: Colors.grey,
+            indicator: BoxDecoration(
+              color: AppColor.secondaryColor,
               borderRadius: BorderRadius.circular(25.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withOpacity(0.2),
                   spreadRadius: 0,
-                  blurRadius: 6,
-                  offset: const Offset(0, 3), // x=0, y=3
+                  blurRadius: 14,
+                  offset: const Offset(0, 4), // x=0, y=4
                 ),
               ],
             ),
-            child: TabBar(
-              labelColor: Colors.black,
-              unselectedLabelColor: Colors.grey,
-              indicator: BoxDecoration(
-                color: AppColor.secondaryColor,
-                borderRadius: BorderRadius.circular(25.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    spreadRadius: 0,
-                    blurRadius: 14,
-                    offset: const Offset(0, 4), // x=0, y=4
-                  ),
-                ],
-              ),
-              tabs: const [
-                Tab(text: 'All'),
-                Tab(text: 'Provider'),
-                Tab(text: 'Requester'),
-              ],
-            ),
+            tabs: const [
+              Tab(text: 'All'),
+              Tab(text: 'Provider'),
+              Tab(text: 'Requester'),
+            ],
           ),
-          const Expanded(
-            child: TabBarView(
-              children: [
-                Center(child: Text('All Reviews')),
-                Center(child: Text('Provider Reviews')),
-                Center(child: Text('Requester Reviews')),
-              ],
-            ),
+        ),
+        const Expanded(
+          child: TabBarView(
+            children: [
+              Center(child: Text('All Reviews')),
+              Center(child: Text('Provider Reviews')),
+              Center(child: Text('Requester Reviews')),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

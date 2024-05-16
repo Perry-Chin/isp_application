@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../common/values/values.dart';
 import 'profile_index.dart';
 
 class ProfilePage extends GetView<ProfileController> {
@@ -11,7 +12,7 @@ class ProfilePage extends GetView<ProfileController> {
       elevation: 0,
       centerTitle: true,
       title: const Text("Profile"),
-      backgroundColor: Colors.amber,
+      backgroundColor: AppColor.secondaryColor,
     );
   }
 
@@ -43,7 +44,7 @@ class UserProfilePage extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: Colors.grey.shade200, // Light gray background
                       border: Border.all(
-                        color: Colors.amber, // Yellow border color
+                        color: AppColor.secondaryColor, // Yellow border color
                         width: 4.0, // Border width
                       ),
                     ),
@@ -75,19 +76,19 @@ class UserProfilePage extends StatelessWidget {
                   _buildRatingRectangle(),
                 ],
               ),
-              const SizedBox(height: 4),
-              RichText(
-                text: const TextSpan(
-                  style: TextStyle(color: Colors.black),
-                  children: [
-                    TextSpan(
-                      text: 'BuzzBuddy',
-                      style: TextStyle(color: Colors.amber),
-                    ),
-                    TextSpan(text: ' accumulated points: 20'),
-                  ],
-                ),
-              ),
+              // const SizedBox(height: 4),
+              // RichText(
+              //   text: const TextSpan(
+              //     style: TextStyle(color: Colors.black),
+              //     children: [
+              //       TextSpan(
+              //         text: 'BuzzBuddy',
+              //         style: TextStyle(color: Colors.amber),
+              //       ),
+              //       TextSpan(text: ' accumulated points: 20'),
+              //     ],
+              //   ),
+              // ),
               const SizedBox(height: 16), // Spacing after text
             ],
           ),
@@ -99,7 +100,6 @@ class UserProfilePage extends StatelessWidget {
               const TabBar(
                 labelColor: Colors.black,
                 tabs: [
-                  Tab(text: 'Your Listings'),
                   Tab(text: 'Reviews'),
                 ],
               ),
@@ -122,7 +122,7 @@ class UserProfilePage extends StatelessWidget {
   Widget _buildRatingRectangle() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.amber,
+        color: AppColor.secondaryColor,
         borderRadius: BorderRadius.circular(15.0),
       ),
       padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 7.0),
@@ -170,7 +170,7 @@ class UserProfilePage extends StatelessWidget {
               labelColor: Colors.black,
               unselectedLabelColor: Colors.grey,
               indicator: BoxDecoration(
-                color: Colors.amber,
+                color: AppColor.secondaryColor,
                 borderRadius: BorderRadius.circular(25.0),
                 boxShadow: [
                   BoxShadow(

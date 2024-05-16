@@ -134,54 +134,77 @@ class UserProfilePage extends StatelessWidget {
   }
 
   Widget _buildReviewsTab() {
-    return Column(
-      children: [
-        Container(
-          margin: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(25.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                spreadRadius: 0,
-                blurRadius: 6,
-                offset: const Offset(0, 3), // x=0, y=3
-              ),
-            ],
-          ),
-          child: TabBar(
-            labelColor: Colors.black,
-            unselectedLabelColor: Colors.grey,
-            indicator: BoxDecoration(
-              color: AppColor.secondaryColor,
+    return Container(
+      height: 500, // Adjust the height as needed
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
               borderRadius: BorderRadius.circular(25.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withOpacity(0.1),
                   spreadRadius: 0,
-                  blurRadius: 14,
-                  offset: const Offset(0, 4), // x=0, y=4
+                  blurRadius: 6,
+                  offset: const Offset(0, 3), // x=0, y=3
                 ),
               ],
             ),
-            tabs: const [
-              Tab(text: 'All'),
-              Tab(text: 'Provider'),
-              Tab(text: 'Requester'),
-            ],
+            child: TabBar(
+              labelColor: Colors.black,
+              unselectedLabelColor: Colors.grey,
+              indicator: BoxDecoration(
+                color: AppColor.secondaryColor,
+                borderRadius: BorderRadius.circular(25.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    spreadRadius: 0,
+                    blurRadius: 14,
+                    offset: const Offset(0, 4), // x=0, y=4
+                  ),
+                ],
+              ),
+              tabs: const [
+                Tab(text: 'All'),
+                Tab(text: 'Provider'),
+                Tab(text: 'Requester'),
+              ],
+            ),
           ),
-        ),
-        const Expanded(
-          child: TabBarView(
-            children: [
-              Center(child: Text('All Reviews')),
-              Center(child: Text('Provider Reviews')),
-              Center(child: Text('Requester Reviews')),
-            ],
+          const Expanded(
+            child: TabBarView(
+              children: [
+                Center(child: Text('All Reviews')),
+                Center(child: Text('Provider Reviews')),
+                Center(child: Text('Requester Reviews')),
+              ],
+            ),
           ),
-        ),
-      ],
+          Container(
+            margin: const EdgeInsets.all(16),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: AppColor.secondaryColor,
+                side: const BorderSide(color: AppColor.secondaryColor),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+              ),
+              onPressed: () {
+                // Implement your sorting functionality here
+              },
+              child: const Text(
+                'Sort by newest',
+                style: TextStyle(color: AppColor.secondaryColor),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -26,7 +26,6 @@ class RequestController extends GetxController {
     return serviceController.text.isNotEmpty &&
         descriptionController.text.isNotEmpty &&
         rateController.text.isNotEmpty &&
-        imageController.text.isNotEmpty &&
         locationController.text.isNotEmpty &&
         dateController.text.isNotEmpty &&
         timeController.text.isNotEmpty &&
@@ -368,7 +367,7 @@ class RequestController extends GetxController {
         serviceName: serviceController.text,
         description: descriptionController.text,
         rate: int.tryParse(rateController.text),
-        image: imgUrl,
+        image: imgUrl ?? "",
         location: locationController.text,
         date: dateController.text,
         time: timeController.text,

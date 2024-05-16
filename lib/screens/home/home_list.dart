@@ -12,8 +12,10 @@ class HomeList extends GetView<HomeController> {
   const HomeList({super.key});
 
   Widget homeListItem(QueryDocumentSnapshot<ServiceData> item) {
-    return Container(
-      padding: EdgeInsets.only(top: 15.w),
+    return Card(
+      color: Colors.transparent,
+      elevation: 4, // Add elevation for a shadow effect
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8), // Add margin around the card
       child: InkWell(
         onTap: () {
           
@@ -24,15 +26,8 @@ class HomeList extends GetView<HomeController> {
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: Colors.grey,
-              width: 0.1
-            ),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 4,
-                spreadRadius: 2
-              )
-            ]
+              width: 0.2
+            )
           ),
           child: Column(
             children: [
@@ -48,7 +43,7 @@ class HomeList extends GetView<HomeController> {
                   child: Row(
                     children: [
                       Text(
-                        item.data().reqUsername ?? "",
+                        item.data().reqUsername ?? "Username",
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -60,13 +55,13 @@ class HomeList extends GetView<HomeController> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.amber)
+                          border: Border.all(color: AppColor.secondaryColor)
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              "\$${item.data().rate?.toString() ?? "0"}/h",
+                              "4.5",
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -86,7 +81,7 @@ class HomeList extends GetView<HomeController> {
                   ), 
                 ),
                 subtitle: Text(
-                  item.data().date ?? ""
+                  "${item.data().date}, ${item.data().time}"
                 ),
               ),
               // Location Icon

@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         initialRoute: AppPages.initial,
-        getPages: AppPages.routes,
+        getPages: AppPages.routes
       )
     );
   }

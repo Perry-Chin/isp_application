@@ -1,6 +1,7 @@
 //Navbar View
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:isp_application/common/values/color.dart';
 
 import '../../common/storage/storage.dart';
 import '../home/home_index.dart';
@@ -32,6 +33,7 @@ class NavbarPage extends GetView<NavbarController> {
     Widget buildBottomNavigationBar() { 
       return BottomAppBar(
         shape: const CircularNotchedRectangle(),
+        color: Colors.white,
         notchMargin: 10.0,
         child: Row(
           mainAxisSize: MainAxisSize.max,
@@ -40,14 +42,14 @@ class NavbarPage extends GetView<NavbarController> {
             IconButton(
               icon: Obx(() => Icon(
                 Icons.home,
-                color: controller.state.page == 0 ? Colors.amber : Colors.black45,
+                color: controller.state.page == 0 ? AppColor.secondaryColor : Colors.black45,
               )),
               onPressed: () => controller.handleNavBarTap(0),
             ),
             IconButton(
               icon: Obx(() => Icon(
                 Icons.calendar_month,
-                color: controller.state.page == 1 ? Colors.amber : Colors.black45,
+                color: controller.state.page == 1 ? AppColor.secondaryColor : Colors.black45,
               )),
               onPressed: () => controller.handleNavBarTap(1),
             ),
@@ -55,14 +57,14 @@ class NavbarPage extends GetView<NavbarController> {
             IconButton(
               icon: Obx(() => Icon(
                 Icons.message,
-                color: controller.state.page == 2 ? Colors.amber : Colors.black45,
+                color: controller.state.page == 2 ? AppColor.secondaryColor : Colors.black45,
               )),
               onPressed: () => controller.handleNavBarTap(2),
             ),
             IconButton(
               icon: Obx(() => Icon(
                 Icons.person,
-                color: controller.state.page == 3 ? Colors.amber : Colors.black45,
+                color: controller.state.page == 3 ? AppColor.secondaryColor : Colors.black45,
               )),
               onPressed: () => controller.handleNavBarTap(3),
             ),

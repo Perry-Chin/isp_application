@@ -16,7 +16,7 @@ class HomeController extends GetxController {
     initialRefresh: true
   );
 
-  //The dependency requires this 2 functions to work
+  //The pull_to_refresh dependency requires this 2 functions to work
   void onRefresh() {
     asyncLoadAllData().then((_){
       refreshController.refreshCompleted(resetFooterState: true);
@@ -35,15 +35,53 @@ class HomeController extends GetxController {
   //
 
   asyncLoadAllData() async {
-    var reqServices = await db.collection("service").withConverter(
+    try {
+      var reqServices = await db.collection("service").withConverter(
       fromFirestore: ServiceData.fromFirestore, 
       toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore()
-    ).where("requester_uid", isNotEqualTo: token).get();
+      ).where("requester_uid", isNotEqualTo: token)  // Make sure the field matches the orderBy field
+      .where("status", isEqualTo: "Requested").get();
+      
+      List<QueryDocumentSnapshot<ServiceData>> documents = reqServices.docs;
 
-    state.serviceList.clear();
+      // Sort the documents based on date and time
+      documents.sort((a, b) {
+        DateTime dateTimeA = combineDateTime(a.data().date!, a.data().time!);
+        DateTime dateTimeB = combineDateTime(b.data().date!, b.data().time!);
+        
+        return dateTimeA.compareTo(dateTimeB);
+      });
 
-    if(reqServices.docs.isNotEmpty) {
-      state.serviceList.assignAll(reqServices.docs);
-    } 
+      // Now use the sorted documents for display
+      state.serviceList.assignAll(documents);
+    }
+    catch(e) {
+      print("Error fetching: $e");
+    }
+  }
+
+  DateTime combineDateTime(String dateString, String timeString) {
+    // Parse the date and time strings
+    DateTime date = DateTime.parse(dateString);
+    DateTime time = parseTime(timeString);
+
+    // Combine date and time into a single DateTime object
+    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
+  }
+
+  DateTime parseTime(String timeString) {
+    // Split the time string into hours, minutes, and AM/PM parts
+    List<String> parts = timeString.split(' ');
+    List<String> timeParts = parts[0].split(':');
+    int hours = int.parse(timeParts[0]);
+    int minutes = int.parse(timeParts[1]);
+
+    // Adjust hours if it's PM
+    if (parts[1] == 'PM' && hours < 12) {
+      hours += 12;
+    }
+
+    // Construct and return the DateTime object using the correct year from the date
+    return DateTime(DateTime.now().year, 1, 1, hours, minutes);
   }
 }

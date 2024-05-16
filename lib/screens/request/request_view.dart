@@ -3,10 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:isp_application/common/widgets/button.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../common/values/values.dart';
+import '../../common/widgets/widgets.dart';
 import 'request_index.dart';
 
 class RequestPage extends GetView<RequestController> {

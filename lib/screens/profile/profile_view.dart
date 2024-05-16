@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../common/values/values.dart';
 import 'profile_index.dart';
 
 class ProfilePage extends GetView<ProfileController> {
@@ -11,7 +12,7 @@ class ProfilePage extends GetView<ProfileController> {
       elevation: 0,
       centerTitle: true,
       title: const Text("Profile"),
-      backgroundColor: Colors.amber,
+      backgroundColor: AppColor.secondaryColor,
     );
   }
 
@@ -43,7 +44,7 @@ class UserProfilePage extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: Colors.grey.shade200, // Light gray background
                       border: Border.all(
-                        color: Colors.amber, // Yellow border color
+                        color: AppColor.secondaryColor, // Yellow border color
                         width: 4.0, // Border width
                       ),
                     ),
@@ -75,31 +76,17 @@ class UserProfilePage extends StatelessWidget {
                   _buildRatingRectangle(),
                 ],
               ),
-              const SizedBox(height: 4),
-              RichText(
-                text: const TextSpan(
-                  style: TextStyle(color: Colors.black),
-                  children: [
-                    TextSpan(
-                      text: 'BuzzBuddy',
-                      style: TextStyle(color: Colors.amber),
-                    ),
-                    TextSpan(text: ' accumulated points: 20'),
-                  ],
-                ),
-              ),
               const SizedBox(height: 16), // Spacing after text
             ],
           ),
         ),
         DefaultTabController(
-          length: 2,
+          length: 1,
           child: Column(
             children: [
               const TabBar(
                 labelColor: Colors.black,
                 tabs: [
-                  Tab(text: 'Your Listings'),
                   Tab(text: 'Reviews'),
                 ],
               ),
@@ -107,7 +94,6 @@ class UserProfilePage extends StatelessWidget {
                 height: 400, // Adjust height as needed
                 child: TabBarView(
                   children: [
-                    const Center(child: Text('All Provider Requester')),
                     _buildReviewsTab(), // Build the Reviews tab content
                   ],
                 ),
@@ -122,7 +108,7 @@ class UserProfilePage extends StatelessWidget {
   Widget _buildRatingRectangle() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.amber,
+        color: AppColor.secondaryColor,
         borderRadius: BorderRadius.circular(15.0),
       ),
       padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 7.0),
@@ -148,8 +134,8 @@ class UserProfilePage extends StatelessWidget {
   }
 
   Widget _buildReviewsTab() {
-    return DefaultTabController(
-      length: 3,
+    return Container(
+      height: 500, // Adjust the height as needed
       child: Column(
         children: [
           Container(
@@ -170,7 +156,7 @@ class UserProfilePage extends StatelessWidget {
               labelColor: Colors.black,
               unselectedLabelColor: Colors.grey,
               indicator: BoxDecoration(
-                color: Colors.amber,
+                color: AppColor.secondaryColor,
                 borderRadius: BorderRadius.circular(25.0),
                 boxShadow: [
                   BoxShadow(
@@ -195,6 +181,26 @@ class UserProfilePage extends StatelessWidget {
                 Center(child: Text('Provider Reviews')),
                 Center(child: Text('Requester Reviews')),
               ],
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.all(16),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: AppColor.secondaryColor,
+                side: const BorderSide(color: AppColor.secondaryColor),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+              ),
+              onPressed: () {
+                // Implement your sorting functionality here
+              },
+              child: const Text(
+                'Sort by newest',
+                style: TextStyle(color: AppColor.secondaryColor),
+              ),
             ),
           ),
         ],

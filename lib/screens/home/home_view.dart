@@ -24,9 +24,9 @@ class HomePage extends GetView<HomeController> {
       decoration: BoxDecoration(
         boxShadow: const [
           BoxShadow(
-            color: Color(0xFFE7EEF8),
+            color: Colors.black45,
             blurRadius: 1,
-            offset: Offset(2.6, 2.6)
+            offset: Offset(1.6, 1.6)
           )
         ],
         color: Colors.white,
@@ -66,19 +66,23 @@ class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFCF2EB),
+      resizeToAvoidBottomInset: false,
       appBar: _buildAppBar(),
       body: Container(
-        padding: const EdgeInsets.all(20),
+        // color: Colors.amber,
+        height: 900,
+        padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
         child: Column(
-          children: [
-            searchBar(),
-            const SizedBox(height: 15),
-            const SizedBox(
-              height: 440,
-              child: HomeList(),
-            )
-          ],
-        )
+            children: [
+              searchBar(),
+              const SizedBox(height: 10),
+              const SizedBox(
+                height: 470,
+                child: HomeList(),
+              )
+            ],
+          )
       )
     );
   }

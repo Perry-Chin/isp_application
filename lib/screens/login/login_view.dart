@@ -1,13 +1,12 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:isp_application/screens/login/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:isp_application/screens/login/login_index.dart';
 
 import '../../common/values/values.dart';
 import '../../common/widgets/button.dart';
 import '../../common/widgets/textfield.dart';
 import '../register/register_index.dart';
+import 'login_index.dart';
 
 class LoginPage extends GetView<LoginController> {
   const LoginPage({super.key});

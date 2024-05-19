@@ -20,18 +20,20 @@ class ProfilePage extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: UserProfilePage(),
+      body: const UserProfilePage(),
     );
   }
 }
 
 class UserProfilePage extends StatelessWidget {
+  const UserProfilePage({Key? key}) : super(key: key); // Add the key parameter
+
   @override
   Widget build(BuildContext context) {
     return ListView(
       children: [
         Container(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           alignment: Alignment.centerLeft,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,7 +136,7 @@ class UserProfilePage extends StatelessWidget {
   }
 
   Widget _buildReviewsTab() {
-    return Container(
+    return SizedBox(
       height: 500, // Adjust the height as needed
       child: Column(
         children: [

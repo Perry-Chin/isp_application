@@ -8,7 +8,7 @@ class UserData {
   final int? phoneNo;
   final String? photourl;
   final String? address;
-  final String? rating;
+  final double? rating;
   final String? account;
 
   //Constructor

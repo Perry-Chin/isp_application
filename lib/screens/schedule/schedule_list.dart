@@ -5,7 +5,8 @@ import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:get/get.dart';
 
 import '../../common/data/service.dart';
-import '../../common/values/values.dart';
+import '../../common/data/user.dart';
+// import '../../common/values/values.dart';
 import 'schedule_index.dart';
 
 
@@ -120,19 +121,15 @@ class ProviderCard extends StatelessWidget {
   }
 }
 
-class FilteredProviderCards extends StatelessWidget {
+class FilteredProviderCards extends GetView<ScheduleController> {
   final List<String> statusFilter;
   final List<String> ratingFilter;
 
   const FilteredProviderCards({Key? key, required this.statusFilter, required this.ratingFilter}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
+  Widget filteredProviderlist(QueryDocumentSnapshot<ServiceData> item, QueryDocumentSnapshot<UserData> rating) {
     List<ProviderCard> allProviderCards = [
-      const ProviderCard(rating: 4.5, starColor: Colors.white, status: 'finished'),
-      const ProviderCard(rating: 4.2, starColor: Colors.white, status: 'pending'),
-      const ProviderCard(rating: 3.9, starColor: Colors.white, status: 'cancelled'),
-      const ProviderCard(rating: 2, starColor: Colors.white, status: 'pending'),
+      ProviderCard(rating: rating.data().rating!, starColor: Colors.white, status: item.data().status!),
       // Add more ProviderCard widgets as needed
     ];
 
@@ -168,7 +165,44 @@ class FilteredProviderCards extends StatelessWidget {
       children: filteredProviderCards,
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(
+      () {
+        if (controller.state.providerState.providerList.isEmpty) {
+          return Center(child: CircularProgressIndicator());
+        }
+        return SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          controller: controller.refreshController,
+          onLoading: controller.onLoading,
+          onRefresh: controller.onRefresh,
+          header: const WaterDropHeader(),
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.w),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      var item = controller.state.providerState.providerList[index];
+                      var rating = controller.state.ratingState.ratingState[index];
+                      return filteredProviderlist(item, rating);
+                    },
+                    childCount: controller.state.providerState.providerList.length,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
+
 
 class RequesterProviderCards extends StatelessWidget{ 
    final List<String> statusFilter;

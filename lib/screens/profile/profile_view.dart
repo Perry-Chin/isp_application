@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../settings/settings_index.dart';
+
 import '../../common/values/values.dart';
 import 'profile_index.dart';
 
@@ -11,7 +11,7 @@ class ProfilePage extends GetView<ProfileController> {
     return AppBar(
       elevation: 0,
       centerTitle: true,
-      title: const Text("Profile"),
+      title: const Text("Profiles"),
       backgroundColor: AppColor.secondaryColor,
     );
   }
@@ -56,12 +56,7 @@ class UserProfilePage extends StatelessWidget {
                   const Spacer(), // Pushes the icons to the far right
                   IconButton(
                     icon: const Icon(Icons.settings),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const SettingsPage()),
-                      );
-                    },
+                    onPressed: () {},
                   ),
                   IconButton(
                     icon: const Icon(Icons.edit),

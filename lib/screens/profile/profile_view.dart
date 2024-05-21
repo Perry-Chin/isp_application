@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../settings/settings_index.dart';
+
 import '../../common/values/values.dart';
 import 'profile_index.dart';
 
@@ -56,12 +56,7 @@ class UserProfilePage extends StatelessWidget {
                   const Spacer(), // Pushes the icons to the far right
                   IconButton(
                     icon: const Icon(Icons.settings),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const SettingsPage()),
-                      );
-                    },
+                    onPressed: () {},
                   ),
                   IconButton(
                     icon: const Icon(Icons.edit),
@@ -141,117 +136,6 @@ class UserProfilePage extends StatelessWidget {
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16), // Spacing before the reviews tab
-        _buildReviewsTab(),
-      ],
-    );
-  }
-
-Widget _buildReviewsTab() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'Reviews',
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      const SizedBox(height: 8),
-      Container(
-        height: 2,
-        decoration: BoxDecoration(
-          color: AppColor.secondaryColor,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-      ),
-      const SizedBox(height: 16),
-      _CustomTabWidget(),
-    ],
-  );
-}
-
-class _CustomTabWidget extends StatefulWidget {
-  @override
-  _CustomTabWidgetState createState() => _CustomTabWidgetState();
-}
-
-class _CustomTabWidgetState extends State<_CustomTabWidget>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          margin: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(25.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                spreadRadius: 0,
-                blurRadius: 6,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: TabBar(
-            controller: _tabController,
-            labelColor: Colors.black,
-            unselectedLabelColor: Colors.grey,
-            indicator: BoxDecoration(
-              color: AppColor.secondaryColor,
-              borderRadius: BorderRadius.circular(25.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  spreadRadius: 0,
-                  blurRadius: 14,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            tabs: const [
-              Tab(text: 'All'),
-              Tab(text: 'Provider'),
-              Tab(text: 'Requester'),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 200, // Adjust the height as needed
-          child: TabBarView(
-            controller: _tabController,
-            children: const [
-              Center(child: Text('All Reviews')),
-              Center(child: Text('Provider Reviews')),
-              Center(child: Text('Requester Reviews')),
             ],
           ),
         ),

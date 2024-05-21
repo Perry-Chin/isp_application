@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'data.dart';
+
 //Service information
 class ServiceData {
+  UserData? userData;
   //Service details
   final String? serviceid;
   final String? serviceName;
@@ -17,10 +20,8 @@ class ServiceData {
   final String? status;
   //Personal information of requester
   final String? reqUserid;
-  final String? reqUsername;
   //Personal information of provider
   final String? provUserid;
-  final String? provUsername;
 
   //Constructor
   ServiceData({
@@ -35,9 +36,7 @@ class ServiceData {
     this.duration,
     this.status,
     this.reqUserid,
-    this.reqUsername,
     this.provUserid,
-    this.provUsername,
   });
 
   // Create ServiceData object from Firestore document snapshot
@@ -58,9 +57,7 @@ class ServiceData {
       duration: data?['duration'],
       status: data?['status'],
       reqUserid: data?['requester_uid'],
-      reqUsername: data?['requester_name'],
       provUserid: data?['provider_uid'],
-      provUsername: data?['provider_name'],
     );
   }
 
@@ -78,9 +75,7 @@ class ServiceData {
       if (duration != null) "duration": duration,
       if (status != null) "status": status,
       if (reqUserid != null) "requester_uid": reqUserid,
-      if (reqUsername != null) "requester_name": reqUsername,
       if (provUserid != null) "provider_uid": provUserid,
-      if (provUsername != null) "provider_name": provUsername,
     };
   }
 }

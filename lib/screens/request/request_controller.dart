@@ -359,9 +359,6 @@ class RequestController extends GetxController {
     // Upload the file and get the image URL
     final imgUrl = await uploadFile();
 
-    // Check if the display name is available, if not, fetch it from Firestore
-    String username = userdata.username ?? await getDisplayName();
-
     final serviceData = ServiceData(
         serviceid: doc_id,
         serviceName: serviceController.text,
@@ -374,9 +371,7 @@ class RequestController extends GetxController {
         duration: int.tryParse(durationController.text),
         status: "Requested", //Default status
         reqUserid: userdata.accessToken,
-        reqUsername: username,
-        provUserid: "",
-        provUsername: "");
+        provUserid: "");
 
     // Set data in Firestore document
     await FirebaseFirestore.instance.collection('service').doc(doc_id).set(
@@ -384,22 +379,5 @@ class RequestController extends GetxController {
         );
 
     requestCompleted.value = true;
-  }
-
-  // Function to fetch username from Firestore
-  Future<String> getDisplayName() async {
-    // Query Firestore to fetch user data based on userId
-    DocumentSnapshot<Map<String, dynamic>> userSnapshot =
-        await FirebaseFirestore.instance.collection('users').doc(user_id).get();
-
-    // Check if the user exists and contains the username
-    if (userSnapshot.exists) {
-      Map<String, dynamic> userData = userSnapshot.data()!;
-      return userData['username'];
-    }
-    // Safety null, If username is undefined
-    else {
-      return 'Unknown User';
-    }
   }
 }

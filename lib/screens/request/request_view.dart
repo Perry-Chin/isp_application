@@ -30,6 +30,7 @@ class RequestPage extends GetView<RequestController> {
         return true; //Allow the back navigation
       },
       child: Scaffold(
+        backgroundColor: AppColor.backgroundColor,
           appBar: _buildAppBar(),
           body: Obx(() {
             //Request submitted successfully

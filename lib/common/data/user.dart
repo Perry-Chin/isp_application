@@ -54,6 +54,7 @@ class UserData {
       if (account != null) "account_type": account,
     };
   }
+
 }
 
 //User login

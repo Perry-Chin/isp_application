@@ -61,6 +61,8 @@ class ServiceData {
     );
   }
 
+  get rating => null;
+
   // Convert ServiceData object to Firestore document data
   Map<String, dynamic> toFirestore() {
     return {

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'schedule_provider.dart';
-import 'schedule_requester.dart';
-void main() {
-  runApp(const MyApp());
-}
+import 'package:get/get.dart';
+import 'schedule_provider.dart'; // Ensure this imports the correct file
+import 'schedule_requester.dart'; // Ensure this imports the correct file
+// import '../../common/data/user.dart';
+// import 'package:get/get_utils/get_utils.dart';
+// import 'schedule_index.dart';
+
 
 class MyApp extends StatelessWidget {
-  // ignore: use_key_in_widget_constructors
   const MyApp({Key? key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return GetMaterialApp( // Use GetMaterialApp instead of MaterialApp for GetX integration
       debugShowCheckedModeBanner: false,
       home: SchedulePage(),
     );
@@ -22,13 +23,12 @@ class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _SchedulePageState createState() => _SchedulePageState();
 }
 
 class _SchedulePageState extends State<SchedulePage> {
-  List<String> selectedFilters = ['all']; // Initialize with a default filter
-  List<String> selectedRating = ['all']; // Initialize with a default rating filter
+  List<String> selectedFilters = ['all'];
+  List<String> selectedRating = ['all'];
 
   Future<void> _navigateAndDisplayFilter(BuildContext context) async {
     final result = await Navigator.push(
@@ -65,7 +65,7 @@ class _SchedulePageState extends State<SchedulePage> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 10, 20, 0), // Adjust padding as needed
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
         child: DefaultTabController(
           length: 2,
           child: Column(
@@ -73,8 +73,8 @@ class _SchedulePageState extends State<SchedulePage> {
               Container(
                 height: 50,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD9D9D9), // Set the background color of DefaultTabController
-                  borderRadius: BorderRadius.circular(20), // Set rounded corners
+                  color: const Color(0xFFD9D9D9),
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 child: TabBar(
                   indicatorSize: TabBarIndicatorSize.tab,
@@ -102,8 +102,8 @@ class _SchedulePageState extends State<SchedulePage> {
               Expanded(
                 child: TabBarView(
                   children: [
-                    FilteredProviderCards(statusFilter: selectedFilters, ratingFilter: selectedRating),
-                    RequesterProviderCards(statusFilter: selectedFilters, ratingFilter: selectedRating), 
+                    ProviderCard(),
+                    RequesterProviderCards(statusFilter: selectedFilters, ratingFilter: selectedRating),
                   ],
                 ),
               ),
@@ -115,14 +115,12 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 }
 
-
 class Filter extends StatefulWidget {
   final List<String> selectedFilters;
   final List<String> selectedRating;
   const Filter({Key? key, required this.selectedFilters, required this.selectedRating}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _FilterState createState() => _FilterState();
 }
 
@@ -308,7 +306,7 @@ class _FilterState extends State<Filter> {
               ),
               const SizedBox(width: 10),
               Text(
-                status.capitalize(),
+                "${status}",
                 style: const TextStyle(fontSize: 16),
               ),
             ],
@@ -362,13 +360,12 @@ class _FilterState extends State<Filter> {
   }
 }
 
+
 extension StringExtension on String {
   String capitalize() {
-    // ignore: unnecessary_this
     return "${this[0].toUpperCase()}${this.substring(1)}";
   }
 }
-
 
 
 class RatedStar extends StatelessWidget {
@@ -376,7 +373,8 @@ class RatedStar extends StatelessWidget {
   final Color starColor;
   final double iconSize;
 
-  const RatedStar({super.key, 
+  const RatedStar({
+    super.key,
     required this.rating,
     required this.starColor,
     this.iconSize = 18.0,
@@ -409,133 +407,6 @@ class RatedStar extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class RequesterCard extends StatelessWidget {
-  final double rating;
-  final Color starColor;
-  final String status;
-
-
-
-  const RequesterCard({
-    Key? key,
-    required this.rating,
-    required this.starColor,
-    required this.status,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Color statusColor = Colors.green; // Default green for "Finished"
-    if (status.toLowerCase() == 'pending') {
-      statusColor = Colors.blue; // Change color based on status
-    } else if (status.toLowerCase() == 'cancelled') {
-      statusColor = Colors.red;
-    }
-
-    return Card(
-      elevation: 4, // Add elevation for a shadow effect
-      margin: const EdgeInsets.all(16), // Add margin around the card
-      child: Container(
-        decoration: BoxDecoration(border: Border(left: BorderSide(width: 10.0, color: statusColor))),
-        padding: const EdgeInsets.all(16), // Add padding inside the card
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // Align children to the start of the column
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const Icon(Icons.account_circle, size: 53, color: Colors.grey,),
-                const SizedBox(width: 5,),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        const Text("Username",style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                        const SizedBox(width: 10,),
-                        RatedStar(rating: rating, starColor: starColor),
-                      ],
-                    ),
-                    const Text("10:00am - 9:00am"),
-                  ],
-                )
-              ],
-            ),
-          const SizedBox(height: 10,),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Icon(Icons.location_on,size: 28,color: Colors.grey,),
-              SizedBox(width: 10,),
-              Text("Balam Road"),
-            ],
-            ),
-
-          const SizedBox(height: 15,),
-          
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                border: Border.all(
-                  color: Colors.black,
-                  width: 2,
-                ),
-                borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Text("Light Housekeeping"),
-              ),
-            ),
-
-            const SizedBox(
-              width: 35,
-            ),
-
-              Container(
-              height: 43,
-              width: 110,
-              decoration: BoxDecoration(
-                color: statusColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Center(
-                child: Padding(
-                padding: const EdgeInsets.all(13),
-                child: Text(status,style: const TextStyle(fontSize: 15, color: Colors.white),),
-                ),
-              ),
-              ),
-            ],)
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class RequesterCards extends StatelessWidget {
-  const RequesterCards({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: const [
-        RequesterCard(rating: 4.5, starColor: Colors.white, status: "pending"),
-        RequesterCard(rating: 4.2, starColor: Colors.white, status: "cancelled"),
-        RequesterCard(rating: 3.9, starColor: Colors.white, status: "pending"),
-        // Add more ProviderCard widgets as needed
-      ],
     );
   }
 }

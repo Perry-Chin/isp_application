@@ -4,7 +4,6 @@ import 'data.dart';
 
 //Service information
 class ServiceData {
-  UserData? userData;
   //Service details
   final String? serviceid;
   final String? serviceName;
@@ -22,6 +21,8 @@ class ServiceData {
   final String? reqUserid;
   //Personal information of provider
   final String? provUserid;
+  // Associated user data
+  UserData? userData;
 
   //Constructor
   ServiceData({
@@ -37,6 +38,7 @@ class ServiceData {
     this.status,
     this.reqUserid,
     this.provUserid,
+    this.userData,
   });
 
   // Create ServiceData object from Firestore document snapshot
@@ -58,6 +60,8 @@ class ServiceData {
       status: data?['status'],
       reqUserid: data?['requester_uid'],
       provUserid: data?['provider_uid'],
+       // Retrieve userData from the map directly
+      userData: data!['userData'] != null ? UserData.fromFirestore(snapshot, options) : null,
     );
   }
 
@@ -78,6 +82,7 @@ class ServiceData {
       if (status != null) "status": status,
       if (reqUserid != null) "requester_uid": reqUserid,
       if (provUserid != null) "provider_uid": provUserid,
+      'userData': userData?.toFirestore(), 
     };
   }
 }

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/values/values.dart';
-import '../settings/settings_view.dart';
 import 'profile_index.dart';
+import 'profile_allreviews.dart';
+import '../settings/settings_index.dart';
 
 class ProfilePage extends GetView<ProfileController> {
   const ProfilePage({Key? key}) : super(key: key);
@@ -21,20 +22,18 @@ class ProfilePage extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: const UserProfilePage(),
+      body: UserProfilePage(),
     );
   }
 }
 
 class UserProfilePage extends StatelessWidget {
-  const UserProfilePage({Key? key}) : super(key: key); // Add the key parameter
-
   @override
   Widget build(BuildContext context) {
     return ListView(
       children: [
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
           alignment: Alignment.centerLeft,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +61,8 @@ class UserProfilePage extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const SettingsPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const SettingsPage()),
                       );
                     },
                   ),
@@ -85,27 +85,7 @@ class UserProfilePage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16), // Spacing after text
-            ],
-          ),
-        ),
-        DefaultTabController(
-          length: 1,
-          child: Column(
-            children: [
-              const TabBar(
-                labelColor: Colors.black,
-                tabs: [
-                  Tab(text: 'Reviews'),
-                ],
-              ),
-              SizedBox(
-                height: 400, // Adjust height as needed
-                child: TabBarView(
-                  children: [
-                    _buildReviewsTab(), // Build the Reviews tab content
-                  ],
-                ),
-              ),
+              _buildReviewSection(), // Add the review section
             ],
           ),
         ),
@@ -141,78 +121,91 @@ class UserProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildReviewsTab() {
-    return SizedBox(
-      height: 500, // Adjust the height as needed
+  Widget _buildReviewSection() {
+    return DefaultTabController(
+      length: 3, // Number of tabs
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const Text(
+            'Reviews',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
           Container(
-            margin: const EdgeInsets.all(16),
+            height: 2,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColor.secondaryColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 2,
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16), // Spacing before the reviews tab
+          _buildReviewsTab(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReviewsTab() {
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(25.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                spreadRadius: 0,
+                blurRadius: 6,
+                offset: const Offset(0, 3), // x=0, y=3
+              ),
+            ],
+          ),
+          child: TabBar(
+            labelColor: Colors.black,
+            unselectedLabelColor: Colors.grey,
+            indicator: BoxDecoration(
+              color: AppColor.secondaryColor,
               borderRadius: BorderRadius.circular(25.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withOpacity(0.2),
                   spreadRadius: 0,
-                  blurRadius: 6,
-                  offset: const Offset(0, 3), // x=0, y=3
+                  blurRadius: 14,
+                  offset: const Offset(0, 4), // x=0, y=4
                 ),
               ],
             ),
-            child: TabBar(
-              labelColor: Colors.black,
-              unselectedLabelColor: Colors.grey,
-              indicator: BoxDecoration(
-                color: AppColor.secondaryColor,
-                borderRadius: BorderRadius.circular(25.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    spreadRadius: 0,
-                    blurRadius: 14,
-                    offset: const Offset(0, 4), // x=0, y=4
-                  ),
-                ],
-              ),
-              tabs: const [
-                Tab(text: 'All'),
-                Tab(text: 'Provider'),
-                Tab(text: 'Requester'),
-              ],
-            ),
+            tabs: const [
+              Tab(text: 'All'),
+              Tab(text: 'Provider'),
+              Tab(text: 'Requester'),
+            ],
           ),
-          const Expanded(
-            child: TabBarView(
-              children: [
-                Center(child: Text('All Reviews')),
-                Center(child: Text('Provider Reviews')),
-                Center(child: Text('Requester Reviews')),
-              ],
-            ),
+        ),
+        const SizedBox(
+          height: 300, // Adjust height as needed
+          child: TabBarView(
+            children: [
+              ReviewsList(reviewsType: 'All'),
+              ReviewsList(reviewsType: 'Provider'),
+              ReviewsList(reviewsType: 'Requester'),
+            ],
           ),
-          Container(
-            margin: const EdgeInsets.all(16),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: AppColor.secondaryColor,
-                side: const BorderSide(color: AppColor.secondaryColor),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25.0),
-                ),
-              ),
-              onPressed: () {
-                // Implement your sorting functionality here
-              },
-              child: const Text(
-                'Sort by newest',
-                style: TextStyle(color: AppColor.secondaryColor),
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

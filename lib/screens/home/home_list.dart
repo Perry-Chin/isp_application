@@ -4,30 +4,27 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:get/get.dart';
 
-import '../../common/data/service.dart';
+import '../../common/data/data.dart';
 import '../../common/values/values.dart';
 import 'home_index.dart';
 
 class HomeList extends GetView<HomeController> {
   const HomeList({super.key});
 
-  Widget homeListItem(QueryDocumentSnapshot<ServiceData> item) {
+  Widget homeListItem(QueryDocumentSnapshot<ServiceData> serviceItem, UserData? userData) {
     return Card(
       color: Colors.transparent,
-      elevation: 4, // Add elevation for a shadow effect
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8), // Add margin around the card
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
       child: InkWell(
         onTap: () {
-          
+          // Handle on tap
         },
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: Colors.grey,
-              width: 0.2
-            )
+            border: Border.all(color: Colors.grey, width: 0.2),
           ),
           child: Column(
             children: [
@@ -36,23 +33,19 @@ class HomeList extends GetView<HomeController> {
                 leading: const CircleAvatar(
                   radius: 28,
                   backgroundImage: AssetImage("assets/images/profile.png"),
-                  backgroundColor: Colors.transparent
+                  backgroundColor: Colors.transparent,
                 ),
                 title: Padding(
                   padding: const EdgeInsets.only(bottom: 3),
                   child: Row(
                     children: [
-                      // Use GetBuilder here to update the username when it changes
-                      GetBuilder<HomeController>(
-                        builder: (controller) {
-                          return Text(
-                            item.data().userData?.username ?? "Default Username",
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          );
-                        },
+                      // Username of requester
+                      Text(
+                        userData?.username ?? "Default Username",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       const SizedBox(width: 6),
                       Container(
@@ -60,36 +53,37 @@ class HomeList extends GetView<HomeController> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: AppColor.secondaryColor)
+                          border: Border.all(color: AppColor.secondaryColor),
                         ),
-                        child: Row(
+                        // Rating
+                        child: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               "4.5",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
                             ),
-                            const SizedBox(width: 3), // Add spacing between star icon and rating
-                            const Icon(
+                            SizedBox(width: 3),
+                            Icon(
                               Icons.star,
                               color: Colors.yellow,
                               size: 16,
                             ),
                           ],
                         ),
-                      )
+                      ),
                     ],
-                  ), 
+                  ),
                 ),
+                // Date and time
                 subtitle: Text(
-                  "${item.data().date}, ${item.data().time}"
+                  "${serviceItem.data().date}, ${serviceItem.data().time}",
                 ),
               ),
-              // Location Icon
               Padding(
                 padding: const EdgeInsets.only(left: 15, top: 5),
                 child: Row(
@@ -99,7 +93,7 @@ class HomeList extends GetView<HomeController> {
                       color: AppColor.secondaryColor,
                     ),
                     const SizedBox(width: 2),
-                    Text(item.data().location ?? ""),
+                    Text(serviceItem.data().location ?? ""),
                   ],
                 ),
               ),
@@ -109,7 +103,7 @@ class HomeList extends GetView<HomeController> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      width: item.data().serviceName!.length * 10.0,
+                      width: serviceItem.data().serviceName!.length * 10.0,
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: const Color(0xffF2F2F2),
@@ -117,7 +111,7 @@ class HomeList extends GetView<HomeController> {
                       ),
                       child: Center(
                         child: Text(
-                          item.data().serviceName ?? "",
+                          serviceItem.data().serviceName ?? "",
                           style: const TextStyle(
                             fontWeight: FontWeight.w500,
                           ),
@@ -129,51 +123,56 @@ class HomeList extends GetView<HomeController> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          // Convert rate to string
-                          "\$${item.data().rate?.toString() ?? "0"}/h", 
-                          style: const TextStyle(
-                            // Your desired text style
-                          ),
+                          "\$${serviceItem.data().rate?.toString() ?? "0"}/h"
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
-        )
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        controller: controller.refreshController,
-        onLoading: controller.onLoading,
-        onRefresh: controller.onRefresh,
-        header: const WaterDropHeader(),
-        child: CustomScrollView(
-          slivers: [
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.w),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    var item = controller.state.serviceList[index];
-                    return homeListItem(item);
-                  },
-                  childCount: controller.state.serviceList.length
-                )
-              ),
+    // Use a StreamBuilder to listen to the combined data stream from the controller
+    return StreamBuilder<Map<String, UserData?>>(
+      stream: controller.combinedStream,
+      builder: (context, snapshot) {
+        // Create a map to associate user data with service data based on the 'reqUserid'
+        final userDataMap = snapshot.data ?? {};
+        return Obx(
+          () => SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: true,
+            controller: controller.refreshController,
+            onLoading: controller.onLoading,
+            onRefresh: controller.onRefresh,
+            header: const WaterDropHeader(),
+            child: CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.w),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        var serviceItem = controller.state.serviceList[index];
+                        var userData = userDataMap[serviceItem.data().reqUserid];
+                        return homeListItem(serviceItem, userData);
+                      },
+                      childCount: controller.state.serviceList.length
+                    )
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      )
+          )
+        );
+      }
     );
   }
 }

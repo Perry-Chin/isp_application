@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import '../settings/settings_index.dart';
 import '../../common/values/values.dart';
 import 'profile_index.dart';
 
@@ -56,7 +56,12 @@ class UserProfilePage extends StatelessWidget {
                   const Spacer(), // Pushes the icons to the far right
                   IconButton(
                     icon: const Icon(Icons.settings),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SettingsPage()),
+                      );
+                    },
                   ),
                   IconButton(
                     icon: const Icon(Icons.edit),

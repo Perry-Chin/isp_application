@@ -23,6 +23,12 @@ class ScheduleController extends GetxController {
   final Rx<ScheduleState> _state = ScheduleState(ProviderState(), RatingState()).obs;
   ScheduleState get state => _state.value;
 
+  @override
+  void onInit() {
+    super.onInit();
+    asyncLoadAllData();
+  }
+
   void onRefresh() {
     asyncLoadAllData().then((_) {
       refreshController.refreshCompleted(resetFooterState: true);
@@ -62,5 +68,6 @@ class ScheduleController extends GetxController {
     }
 
     _state.value = ScheduleState(_providerState, _ratingState);
+    print("Data loaded: ${_state.value.providerState.providerList.length} services, ${_state.value.ratingState.ratingState.length} ratings");
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
+import '../../screens/settings/settings_index.dart';
 import 'routes.dart';
 import '../middlewares/middlewares.dart';
 import '../../screens/login/login_index.dart';
@@ -44,6 +45,12 @@ class AppPages {
       name: AppRoutes.register,
       page: () => const RegisterPage(),
       binding: RegisterBinding()
+    ),
+    //Settings Page
+    GetPage(
+      name: AppRoutes.settings,
+      page: () => const SettingsPage(),
+      binding: SettingsBinding()
     ),
   ];
 }

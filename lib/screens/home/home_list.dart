@@ -15,165 +15,154 @@ class HomeList extends GetView<HomeController> {
     return Card(
       color: Colors.transparent,
       elevation: 4, // Add elevation for a shadow effect
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8), // Add margin around the card
+      margin: const EdgeInsets.symmetric(
+          vertical: 10, horizontal: 8), // Add margin around the card
       child: InkWell(
-        onTap: () {
-          
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: Colors.grey,
-              width: 0.2
-            )
-          ),
-          child: Column(
-            children: [
-              ListTile(
-                horizontalTitleGap: 12,
-                leading: const CircleAvatar(
-                  radius: 28,
-                  backgroundImage: AssetImage("assets/images/profile.png"),
-                  backgroundColor: Colors.transparent
+          onTap: () {},
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey, width: 0.2)),
+            child: Column(
+              children: [
+                ListTile(
+                  horizontalTitleGap: 12,
+                  leading: const CircleAvatar(
+                      radius: 28,
+                      backgroundImage: AssetImage("assets/images/profile.png"),
+                      backgroundColor: Colors.transparent),
+                  title: Padding(
+                    padding: const EdgeInsets.only(bottom: 3),
+                    child: Row(
+                      children: [
+                        // Use GetBuilder here to update the username when it changes
+                        GetBuilder<HomeController>(
+                          builder: (controller) {
+                            return Text(
+                              item.data().userData?.username ??
+                                  "Default Username",
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 5),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border:
+                                  Border.all(color: AppColor.secondaryColor)),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "4.5",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(
+                                  width:
+                                      3), // Add spacing between star icon and rating
+                              Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                                size: 16,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  subtitle: Text("${item.data().date}, ${item.data().time}"),
                 ),
-                title: Padding(
-                  padding: const EdgeInsets.only(bottom: 3),
+                // Location Icon
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, top: 5),
                   child: Row(
                     children: [
-                      // Use GetBuilder here to update the username when it changes
-                      GetBuilder<HomeController>(
-                        builder: (controller) {
-                          return Text(
-                            item.data().userData?.username ?? "Default Username",
+                      const Icon(
+                        Icons.location_on,
+                        color: AppColor.secondaryColor,
+                      ),
+                      const SizedBox(width: 2),
+                      Text(item.data().location ?? ""),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: item.data().serviceName!.length * 10.0,
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xffF2F2F2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(
+                            item.data().serviceName ?? "",
                             style: const TextStyle(
-                              fontSize: 16,
                               fontWeight: FontWeight.w500,
                             ),
-                          );
-                        },
+                          ),
+                        ),
                       ),
-                      const SizedBox(width: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: AppColor.secondaryColor)
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              "4.5",
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            const SizedBox(width: 3), // Add spacing between star icon and rating
-                            const Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                              size: 16,
-                            ),
-                          ],
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            // Convert rate to string
+                            "\$${item.data().rate?.toString() ?? "0"}/h",
+                            style: const TextStyle(
+                                // Your desired text style
+                                ),
+                          ),
+                        ],
                       )
                     ],
-                  ), 
-                ),
-                subtitle: Text(
-                  "${item.data().date}, ${item.data().time}"
-                ),
-              ),
-              // Location Icon
-              Padding(
-                padding: const EdgeInsets.only(left: 15, top: 5),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.location_on,
-                      color: AppColor.secondaryColor,
-                    ),
-                    const SizedBox(width: 2),
-                    Text(item.data().location ?? ""),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: item.data().serviceName!.length * 10.0,
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffF2F2F2),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Text(
-                          item.data().serviceName ?? "",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          // Convert rate to string
-                          "\$${item.data().rate?.toString() ?? "0"}/h", 
-                          style: const TextStyle(
-                            // Your desired text style
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              )
-            ],
-          ),
-        )
-      ),
+                  ),
+                )
+              ],
+            ),
+          )),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        controller: controller.refreshController,
-        onLoading: controller.onLoading,
-        onRefresh: controller.onRefresh,
-        header: const WaterDropHeader(),
-        child: CustomScrollView(
-          slivers: [
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.w),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    var item = controller.state.serviceList[index];
-                    return homeListItem(item);
-                  },
-                  childCount: controller.state.serviceList.length
-                )
+    return Obx(() => SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          controller: controller.refreshController,
+          onLoading: controller.onLoading,
+          onRefresh: controller.onRefresh,
+          header: const WaterDropHeader(),
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.w),
+                sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                  var item = controller.state.serviceList[index];
+                  return homeListItem(item);
+                }, childCount: controller.state.serviceList.length)),
               ),
-            ),
-          ],
-        ),
-      )
-    );
+            ],
+          ),
+        ));
   }
 }

@@ -25,7 +25,7 @@ class SettingsPage extends GetView<SettingsController> {
           children: [
             Text(
               "data"
-            )
+            ),
             // Obx(() => SwitchListTile(
             //     title: const Text("Dark Mode"),
             //     value: controller.isDarkMode.value,

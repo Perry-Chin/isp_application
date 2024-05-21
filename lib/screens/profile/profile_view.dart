@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../common/values/values.dart';
 import 'profile_index.dart';
+import 'profile_allreviews.dart';
 import '../settings/settings_index.dart';
 
 class ProfilePage extends GetView<ProfileController> {
@@ -121,86 +122,90 @@ class UserProfilePage extends StatelessWidget {
   }
 
   Widget _buildReviewSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Reviews',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+    return DefaultTabController(
+      length: 3, // Number of tabs
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Reviews',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          height: 2,
-          decoration: BoxDecoration(
-            color: AppColor.secondaryColor,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                spreadRadius: 2,
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
+          const SizedBox(height: 8),
+          Container(
+            height: 2,
+            decoration: BoxDecoration(
+              color: AppColor.secondaryColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 2,
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
           ),
-        ),
-        // const SizedBox(height: 16), // Spacing before the reviews tab
-        // _buildReviewsTab(),
-      ],
+          const SizedBox(height: 16), // Spacing before the reviews tab
+          _buildReviewsTab(),
+        ],
+      ),
     );
   }
 
-  // Widget _buildReviewsTab() {
-  //   return Column(
-  //     children: [
-  //       Container(
-  //         margin: const EdgeInsets.all(16),
-  //         decoration: BoxDecoration(
-  //           color: Colors.white,
-  //           borderRadius: BorderRadius.circular(25.0),
-  //           boxShadow: [
-  //             BoxShadow(
-  //               color: Colors.black.withOpacity(0.1),
-  //               spreadRadius: 0,
-  //               blurRadius: 6,
-  //               offset: const Offset(0, 3), // x=0, y=3
-  //             ),
-  //           ],
-  //         ),
-  //         child: TabBar(
-  //           labelColor: Colors.black,
-  //           unselectedLabelColor: Colors.grey,
-  //           indicator: BoxDecoration(
-  //             color: AppColor.secondaryColor,
-  //             borderRadius: BorderRadius.circular(25.0),
-  //             boxShadow: [
-  //               BoxShadow(
-  //                 color: Colors.black.withOpacity(0.2),
-  //                 spreadRadius: 0,
-  //                 blurRadius: 14,
-  //                 offset: const Offset(0, 4), // x=0, y=4
-  //               ),
-  //             ],
-  //           ),
-  //           tabs: const [
-  //             Tab(text: 'All'),
-  //             Tab(text: 'Provider'),
-  //             Tab(text: 'Requester'),
-  //           ],
-  //         ),
-  //       ),
-  //       const Expanded(
-  //         child: TabBarView(
-  //           children: [
-  //             Center(child: Text('All Reviews')),
-  //             Center(child: Text('Provider Reviews')),
-  //             Center(child: Text('Requester Reviews')),
-  //           ],
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
+  Widget _buildReviewsTab() {
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(25.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                spreadRadius: 0,
+                blurRadius: 6,
+                offset: const Offset(0, 3), // x=0, y=3
+              ),
+            ],
+          ),
+          child: TabBar(
+            labelColor: Colors.black,
+            unselectedLabelColor: Colors.grey,
+            indicator: BoxDecoration(
+              color: AppColor.secondaryColor,
+              borderRadius: BorderRadius.circular(25.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 0,
+                  blurRadius: 14,
+                  offset: const Offset(0, 4), // x=0, y=4
+                ),
+              ],
+            ),
+            tabs: const [
+              Tab(text: 'All'),
+              Tab(text: 'Provider'),
+              Tab(text: 'Requester'),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 300, // Adjust height as needed
+          child: TabBarView(
+            children: [
+              ReviewsList(reviewsType: 'All'),
+              ReviewsList(reviewsType: 'Provider'),
+              ReviewsList(reviewsType: 'Requester'),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }

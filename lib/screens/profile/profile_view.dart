@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/values/values.dart';
+import '../settings/settings_view.dart';
 import 'profile_index.dart';
 
 class ProfilePage extends GetView<ProfileController> {
@@ -58,7 +59,12 @@ class UserProfilePage extends StatelessWidget {
                   const Spacer(), // Pushes the icons to the far right
                   IconButton(
                     icon: const Icon(Icons.settings),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SettingsPage()),
+                      );
+                    },
                   ),
                   IconButton(
                     icon: const Icon(Icons.edit),

@@ -2,6 +2,7 @@
 
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:isp_application/common/values/color.dart';
 
 class MyTextField extends StatefulWidget {
   final String hinttext; // Hint text for textfield
@@ -36,55 +37,58 @@ class _MyTextFieldState extends State<MyTextField> {
   Widget build(BuildContext context) {
     bool isPasswordField = widget.obscuretext;
     return FadeInUp(
-      child: TextField(
-        controller: widget.controller, // Set controller for textfield
-        minLines: 1,
-        maxLines: widget.maxLines,
-        onTap: widget.onTap,
-        readOnly: widget.readOnly ?? false,
-        decoration: InputDecoration(
-          labelText: widget.labeltext, // Set label text
-          hintText: widget.hinttext, // Set hint text
-          labelStyle: const TextStyle(
-            color: Colors.black,
-            fontSize: 14.0,
-            fontWeight: FontWeight.w400,
+      child: Container(
+        color: Colors.white,
+        child: TextField(
+          controller: widget.controller, // Set controller for textfield
+          minLines: 1,
+          maxLines: widget.maxLines,
+          onTap: widget.onTap,
+          readOnly: widget.readOnly ?? false,
+          decoration: InputDecoration(
+            labelText: widget.labeltext, // Set label text
+            hintText: widget.hinttext, // Set hint text
+            labelStyle: const TextStyle(
+              color: Colors.black,
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+            ),
+            hintStyle: const TextStyle(
+              color: Colors.grey,
+              fontSize: 14.0,
+            ),
+            prefixIcon: Icon(
+              widget.prefixicon, 
+              color: Colors.black, 
+              size: 20, 
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: AppColor.secondaryColor, width: 1.5),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            floatingLabelStyle: const TextStyle(
+              color: Colors.black,
+              fontSize: 18.0,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: AppColor.secondaryColor, width: 1.5),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            suffixIcon: isPasswordField
+              ? IconButton(
+                  icon: _isPasswordVisible
+                      ? const Icon(Icons.visibility)
+                      : const Icon(Icons.visibility_off),
+                  onPressed: () {
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible; // Toggle password visibility
+                    });
+                  },
+                )
+              : null, // If not a password field or obscuretext is null or false, suffix icon is null
           ),
-          hintStyle: const TextStyle(
-            color: Colors.grey,
-            fontSize: 14.0,
-          ),
-          prefixIcon: Icon(
-            widget.prefixicon, 
-            color: Colors.black, 
-            size: 20, 
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade200, width: 2),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          floatingLabelStyle: const TextStyle(
-            color: Colors.black,
-            fontSize: 18.0,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.black, width: 1.5),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          suffixIcon: isPasswordField
-            ? IconButton(
-                icon: _isPasswordVisible
-                    ? const Icon(Icons.visibility)
-                    : const Icon(Icons.visibility_off),
-                onPressed: () {
-                  setState(() {
-                    _isPasswordVisible = !_isPasswordVisible; // Toggle password visibility
-                  });
-                },
-              )
-            : null, // If not a password field or obscuretext is null or false, suffix icon is null
+          obscureText: isPasswordField && !_isPasswordVisible, // Ensure text is not obscured if field is multiline
         ),
-        obscureText: isPasswordField && !_isPasswordVisible, // Ensure text is not obscured if field is multiline
       )
     );
   }

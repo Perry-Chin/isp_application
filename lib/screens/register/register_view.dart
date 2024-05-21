@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../common/widgets/button.dart';
-import '../../common/widgets/textfield.dart';
+import '../../common/values/values.dart';
+import '../../common/widgets/widgets.dart';
 import '../login/login_index.dart';
 import 'register_index.dart';
 
@@ -12,6 +12,7 @@ class RegisterPage extends GetView<RegisterController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.backgroundColor,
       body: Center(
         child: SingleChildScrollView(
           child: Padding(

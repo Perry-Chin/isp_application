@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
-import '../../common/data/service.dart';
+import '../../common/data/data.dart';
 import '../../common/storage/storage.dart';
 import 'home_index.dart';
 
@@ -54,6 +54,15 @@ class HomeController extends GetxController {
 
       // Now use the sorted documents for display
       state.serviceList.assignAll(documents);
+
+      // Fetch user data for each service item
+      for (var i = 0; i < state.serviceList.length; i++) {
+        var serviceItem = state.serviceList[i];
+        var userDoc = await db.collection('users').doc(serviceItem.data().reqUserid).get();
+
+        // Assign the entire UserData object to userData property
+        serviceItem.data().userData = UserData.fromFirestore(userDoc, null);
+      }
     }
     catch(e) {
       print("Error fetching: $e");

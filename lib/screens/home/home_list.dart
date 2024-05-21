@@ -42,12 +42,17 @@ class HomeList extends GetView<HomeController> {
                   padding: const EdgeInsets.only(bottom: 3),
                   child: Row(
                     children: [
-                      Text(
-                        item.data().reqUsername ?? "Username",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      // Use GetBuilder here to update the username when it changes
+                      GetBuilder<HomeController>(
+                        builder: (controller) {
+                          return Text(
+                            item.data().userData?.username ?? "Default Username",
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(width: 6),
                       Container(

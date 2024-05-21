@@ -1,8 +1,7 @@
-// settings_view.dart
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'settings_controller.dart';
+import '../../common/values/values.dart';
 
 class SettingsPage extends GetView<SettingsController> {
   const SettingsPage({Key? key}) : super(key: key);
@@ -12,7 +11,7 @@ class SettingsPage extends GetView<SettingsController> {
       elevation: 0,
       centerTitle: true,
       title: const Text("Settings"),
-      backgroundColor: Colors.blue,
+      backgroundColor: AppColor.secondaryColor,
     );
   }
 
@@ -25,12 +24,14 @@ class SettingsPage extends GetView<SettingsController> {
         child: Column(
           children: [
             Obx(() => SwitchListTile(
-                  title: const Text("Dark Mode"),
-                  value: controller.isDarkMode.value,
-                  onChanged: (bool value) {
-                    controller.toggleDarkMode();
-                  },
-                )),
+                title: const Text("Dark Mode"),
+                value: controller.isDarkMode.value,
+                onChanged: (bool value) {
+                  controller.toggleDarkMode();
+                },
+              )
+            ),
+
             // Add more settings options here
           ],
         ),

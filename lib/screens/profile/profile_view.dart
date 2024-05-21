@@ -11,7 +11,7 @@ class ProfilePage extends GetView<ProfileController> {
     return AppBar(
       elevation: 0,
       centerTitle: true,
-      title: const Text("Profile"),
+      title: const Text("Profiles"),
       backgroundColor: AppColor.secondaryColor,
     );
   }

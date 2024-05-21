@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'settings_controller.dart';
+import 'settings_index.dart';
 import '../../common/values/values.dart';
 
 class SettingsPage extends GetView<SettingsController> {

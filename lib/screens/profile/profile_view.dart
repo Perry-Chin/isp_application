@@ -56,7 +56,7 @@ class UserProfilePage extends StatelessWidget {
                   const Spacer(), // Pushes the icons to the far right
                   IconButton(
                     icon: const Icon(Icons.settings),
-                    onPressed: () {},
+                    onPressed: () { },
                   ),
                   IconButton(
                     icon: const Icon(Icons.edit),

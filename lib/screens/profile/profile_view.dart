@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/values/values.dart';
-import '../settings/settings_view.dart';
+import '../settings/settings_index.dart';
 import 'profile_index.dart';
 
 class ProfilePage extends GetView<ProfileController> {

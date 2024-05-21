@@ -4,7 +4,7 @@ import 'settings_index.dart';
 import '../../common/values/values.dart';
 
 class SettingsPage extends GetView<SettingsController> {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   AppBar _buildAppBar() {
     return AppBar(
@@ -23,16 +23,19 @@ class SettingsPage extends GetView<SettingsController> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Obx(() => SwitchListTile(
-                title: const Text("Dark Mode"),
-                value: controller.isDarkMode.value,
-                onChanged: (bool value) {
-                  controller.toggleDarkMode();
-                },
-              )
-            ),
+            Text(
+              "data"
+            )
+            // Obx(() => SwitchListTile(
+            //     title: const Text("Dark Mode"),
+            //     value: controller.isDarkMode.value,
+            //     onChanged: (bool value) {
+            //       controller.toggleDarkMode();
+            //     },
+            //   )
+            // ),
 
-            // Add more settings options here
+            // // Add more settings options here
           ],
         ),
       ),

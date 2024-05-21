@@ -69,6 +69,13 @@ android {
     defaultConfig {
         minSdkVersion 19
     }
+    // // Adjust logging level for Google Play services
+    // gradle.projectsEvaluated {
+    //     tasks.withType(JavaCompile) {
+    //         options.compilerArgs << "-Xlint:-GradleCompatible"
+    //     }
+    // }
+    
 }
 
 flutter {

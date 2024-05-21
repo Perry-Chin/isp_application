@@ -66,7 +66,7 @@ class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFCF2EB),
+      backgroundColor: AppColor.backgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: _buildAppBar(),
       body: Container(

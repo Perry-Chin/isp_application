@@ -11,7 +11,7 @@ class ProfilePage extends GetView<ProfileController> {
     return AppBar(
       elevation: 0,
       centerTitle: true,
-      title: const Text("Profiles"),
+      title: const Text("Profile"),
       backgroundColor: AppColor.secondaryColor,
     );
   }
@@ -56,7 +56,7 @@ class UserProfilePage extends StatelessWidget {
                   const Spacer(), // Pushes the icons to the far right
                   IconButton(
                     icon: const Icon(Icons.settings),
-                    onPressed: () { },
+                    onPressed: () {},
                   ),
                   IconButton(
                     icon: const Icon(Icons.edit),

@@ -30,66 +30,72 @@ class ProfilePage extends GetView<ProfileController> {
 class UserProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        Container(
-          padding: EdgeInsets.all(16),
-          alignment: Alignment.centerLeft,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start, // Align to left
+    return NestedScrollView(
+      headerSliverBuilder: (context, innerBoxIsScrolled) {
+        return [
+          SliverToBoxAdapter(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              alignment: Alignment.centerLeft,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.grey.shade200, // Light gray background
-                      border: Border.all(
-                        color: AppColor.secondaryColor, // Yellow border color
-                        width: 4.0, // Border width
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.grey.shade200,
+                          border: Border.all(
+                            color: AppColor.secondaryColor,
+                            width: 4.0,
+                          ),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child:
+                              Icon(Icons.person, size: 70, color: Colors.grey),
+                        ),
                       ),
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(Icons.person, size: 70, color: Colors.grey),
-                    ),
+                      const Spacer(),
+                      IconButton(
+                        icon: const Icon(Icons.settings),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SettingsPage(),
+                            ),
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {},
+                      ),
+                    ],
                   ),
-                  const Spacer(), // Pushes the icons to the far right
-                  IconButton(
-                    icon: const Icon(Icons.settings),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SettingsPage()),
-                      );
-                    },
+                  const SizedBox(height: 16),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Username',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const SizedBox(width: 8),
+                      _buildRatingRectangle(),
+                    ],
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {},
-                  ),
+                  const SizedBox(height: 16),
                 ],
               ),
-              const SizedBox(height: 16), // Spacing between icon and text
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Username',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(width: 8),
-                  _buildRatingRectangle(),
-                ],
-              ),
-              const SizedBox(height: 16), // Spacing after text
-              _buildReviewSection(), // Add the review section
-            ],
+            ),
           ),
-        ),
-      ],
+        ];
+      },
+      body: _buildReviewSection(),
     );
   }
 
@@ -123,15 +129,18 @@ class UserProfilePage extends StatelessWidget {
 
   Widget _buildReviewSection() {
     return DefaultTabController(
-      length: 3, // Number of tabs
+      length: 3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Reviews',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          const Padding(
+            padding: EdgeInsets.only(left: 16.0, top: 16.0, right: 16.0),
+            child: Text(
+              'Reviews',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           const SizedBox(height: 8),
@@ -149,7 +158,7 @@ class UserProfilePage extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16), // Spacing before the reviews tab
+          const SizedBox(height: 16),
           _buildReviewsTab(),
         ],
       ),
@@ -157,55 +166,56 @@ class UserProfilePage extends StatelessWidget {
   }
 
   Widget _buildReviewsTab() {
-    return Column(
-      children: [
-        Container(
-          margin: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(25.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                spreadRadius: 0,
-                blurRadius: 6,
-                offset: const Offset(0, 3), // x=0, y=3
-              ),
-            ],
-          ),
-          child: TabBar(
-            labelColor: Colors.black,
-            unselectedLabelColor: Colors.grey,
-            indicator: BoxDecoration(
-              color: AppColor.secondaryColor,
+    return Expanded(
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
               borderRadius: BorderRadius.circular(25.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withOpacity(0.1),
                   spreadRadius: 0,
-                  blurRadius: 14,
-                  offset: const Offset(0, 4), // x=0, y=4
+                  blurRadius: 6,
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
-            tabs: const [
-              Tab(text: 'All'),
-              Tab(text: 'Provider'),
-              Tab(text: 'Requester'),
-            ],
+            child: TabBar(
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.grey,
+              indicator: BoxDecoration(
+                color: AppColor.secondaryColor,
+                borderRadius: BorderRadius.circular(25.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    spreadRadius: 0,
+                    blurRadius: 14,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              tabs: const [
+                Tab(text: 'All'),
+                Tab(text: 'Provider'),
+                Tab(text: 'Requester'),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(
-          height: 300, // Adjust height as needed
-          child: TabBarView(
-            children: [
-              ReviewsList(reviewsType: 'All'),
-              ReviewsList(reviewsType: 'Provider'),
-              ReviewsList(reviewsType: 'Requester'),
-            ],
+          const Expanded(
+            child: TabBarView(
+              children: [
+                ReviewsList(reviewsType: 'All'),
+                ReviewsList(reviewsType: 'Provider'),
+                ReviewsList(reviewsType: 'Requester'),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'schedule_list.dart';
+import 'schedule_provider.dart';
+import 'schedule_requester.dart';
 void main() {
   runApp(const MyApp());
 }

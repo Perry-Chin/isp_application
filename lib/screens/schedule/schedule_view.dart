@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp( // Use GetMaterialApp instead of MaterialApp for GetX integration
+    return const GetMaterialApp( // Use GetMaterialApp instead of MaterialApp for GetX integration
       debugShowCheckedModeBanner: false,
       home: SchedulePage(),
     );
@@ -102,7 +102,7 @@ class _SchedulePageState extends State<SchedulePage> {
               Expanded(
                 child: TabBarView(
                   children: [
-                    ProviderCard(),
+                    const ProviderCard(),
                     RequesterProviderCards(statusFilter: selectedFilters, ratingFilter: selectedRating),
                   ],
                 ),
@@ -363,7 +363,7 @@ class _FilterState extends State<Filter> {
 
 extension StringExtension on String {
   String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1)}";
+    return "${this[0].toUpperCase()}${substring(1)}";
   }
 }
 

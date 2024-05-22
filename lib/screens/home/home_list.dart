@@ -2,15 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 
 import '../../common/data/data.dart';
 import '../../common/values/values.dart';
+import '../../common/widgets/widgets.dart';
 import 'home_index.dart';
 
 class HomeList extends GetView<HomeController> {
   const HomeList({super.key});
-
+  
   Widget homeListItem(QueryDocumentSnapshot<ServiceData> serviceItem, UserData? userData) {
     return Card(
       color: Colors.transparent,
@@ -30,9 +32,18 @@ class HomeList extends GetView<HomeController> {
             children: [
               ListTile(
                 horizontalTitleGap: 12,
-                leading: const CircleAvatar(
-                  radius: 28,
-                  backgroundImage: AssetImage("assets/images/profile.png"),
+                // leading: CircleAvatar(
+                //   radius: 28,
+                //   backgroundImage: userData?.photourl != null
+                //     ? NetworkImage(userData!.photourl!) // Use userData! for non-null access
+                //     : const AssetImage("assets/images/profile.png") as ImageProvider<Object>?,
+                //   backgroundColor: Colors.transparent,
+                // ),
+                leading: CircleAvatar(
+                  radius: 28.0, // Set radius for the avatar
+                  backgroundImage: userData?.photourl?.isNotEmpty == true
+                    ? NetworkImage(userData!.photourl!) // Use userData! for non-null access
+                    : const AssetImage("assets/images/profile.png")as ImageProvider<Object>?, // Default image
                   backgroundColor: Colors.transparent,
                 ),
                 title: Padding(
@@ -41,7 +52,7 @@ class HomeList extends GetView<HomeController> {
                     children: [
                       // Username of requester
                       Text(
-                        userData?.username ?? "Default Username",
+                        userData?.username ?? "",
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -145,6 +156,9 @@ class HomeList extends GetView<HomeController> {
       builder: (context, snapshot) {
         // Create a map to associate user data with service data based on the 'reqUserid'
         final userDataMap = snapshot.data ?? {};
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const ShimmerLoading();
+        }
         return Obx(
           () => SmartRefresher(
             enablePullDown: true,

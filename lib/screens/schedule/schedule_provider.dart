@@ -41,15 +41,15 @@ class ProviderCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start, // Align children to the start of the column
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Row(
+          const Row(
             children: [
-              const Icon(Icons.account_circle, size: 53, color: Colors.grey,),
-              const SizedBox(width: 10,),
+              Icon(Icons.account_circle, size: 53, color: Colors.grey,),
+              SizedBox(width: 10,),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Bellaa", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 5),
+                  SizedBox(height: 5),
                   RatedStar(rating: 3.5, starColor: Colors.white),
                 ],
               ),
@@ -58,7 +58,7 @@ class ProviderCard extends StatelessWidget {
           const SizedBox(height: 10),
           Row(
             children: [
-              Icon(Icons.location_on, size: 28, color: Colors.grey),
+              const Icon(Icons.location_on, size: 28, color: Colors.grey),
               const SizedBox(width: 10),
               Expanded(
                 child: Text("${item.data().location}", overflow: TextOverflow.ellipsis, maxLines: 1),

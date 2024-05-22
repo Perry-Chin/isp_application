@@ -16,11 +16,12 @@ class HomeController extends GetxController {
   final db = FirebaseFirestore.instance;
   final HomeState state = HomeState();
   final RefreshController refreshController = RefreshController (
-    initialRefresh: true
+    initialRefresh: false
   );
 
   //The pull_to_refresh dependency requires this 2 functions to work
   void onRefresh() {
+    print(token);
     asyncLoadAllData().then((_){
       refreshController.refreshCompleted(resetFooterState: true);
     }).catchError((_){
@@ -81,6 +82,7 @@ class HomeController extends GetxController {
 
   // Stream to handle data fetching
   Stream<Map<String, UserData?>> get combinedStream async* {
+    await asyncLoadAllData();
     yield* getCombinedStream(token);
   }
   
@@ -88,6 +90,9 @@ class HomeController extends GetxController {
   // You can't use orderBy on a field that is used in a where clause
   Future<void> asyncLoadAllData() async {
     try {
+      // Add a delay of 1 second
+      await Future.delayed(Duration(seconds: 1));
+
       var reqServices = await db.collection("service").withConverter(
       fromFirestore: ServiceData.fromFirestore, 
       toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore()

@@ -5,6 +5,7 @@ import '../../common/values/values.dart';
 import 'profile_index.dart';
 import 'profile_allreviews.dart';
 import '../settings/settings_index.dart';
+import '../editProfile/edit_profile_index.dart'; // Import the edit profile module
 
 class ProfilePage extends GetView<ProfileController> {
   const ProfilePage({Key? key}) : super(key: key);
@@ -22,12 +23,14 @@ class ProfilePage extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: UserProfilePage(),
+      body: const UserProfilePage(),
     );
   }
 }
 
 class UserProfilePage extends StatelessWidget {
+  const UserProfilePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
@@ -72,7 +75,10 @@ class UserProfilePage extends StatelessWidget {
                       ),
                       IconButton(
                         icon: const Icon(Icons.edit),
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.to(() => const EditProfilePage(),
+                              binding: EditProfileBinding());
+                        },
                       ),
                     ],
                   ),

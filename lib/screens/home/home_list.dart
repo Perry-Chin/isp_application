@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 
 import '../../common/data/data.dart';
@@ -32,19 +31,20 @@ class HomeList extends GetView<HomeController> {
             children: [
               ListTile(
                 horizontalTitleGap: 12,
-                // leading: CircleAvatar(
-                //   radius: 28,
-                //   backgroundImage: userData?.photourl != null
-                //     ? NetworkImage(userData!.photourl!) // Use userData! for non-null access
-                //     : const AssetImage("assets/images/profile.png") as ImageProvider<Object>?,
-                //   backgroundColor: Colors.transparent,
-                // ),
                 leading: CircleAvatar(
-                  radius: 28.0, // Set radius for the avatar
-                  backgroundImage: userData?.photourl?.isNotEmpty == true
-                    ? NetworkImage(userData!.photourl!) // Use userData! for non-null access
-                    : const AssetImage("assets/images/profile.png")as ImageProvider<Object>?, // Default image
+                  radius: 28.0,
                   backgroundColor: Colors.transparent,
+                  child: ClipOval(
+                    child: FadeInImage.assetNetwork(
+                      placeholder: "assets/images/profile.png", // Placeholder image while loading
+                      image: userData?.photourl ?? "", // Image URL
+                      fadeInDuration: const Duration(milliseconds: 500), // Fade-in duration
+                      fit: BoxFit.cover,
+                      width: 54.w,
+                      height: 54.w,
+                      imageErrorBuilder: (context, error, stackTrace) => Image.asset("assets/images/profile.png"), // Error placeholder image
+                    ),
+                  ),
                 ),
                 title: Padding(
                   padding: const EdgeInsets.only(bottom: 3),

@@ -91,7 +91,7 @@ class HomeController extends GetxController {
   Future<void> asyncLoadAllData() async {
     try {
       // Add a delay of 1 second
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
 
       var reqServices = await db.collection("service").withConverter(
       fromFirestore: ServiceData.fromFirestore, 

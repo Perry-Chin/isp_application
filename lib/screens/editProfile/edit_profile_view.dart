@@ -29,13 +29,37 @@ class EditProfilePage extends GetView<EditProfileController> {
               children: [
                 const SizedBox(height: 30),
                 GestureDetector(
-                  onTap: () {
-                    // Add logic to upload an image
+                  onTap: () async {
+                    await controller.pickImage();
                   },
-                  child: const CircleAvatar(
-                    radius: 80,
-                    backgroundImage: AssetImage('assets/images/profile.png'),
-                  ),
+                  child: Obx(() {
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          width: 160, // Set the size of the border container
+                          height: 160, // Set the size of the border container
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color:
+                                  AppColor.secondaryColor, // Blue border color
+                              width: 4.0, // Border width
+                            ),
+                          ),
+                        ),
+                        CircleAvatar(
+                          radius:
+                              76, // Adjust the radius to fit inside the border
+                          backgroundImage: controller
+                                  .profileImageUrl.value.isNotEmpty
+                              ? NetworkImage(controller.profileImageUrl.value)
+                              : const AssetImage('assets/images/profile.png')
+                                  as ImageProvider,
+                        ),
+                      ],
+                    );
+                  }),
                 ),
                 const SizedBox(height: 10),
                 MyTextField(

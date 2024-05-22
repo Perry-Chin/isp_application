@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class EditProfileController extends GetxController {
   EditProfileController();
@@ -11,6 +14,7 @@ class EditProfileController extends GetxController {
   final emailController = TextEditingController();
   final pwdController = TextEditingController();
   final confirmpwdController = TextEditingController();
+  final profileImageUrl = ''.obs;
 
   @override
   void onInit() {
@@ -26,9 +30,66 @@ class EditProfileController extends GetxController {
           .collection('users')
           .doc(user.uid)
           .get();
-      usernameController.text = userData['username'];
-      phoneNoController.text = userData['phone_number'];
-      emailController.text = user.email!;
+
+      if (userData.exists) {
+        usernameController.text =
+            userData.data().toString().contains('username')
+                ? userData['username']
+                : '';
+        phoneNoController.text =
+            userData.data().toString().contains('phone_number')
+                ? userData['phone_number']
+                : '';
+        emailController.text = user.email!;
+        profileImageUrl.value =
+            userData.data().toString().contains('profile_image')
+                ? userData['profile_image']
+                : '';
+        print('Profile image URL loaded: ${profileImageUrl.value}');
+      } else {
+        // Handle the case where the document does not exist
+        usernameController.text = '';
+        phoneNoController.text = '';
+        emailController.text = user.email!;
+        profileImageUrl.value = '';
+      }
+    }
+  }
+
+  Future<void> updateProfileImage(File image) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Upload image to Firebase Storage
+        String fileName = '${user.uid}.jpg';
+        UploadTask uploadTask = FirebaseStorage.instance
+            .ref()
+            .child('profile_images')
+            .child(fileName)
+            .putFile(image);
+        TaskSnapshot taskSnapshot = await uploadTask;
+        String imageUrl = await taskSnapshot.ref.getDownloadURL();
+
+        // Update user document in Firestore
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({'profile_image': imageUrl});
+
+        profileImageUrl.value = imageUrl;
+        print('Profile image URL updated: $imageUrl');
+      }
+    } catch (e) {
+      print("Error updating profile image: $e");
+    }
+  }
+
+  Future<void> pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      File image = File(pickedFile.path);
+      await updateProfileImage(image);
     }
   }
 

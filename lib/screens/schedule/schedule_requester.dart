@@ -173,18 +173,18 @@ class RequesterCard extends StatelessWidget {
   }
 }
 
-class RequesterCards extends StatelessWidget {
-  const RequesterCards({super.key});
+// class RequesterCards extends StatelessWidget {
+//   const RequesterCards({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: const [
-        RequesterCard(rating: 4.5, starColor: Colors.white, status: "pending"),
-        RequesterCard(rating: 4.2, starColor: Colors.white, status: "cancelled"),
-        RequesterCard(rating: 3.9, starColor: Colors.white, status: "pending"),
-        // Add more ProviderCard widgets as needed
-      ],
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return ListView(
+//       children: const [
+//         RequesterCard(rating: 4.5, starColor: Colors.white, status: "pending"),
+//         RequesterCard(rating: 4.2, starColor: Colors.white, status: "cancelled"),
+//         RequesterCard(rating: 3.9, starColor: Colors.white, status: "pending"),
+//         // Add more ProviderCard widgets as needed
+//       ],
+//     );
+//   }
+// }

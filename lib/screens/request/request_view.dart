@@ -43,20 +43,24 @@ class RequestPage extends GetView<RequestController> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Request submitted!",
-                              style: TextStyle(
-                                  color: AppColor.secondaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 24.sp)),
+                          Text(
+                            "Request submitted!",
+                            style: TextStyle(
+                              color: AppColor.secondaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24.sp
+                            )
+                          ),
                           Lottie.asset('assets/animations/success.json',
                               width: 250, height: 250, repeat: false),
                           const SizedBox(height: 20),
                           ApplyButton(
-                              onPressed: () {
-                                controller.resetForm();
-                              },
-                              buttonText: "Reset",
-                              buttonWidth: double.infinity)
+                            onPressed: () {
+                              controller.resetForm();
+                            },
+                            buttonText: "Reset",
+                            buttonWidth: double.infinity
+                          )
                         ],
                       ),
                     ),
@@ -69,45 +73,54 @@ class RequestPage extends GetView<RequestController> {
                   )
                 ],
               );
-            } else {
+            } 
+            else {
               return Theme(
-                  data: Theme.of(context).copyWith(
-                      colorScheme: const ColorScheme.light(
-                          primary: AppColor.secondaryColor)),
-                  child: Stepper(
-                      steps: controller.getSteps(),
-                      currentStep: controller.state.currentStep.value,
-                      onStepContinue: controller.isLastStep
-                          ? () => controller
-                              .confirmRequest(context) //If current step is last
-                          : controller.moveToNextStep, //Move 1 step forward
-                      onStepCancel: controller.cancelStep, //Move 1 step back
-                      onStepTapped: (index) =>
-                          controller.setStep(index), //Move to step selected
-                      controlsBuilder:
-                          (BuildContext context, ControlsDetails controls) {
-                        return Container(
-                          margin: const EdgeInsets.only(top: 15),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                  child: ElevatedButton(
-                                      onPressed: controls.onStepContinue,
-                                      child: Text(controller.isLastStep
-                                          ? 'CONFIRM'
-                                          : 'NEXT'))),
-                              const SizedBox(width: 12),
-                              if (controller.state.currentStep.value != 0)
-                                Expanded(
-                                    child: ElevatedButton(
-                                        onPressed: controls.onStepCancel,
-                                        child: const Text('BACK')))
-                            ],
+                data: Theme.of(context).copyWith(
+                  colorScheme: const ColorScheme.light(
+                    primary: AppColor.secondaryColor
+                  )
+                ),
+                child: Stepper(
+                  steps: controller.getSteps(),
+                  currentStep: controller.state.currentStep.value,
+                  onStepContinue: controller.isLastStep
+                      ? () => controller
+                          .confirmRequest(context) //If current step is last
+                      : controller.moveToNextStep, //Move 1 step forward
+                  onStepCancel: controller.cancelStep, //Move 1 step back
+                  onStepTapped: (index) => controller.setStep(index), //Move to step selected
+                  controlsBuilder: (BuildContext context, ControlsDetails controls) {
+                    return Container(
+                      margin: const EdgeInsets.only(top: 15),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: controls.onStepContinue,
+                              child: Text(controller.isLastStep
+                                  ? 'CONFIRM'
+                                  : 'NEXT')
+                            )
                           ),
-                        );
-                      }));
+                          const SizedBox(width: 12),
+                          if (controller.state.currentStep.value != 0)
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: controls.onStepCancel,
+                                child: const Text('BACK')
+                              )
+                            )
+                        ],
+                      ),
+                    );
+                  }
+                )
+              );
             }
-          })),
+          }
+        )
+      ),
     );
   }
 }

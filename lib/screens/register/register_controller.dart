@@ -88,6 +88,7 @@ class RegisterController extends GetxController {
     await FirebaseFirestore.instance.collection('users').doc(uid).set({
       'user_id': uid,
       'username': usernameController.text,
+      'photourl': '',
       'email': emailController.text,
       'phone_number': phoneNoController.text,
     });

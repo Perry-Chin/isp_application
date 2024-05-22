@@ -6,7 +6,7 @@ import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import '../../common/data/service.dart';
 import '../../common/data/user.dart';
 import '../../common/storage/storage.dart';
-import 'schedule_index.dart';
+import 'schedule_state.dart';
 
 
 class ScheduleController extends GetxController {

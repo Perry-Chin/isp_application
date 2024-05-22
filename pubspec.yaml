@@ -88,7 +88,15 @@ dependencies:
 
   # The following adds support for Lottie animations in your Flutter app.
   lottie: ^2.6.0
+
+  # The following provides internationalization and localization support.
   intl: ^0.19.0
+
+  # The following provides a library for composing asynchronous 
+  # and event-based programs using observable sequences.
+  rxdart: ^0.27.7
+  shimmer: ^3.0.0
+  cached_network_image: ^3.3.1
 
 dev_dependencies:
   flutter_test:

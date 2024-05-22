@@ -3,7 +3,6 @@
 // ignore_for_file: depend_on_referenced_packages, avoid_init_to_null, non_constant_identifier_names, use_build_context_synchronously, avoid_print
 
 import 'dart:io';
-import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -12,9 +11,8 @@ import 'package:get/get.dart';
 import 'package:path/path.dart';
 
 import '../../common/data/service.dart';
-import '../../common/data/user.dart';
 import '../../common/storage/storage.dart';
-import '../../common/utils/security.dart';
+import '../../common/utils/utils.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'request_index.dart';
@@ -35,7 +33,7 @@ class RequestController extends GetxController {
   final state = RequestState();
   File? photo;
   var doc_id = null;
-  final user_id = UserStore.to.token;
+  final token = UserStore.to.token;
   var requestCompleted = false.obs;
   //
   final serviceController = TextEditingController();
@@ -56,6 +54,7 @@ class RequestController extends GetxController {
       state.currentStep.value++;
       update(); // Notify GetBuilder to rebuild
     }
+    print(token);
   }
 
   void cancelStep() {
@@ -352,9 +351,9 @@ class RequestController extends GetxController {
   }
 
   Future<void> createServiceDocument() async {
-    String profile = await UserStore.to.getProfile();
-    UserLoginResponseEntity userdata =
-        UserLoginResponseEntity.fromJson(jsonDecode(profile));
+    // String profile = await UserStore.to.getProfile();
+    // UserLoginResponseEntity userdata =
+    //     UserLoginResponseEntity.fromJson(jsonDecode(profile));
 
     // Upload the file and get the image URL
     final imgUrl = await uploadFile();
@@ -370,7 +369,7 @@ class RequestController extends GetxController {
         time: timeController.text,
         duration: int.tryParse(durationController.text),
         status: "Requested", //Default status
-        reqUserid: userdata.accessToken,
+        reqUserid: token,
         provUserid: "");
 
     // Set data in Firestore document

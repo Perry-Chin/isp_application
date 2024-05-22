@@ -5,7 +5,7 @@ class UserData {
   final String? id;
   final String? username;
   final String? email;
-  final int? phoneNo;
+  final String? phoneNo;
   final String? photourl;
   final String? address;
   final double? rating;
@@ -54,6 +54,7 @@ class UserData {
       if (account != null) "account_type": account,
     };
   }
+
 }
 
 //User login

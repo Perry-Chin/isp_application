@@ -33,6 +33,8 @@ class UserProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<ProfileController>();
+
     return NestedScrollView(
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
@@ -86,12 +88,14 @@ class UserProfilePage extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text(
-                        'Username',
-                        style: TextStyle(fontSize: 18),
-                      ),
+                      Obx(() {
+                        return Text(
+                          controller.user.value?.username ?? 'Username',
+                          style: const TextStyle(fontSize: 18),
+                        );
+                      }),
                       const SizedBox(width: 8),
-                      _buildRatingRectangle(),
+                      _buildRatingRectangle(controller),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -105,31 +109,33 @@ class UserProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildRatingRectangle() {
+  Widget _buildRatingRectangle(ProfileController controller) {
     return Container(
       decoration: BoxDecoration(
         color: AppColor.secondaryColor,
         borderRadius: BorderRadius.circular(15.0),
       ),
       padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 7.0),
-      child: const Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            '4.6',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+      child: Obx(() {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              controller.user.value?.rating?.toStringAsFixed(1) ?? '4.6',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          SizedBox(width: 4),
-          Icon(
-            Icons.star,
-            color: Colors.white,
-            size: 16,
-          ),
-        ],
-      ),
+            const SizedBox(width: 4),
+            const Icon(
+              Icons.star,
+              color: Colors.white,
+              size: 16,
+            ),
+          ],
+        );
+      }),
     );
   }
 

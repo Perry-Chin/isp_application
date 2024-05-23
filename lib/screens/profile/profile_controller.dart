@@ -35,4 +35,8 @@ class ProfileController extends GetxController {
       print('Error fetching user data: $e');
     }
   }
+
+  void updateUserProfile(UserData updatedUser) {
+    user.value = updatedUser;
+  }
 }

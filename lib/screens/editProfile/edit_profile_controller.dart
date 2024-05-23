@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import '../profile/profile_controller.dart'; // Import the ProfileController
 
 class EditProfileController extends GetxController {
   EditProfileController();
@@ -140,6 +141,9 @@ class EditProfileController extends GetxController {
         'username': usernameController.text,
         'phone_number': phoneNoController.text,
       });
+
+      // Fetch and update the profile controller with new data
+      Get.find<ProfileController>().fetchUserData();
 
       Navigator.pop(context); // Dismiss loading dialog
       Get.back(); // Go back to the previous screen

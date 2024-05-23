@@ -50,20 +50,29 @@ class UserProfilePage extends StatelessWidget {
                     children: [
                       Obx(() {
                         final photoUrl = controller.user.value?.photourl;
-                        print(photoUrl);
-                        return ClipOval(
-                          child: FadeInImage.assetNetwork(
-                            placeholder:
-                                "assets/images/profile.png", // Placeholder image while loading
-                            image: photoUrl ?? "", // Image URL
-                            fadeInDuration: const Duration(
-                                milliseconds: 500), // Fade-in duration
-                            fit: BoxFit.cover,
-                            width: 54.w,
-                            height: 54.w,
-                            imageErrorBuilder: (context, error, stackTrace) =>
-                                Image.asset(
-                                    "assets/images/profile.png"), // Error placeholder image
+                        return Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color:
+                                  AppColor.secondaryColor, // Blue border color
+                              width: 4.0, // Width of the border
+                            ),
+                          ),
+                          child: ClipOval(
+                            child: FadeInImage.assetNetwork(
+                              placeholder:
+                                  "assets/images/profile.png", // Placeholder image while loading
+                              image: photoUrl ?? "", // Image URL
+                              fadeInDuration: const Duration(
+                                  milliseconds: 500), // Fade-in duration
+                              fit: BoxFit.cover,
+                              width: 100.w, // Image width
+                              height: 100.w, // Image height
+                              imageErrorBuilder: (context, error, stackTrace) =>
+                                  Image.asset(
+                                      "assets/images/profile.png"), // Error placeholder image
+                            ),
                           ),
                         );
                       }),

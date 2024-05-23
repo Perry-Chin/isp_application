@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../common/values/values.dart';
 import 'profile_index.dart';
-import 'profile_allreviews.dart';
 import '../settings/settings_index.dart';
 import '../editProfile/edit_profile_index.dart'; // Import the edit profile module
 
@@ -48,21 +48,25 @@ class UserProfilePage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.grey.shade200,
-                          border: Border.all(
-                            color: AppColor.secondaryColor,
-                            width: 4.0,
+                      Obx(() {
+                        final photoUrl = controller.user.value?.photourl;
+                        print(photoUrl);
+                        return ClipOval(
+                          child: FadeInImage.assetNetwork(
+                            placeholder:
+                                "assets/images/profile.png", // Placeholder image while loading
+                            image: photoUrl ?? "", // Image URL
+                            fadeInDuration: const Duration(
+                                milliseconds: 500), // Fade-in duration
+                            fit: BoxFit.cover,
+                            width: 54.w,
+                            height: 54.w,
+                            imageErrorBuilder: (context, error, stackTrace) =>
+                                Image.asset(
+                                    "assets/images/profile.png"), // Error placeholder image
                           ),
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child:
-                              Icon(Icons.person, size: 70, color: Colors.grey),
-                        ),
-                      ),
+                        );
+                      }),
                       const Spacer(),
                       IconButton(
                         icon: const Icon(Icons.settings),

@@ -41,10 +41,9 @@ class EditProfileController extends GetxController {
                 ? userData['phone_number']
                 : '';
         emailController.text = user.email!;
-        profileImageUrl.value =
-            userData.data().toString().contains('profile_image')
-                ? userData['profile_image']
-                : '';
+        profileImageUrl.value = userData.data().toString().contains('photourl')
+            ? userData['photourl']
+            : '';
         print('Profile image URL loaded: ${profileImageUrl.value}');
       } else {
         // Handle the case where the document does not exist

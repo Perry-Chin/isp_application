@@ -20,7 +20,8 @@ class ProfileController extends GetxController {
           .collection('users')
           .doc(token)
           .withConverter<UserData>(
-            fromFirestore: UserData.fromFirestore,
+            fromFirestore: (snapshot, _) =>
+                UserData.fromFirestore(snapshot, null),
             toFirestore: (UserData userData, _) => userData.toFirestore(),
           )
           .get();
@@ -33,5 +34,9 @@ class ProfileController extends GetxController {
     } catch (e) {
       print('Error fetching user data: $e');
     }
+  }
+
+  void updateUserProfile(UserData updatedUser) {
+    user.value = updatedUser;
   }
 }

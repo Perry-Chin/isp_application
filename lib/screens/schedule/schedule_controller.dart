@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:get/get.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:rxdart/transformers.dart';
+
 
 import '../../common/data/service.dart';
 import '../../common/data/user.dart';
@@ -45,26 +47,65 @@ class ScheduleController extends GetxController {
     });
   }
 
+    // Stream to handle fetching service data
+  Stream<List<QueryDocumentSnapshot<ServiceData>>> getServiceStream(String token) {
+    return FirebaseFirestore.instance
+      .collection('service')
+      .where('requester_uid', isNotEqualTo: token)
+      .where('status', isEqualTo: 'Requested')
+      .withConverter<ServiceData>(
+        fromFirestore: ServiceData.fromFirestore,
+        toFirestore: (ServiceData serviceData, _) => serviceData.toFirestore(),
+      )
+      .snapshots()
+      .map((snapshot) => snapshot.docs);
+  }
+
+  // Stream to handle fetching user data
+  Stream<List<DocumentSnapshot<UserData>>> getUserStream(List<String> userIds) {
+    return FirebaseFirestore.instance
+      .collection('users')
+      .where(FieldPath.documentId, whereIn: userIds)
+      .withConverter<UserData>(
+        fromFirestore: UserData.fromFirestore,
+        toFirestore: (UserData userData, _) => userData.toFirestore(),
+      )
+      .snapshots()
+      .map((snapshot) => snapshot.docs);
+  }
+
+  // Combine the streams to get user data for each service item
+  Stream<Map<String, UserData?>> getCombinedStream(String token) {
+    return getServiceStream(token).switchMap((serviceDocs) {
+      List<String> userIds = serviceDocs.map((doc) => doc.data().reqUserid!).toList();
+
+      if (userIds.isEmpty) {
+        return Stream.value({});
+      }
+
+      return getUserStream(userIds).map((userDocs) {
+        return Map.fromEntries(userDocs.map((doc) => MapEntry(doc.id, doc.data())));
+      });
+    });
+  }
+
+  // Stream to handle data fetching
+  Stream<Map<String, UserData?>> get combinedStream async* {
+    await asyncLoadAllData();
+    yield* getCombinedStream(token);
+  }
+
   Future<void> asyncLoadAllData() async {
     var reqServices = await db.collection("service").withConverter(
       fromFirestore: ServiceData.fromFirestore,
       toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore(),
     ).where("provider_uid", isNotEqualTo: token).get();
 
-    var reqRatings = await db.collection("user").withConverter(
-      fromFirestore: UserData.fromFirestore,
-      toFirestore: (UserData userData, options) => userData.toFirestore(),
-    ).where("user_id", isNotEqualTo: token).get();
-
     _providerState.providerList.clear();
     _ratingState.ratingState.clear();
 
     if (reqServices.docs.isNotEmpty) {
       _providerState.providerList.assignAll(reqServices.docs);
-    }
-
-    if (reqRatings.docs.isNotEmpty) {
-      _ratingState.ratingState.assignAll(reqRatings.docs);
     }
 
     _state.value = ScheduleState(_providerState, _ratingState);

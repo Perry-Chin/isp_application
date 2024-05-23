@@ -5,11 +5,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:get/get.dart';
 import '../../common/data/service.dart';
-// import '../../common/data/user.dart';
+import '../../common/data/user.dart';
 // import '../../common/values/values.dart';
+import '../../common/widgets/shimmer.dart';
 import 'schedule_index.dart';
 
-class ProviderCard extends StatelessWidget {
+
+class ProviderCard extends GetView<ScheduleController> {
   const ProviderCard({super.key});
 
   // final double rating;
@@ -23,7 +25,7 @@ class ProviderCard extends StatelessWidget {
   //   required this.status,
   // }) : super(key: key);
 
- Widget providerListItem(QueryDocumentSnapshot<ServiceData> item) {
+ Widget providerListItem(QueryDocumentSnapshot<ServiceData> item, UserData? userData) {
   Color statusColor = Colors.green; // Default green for "Finished"
   if (item.data().status?.toLowerCase() == 'requested') {
     statusColor = Colors.blue; // Change color based on status
@@ -41,16 +43,30 @@ class ProviderCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start, // Align children to the start of the column
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.account_circle, size: 53, color: Colors.grey,),
+              CircleAvatar(
+                  radius: 28.0,
+                  backgroundColor: Colors.transparent,
+                  child: ClipOval(
+                    child: FadeInImage.assetNetwork(
+                      placeholder: "assets/images/profile.png", // Placeholder image while loading
+                      image: userData?.photourl ?? "", // Image URL
+                      fadeInDuration: const Duration(milliseconds: 500), // Fade-in duration
+                      fit: BoxFit.cover,
+                      width: 54.w,
+                      height: 54.w,
+                      imageErrorBuilder: (context, error, stackTrace) => Image.asset("assets/images/profile.png"), // Error placeholder image
+                    ),
+                  ),
+                ),
               SizedBox(width: 10,),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Bellaa", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text("${item.data().provUserid}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   SizedBox(height: 5),
-                  RatedStar(rating: 3.5, starColor: Colors.white),
+                  RatedStar(rating: userData?.rating ?? 0.0, starColor: Colors.white),
                 ],
               ),
             ],
@@ -110,36 +126,46 @@ class ProviderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      var controller = Get.find<ScheduleController>();
-      return SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        controller: controller.refreshController,
-        onLoading: controller.onLoading,
-        onRefresh: controller.onRefresh,
-        header: const WaterDropHeader(),
-        child: CustomScrollView(
-          slivers: [
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.w),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    var item = controller.state.providerState.providerList[index];
-                    return providerListItem(item);
-                  },
-                  childCount: controller.state.providerState.providerList.length,
+    // Use a StreamBuilder to listen to the combined data stream from the controller
+    return StreamBuilder<Map<String, UserData?>>(
+      stream: controller.combinedStream,
+      builder: (context, snapshot) {
+        // Create a map to associate user data with service data based on the 'reqUserid'
+        final userDataMap = snapshot.data ?? {};
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const ShimmerLoading();
+        }
+        return Obx(
+          () => SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: true,
+            controller: controller.refreshController,
+            onLoading: controller.onLoading,
+            onRefresh: controller.onRefresh,
+            header: const WaterDropHeader(),
+            child: CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.w),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        var serviceItem = controller.state.providerState.providerList[index];
+                        var userData = userDataMap[serviceItem.data().reqUserid];
+                        return providerListItem(serviceItem, userData);
+                      },
+                      childCount: controller.state.providerState.providerList.length
+                    )
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      );
-    });
+          )
+        );
+      }
+    );
   }
 }
-
 
 
 // class FilteredProviderCards extends StatelessWidget{ 

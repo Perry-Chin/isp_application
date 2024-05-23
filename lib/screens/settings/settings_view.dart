@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'settings_index.dart';
+import '../welcome/welcome_index.dart';
 import '../../common/values/values.dart';
 
 class SettingsPage extends GetView<SettingsController> {
@@ -29,6 +30,8 @@ class SetSettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //final controller = Get.find<SettingsController>();
+
     return ListView(
       children: [
 
@@ -107,6 +110,36 @@ class SetSettingsPage extends StatelessWidget {
               child: Center(
                 child: Text(
                   'View Payment Details',
+                  style: TextStyle(color: Colors.black, fontSize: 18),
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        SizedBox(
+          height: 75,
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const WelcomePage(),
+                ),
+              );
+            },
+            child: Container(
+              margin: EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.0), // Rounded edges
+                border: Border.all(
+                  color: Colors.black, // Border color
+                  width: 2.0, // Border width
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  'Logout',
                   style: TextStyle(color: Colors.black, fontSize: 18),
                 ),
               ),

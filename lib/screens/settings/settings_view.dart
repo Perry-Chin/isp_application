@@ -32,36 +32,37 @@ class SetSettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        SizedBox(
-          height: 75,
-          child: InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const EditProfilePage(),
-                ),
-              );
-            },
-            child: Container(
-              margin: EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                //color: Colors.blue,
-                borderRadius: BorderRadius.circular(16.0), // Rounded edges
-                border: Border.all(
-                  color: Colors.black, // Border color
-                  width: 2.0, // Border width
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  'Edit Profile',
-                  style: TextStyle(color: Colors.black, fontSize: 18),
-                ),
-              ),
-            ),
-          ),
-        ),
+
+        // SizedBox(
+        //   height: 75,
+        //   child: InkWell(
+        //     onTap: () {
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(
+        //           builder: (context) => const EditProfilePage(),
+        //         ),
+        //       );
+        //     },
+        //     child: Container(
+        //       margin: EdgeInsets.all(8.0),
+        //       decoration: BoxDecoration(
+        //         //color: Colors.blue,
+        //         borderRadius: BorderRadius.circular(16.0), // Rounded edges
+        //         border: Border.all(
+        //           color: Colors.black, // Border color
+        //           width: 2.0, // Border width
+        //         ),
+        //       ),
+        //       child: Center(
+        //         child: Text(
+        //           'Edit Profile',
+        //           style: TextStyle(color: Colors.black, fontSize: 18),
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ),
 
         SizedBox(
           height: 75,

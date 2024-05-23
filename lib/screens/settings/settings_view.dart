@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'settings_index.dart';
-import '../editProfile/edit_profile_index.dart';
 import '../../common/values/values.dart';
 
 class SettingsPage extends GetView<SettingsController> {
@@ -47,7 +46,6 @@ class SetSettingsPage extends StatelessWidget {
         //     child: Container(
         //       margin: EdgeInsets.all(8.0),
         //       decoration: BoxDecoration(
-        //         //color: Colors.blue,
         //         borderRadius: BorderRadius.circular(16.0), // Rounded edges
         //         border: Border.all(
         //           color: Colors.black, // Border color
@@ -74,7 +72,6 @@ class SetSettingsPage extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                //color: Colors.blue,
                 borderRadius: BorderRadius.circular(16.0), // Rounded edges
                 border: Border.all(
                   color: Colors.black, // Border color
@@ -101,7 +98,6 @@ class SetSettingsPage extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                //color: Colors.blue,
                 borderRadius: BorderRadius.circular(16.0), // Rounded edges
                 border: Border.all(
                   color: Colors.black, // Border color

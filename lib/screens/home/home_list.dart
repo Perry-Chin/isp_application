@@ -20,6 +20,17 @@ class HomeList extends GetView<HomeController> {
       child: InkWell(
         onTap: () {
           // Handle on tap
+          var reqUserid = "";
+          if(serviceItem.data().reqUserid == controller.token) {
+            reqUserid = serviceItem.data().reqUserid ?? "";
+          }
+          else {
+            reqUserid = serviceItem.data().reqUserid ?? "";
+          }
+          Get.toNamed("/detail", parameters: {
+            "doc_id": serviceItem.id,
+            "req_uid": reqUserid
+          });
         },
         child: Container(
           decoration: BoxDecoration(
@@ -114,7 +125,7 @@ class HomeList extends GetView<HomeController> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      width: serviceItem.data().serviceName!.length * 10.0,
+                      width: serviceItem.data().serviceName!.length * 11,
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: const Color(0xffF2F2F2),
@@ -174,11 +185,11 @@ class HomeList extends GetView<HomeController> {
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        var serviceItem = controller.state.serviceList[index];
+                        var serviceItem = controller.state.filteredServiceList[index];
                         var userData = userDataMap[serviceItem.data().reqUserid];
                         return homeListItem(serviceItem, userData);
                       },
-                      childCount: controller.state.serviceList.length
+                      childCount: controller.state.filteredServiceList.length
                     )
                   ),
                 ),

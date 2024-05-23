@@ -57,7 +57,11 @@ class HomePage extends GetView<HomeController> {
             ),
             contentPadding: const EdgeInsets.symmetric(vertical: 14),
           ),
-          // onChanged: searchElderly, // Callback for search
+          controller: controller.searchController,
+          onChanged: (value) {
+            // Call controller function to filter service list based on username
+            controller.filterServiceList(value);
+          },
         ),
       )
     );

@@ -60,12 +60,12 @@ class ProviderCard extends GetView<ScheduleController> {
                     ),
                   ),
                 ),
-              SizedBox(width: 10,),
+              const SizedBox(width: 10,),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("${item.data().provUserid}", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 5),
+                  Text("${item.data().provUserid}", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 5),
                   RatedStar(rating: userData?.rating ?? 0.0, starColor: Colors.white),
                 ],
               ),

@@ -103,8 +103,10 @@ class RequestController extends GetxController {
                 labeltext: 'Service', 
                 prefixicon: Icons.room_service,
                 suggestions: const [
-                  "Cleaning",
-                  "Housekeeping"
+                  "Sitting",
+                  "Walking",
+                  "Training",
+                  "Grooming"
                 ], 
                 focusNode: FocusNode(), 
                 controller: serviceController
@@ -278,7 +280,7 @@ class RequestController extends GetxController {
     final fileName = getRandomString(15) + extension(photo!.path);
 
     try {
-      final ref = FirebaseStorage.instance.ref("chat").child(fileName);
+      final ref = FirebaseStorage.instance.ref("service").child(fileName);
       final uploadTask = ref.putFile(photo!);
       // Wait for the upload task to complete
       final snapshot = await uploadTask;

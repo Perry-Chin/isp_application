@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:rxdart/rxdart.dart';
@@ -15,28 +16,46 @@ class HomeController extends GetxController {
   final token = UserStore.to.token;
   final db = FirebaseFirestore.instance;
   final HomeState state = HomeState();
+  TextEditingController searchController = TextEditingController();
   final RefreshController refreshController = RefreshController (
     initialRefresh: false
   );
 
   //The pull_to_refresh dependency requires this 2 functions to work
   void onRefresh() {
-    print(token);
-    asyncLoadAllData().then((_){
+    asyncLoadAllData(initialLoad: false, applyFilter: true).then((_){
       refreshController.refreshCompleted(resetFooterState: true);
     }).catchError((_){
       refreshController.refreshFailed();
     });
   }
- 
+
   void onLoading() {
-    asyncLoadAllData().then((_){
+    asyncLoadAllData(initialLoad: false, applyFilter: true).then((_){
       refreshController.loadComplete();
     }).catchError((_){
       refreshController.loadFailed();
     });
   }
   //
+
+  /// Search filter logic
+  void filterServiceList(String username) {
+    if (username.isEmpty) {
+      // Reset to original service list if search box is empty
+      state.filteredServiceList.assignAll(state.serviceList); // Assign original service list
+    } else {
+      // Filter service list based on username
+      state.filteredServiceList.assignAll(state.serviceList.where((service) {
+        var userData = state.userDataMap[service.data().reqUserid];
+        // Check if userData is not null and if the username contains the search query
+        var usernameMatch = userData?.username?.toLowerCase()?.contains(username.toLowerCase()) ?? false;
+        return usernameMatch;
+      }).toList());
+    }
+    // Trigger UI update
+    update();
+  }
 
   // Stream to handle fetching service data
   Stream<List<QueryDocumentSnapshot<ServiceData>>> getServiceStream(String token) {
@@ -62,7 +81,9 @@ class HomeController extends GetxController {
         toFirestore: (UserData userData, _) => userData.toFirestore(),
       )
       .snapshots()
-      .map((snapshot) => snapshot.docs);
+      .map((snapshot) {
+        return snapshot.docs;
+      });
   }
 
   // Combine the streams to get user data for each service item
@@ -75,20 +96,22 @@ class HomeController extends GetxController {
       }
 
       return getUserStream(userIds).map((userDocs) {
-        return Map.fromEntries(userDocs.map((doc) => MapEntry(doc.id, doc.data())));
+        var userDataMap = Map.fromEntries(userDocs.map((doc) => MapEntry(doc.id, doc.data())));
+        state.userDataMap.assignAll(userDataMap); // Update userDataMap in state
+        return userDataMap;
       });
     });
   }
 
   // Stream to handle data fetching
   Stream<Map<String, UserData?>> get combinedStream async* {
-    await asyncLoadAllData();
+    await asyncLoadAllData(initialLoad: true, applyFilter: false);
     yield* getCombinedStream(token);
   }
   
   // This is required due to Firestore limitation 
   // You can't use orderBy on a field that is used in a where clause
-  Future<void> asyncLoadAllData() async {
+  Future<void> asyncLoadAllData({required bool initialLoad, required applyFilter}) async {
     try {
       // Add a delay of 1 second
       await Future.delayed(const Duration(seconds: 1));
@@ -110,6 +133,14 @@ class HomeController extends GetxController {
 
       // Now use the sorted documents for display
       state.serviceList.assignAll(documents);
+
+      // Apply the filter only if the applyFilter flag is true
+      if (initialLoad) {
+        filterServiceList(searchController.text);
+      }
+      if (!initialLoad && applyFilter) {
+        filterServiceList(searchController.text);
+      }
     }
     catch(e) {
       print("Error fetching: $e");

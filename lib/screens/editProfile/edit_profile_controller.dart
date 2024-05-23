@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import '../profile/profile_index.dart'; // Import the ProfileController
 
 class EditProfileController extends GetxController {
   EditProfileController();
@@ -41,10 +42,9 @@ class EditProfileController extends GetxController {
                 ? userData['phone_number']
                 : '';
         emailController.text = user.email!;
-        profileImageUrl.value =
-            userData.data().toString().contains('profile_image')
-                ? userData['profile_image']
-                : '';
+        profileImageUrl.value = userData.data().toString().contains('photourl')
+            ? userData['photourl']
+            : '';
         print('Profile image URL loaded: ${profileImageUrl.value}');
       } else {
         // Handle the case where the document does not exist
@@ -141,6 +141,9 @@ class EditProfileController extends GetxController {
         'username': usernameController.text,
         'phone_number': phoneNoController.text,
       });
+
+      // Fetch and update the profile controller with new data
+      Get.find<ProfileController>().fetchUserData();
 
       Navigator.pop(context); // Dismiss loading dialog
       Get.back(); // Go back to the previous screen

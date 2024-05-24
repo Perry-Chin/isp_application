@@ -34,7 +34,6 @@ class SetSettingsPage extends StatelessWidget {
 
     return ListView(
       children: [
-
         // SizedBox(
         //   height: 75,
         //   child: InkWell(
@@ -73,7 +72,7 @@ class SetSettingsPage extends StatelessWidget {
               print("box2 tapped");
             },
             child: Container(
-              margin: const EdgeInsets.all(8.0),
+              margin: EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.0), // Rounded edges
                 border: Border.all(
@@ -81,7 +80,7 @@ class SetSettingsPage extends StatelessWidget {
                   width: 2.0, // Border width
                 ),
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
                   'Any Problems? Contact Us!',
                   style: TextStyle(color: Colors.black, fontSize: 18),
@@ -99,7 +98,7 @@ class SetSettingsPage extends StatelessWidget {
               print("box3 tapped");
             },
             child: Container(
-              margin: const EdgeInsets.all(8.0),
+              margin: EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.0), // Rounded edges
                 border: Border.all(
@@ -107,7 +106,7 @@ class SetSettingsPage extends StatelessWidget {
                   width: 2.0, // Border width
                 ),
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
                   'View Payment Details',
                   style: TextStyle(color: Colors.black, fontSize: 18),
@@ -129,7 +128,7 @@ class SetSettingsPage extends StatelessWidget {
               );
             },
             child: Container(
-              margin: const EdgeInsets.all(8.0),
+              margin: EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.0), // Rounded edges
                 border: Border.all(
@@ -137,7 +136,7 @@ class SetSettingsPage extends StatelessWidget {
                   width: 2.0, // Border width
                 ),
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
                   'Logout',
                   style: TextStyle(color: Colors.black, fontSize: 18),
@@ -146,9 +145,7 @@ class SetSettingsPage extends StatelessWidget {
             ),
           ),
         ),
-
       ],
     );
   }
 }
-

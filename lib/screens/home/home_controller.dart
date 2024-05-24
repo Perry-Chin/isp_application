@@ -111,7 +111,7 @@ class HomeController extends GetxController {
   
   // This is required due to Firestore limitation 
   // You can't use orderBy on a field that is used in a where clause
-  Future<void> asyncLoadAllData({required bool initialLoad, required applyFilter}) async {
+  Future<void> asyncLoadAllData({required initialLoad, required applyFilter}) async {
     try {
       // Add a delay of 1 second
       await Future.delayed(const Duration(seconds: 1));

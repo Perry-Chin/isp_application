@@ -15,32 +15,74 @@ class DetailPage extends GetView<DetailController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
-      body: Stack(
+      bottomNavigationBar: applyButton(),
+      body: FutureBuilder<void>(
+        future: controller.asyncLoadAllData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return content(context);
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
+  }
+
+  Widget content(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          FutureBuilder<void>(
-             future: controller.asyncLoadAllData(),
-             builder: (context, snapshot) {
-               if (snapshot.connectionState == ConnectionState.done) {
-                 return backgroundImage(controller.state.serviceList.first.data());
-               } else {
-                 return const Center(child: CircularProgressIndicator());
-               }
-             },
-           ),
-          buttonArrow(context),
-          content()
+          Stack(
+            children: [
+              Positioned(
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.width - 133,
+                  child: Obx(() {
+                    if (controller.state.serviceList.isNotEmpty) {
+                      var serviceData = controller.state.serviceList.first.data();
+                      return backgroundImage(serviceData);
+                    }
+                    return const SizedBox.shrink();
+                  }),
+                ),
+              ),
+              buttonArrow(context),
+              Positioned(
+                left: 0,
+                right: 0,
+                top: MediaQuery.of(context).size.width - 150,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(10),
+                  decoration: const BoxDecoration(
+                    color: AppColor.backgroundColor,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(20),
+                      topLeft: Radius.circular(20),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          buildContent(context)
         ],
       ),
     );
   }
 
   Widget backgroundImage(ServiceData serviceData) {
-    if(controller.state.serviceList.isNotEmpty) {
+    if (controller.state.serviceList.isNotEmpty) {
       if (serviceData.image != null && serviceData.image!.isNotEmpty) {
         // Load image using photourl
         return SizedBox(
           width: double.infinity,
-          child: Image.network(serviceData.image!),
+          child: Image.network(
+            serviceData.image!,
+            fit: BoxFit.cover,
+          ),
         );
       } else {
         // Check service name for default image
@@ -67,10 +109,10 @@ class DetailPage extends GetView<DetailController> {
                 width: double.infinity,
                 fit: BoxFit.cover,
               );
-            }
           }
         }
       }
+    }
     // Return a default image widget if no conditions are met
     return Image.asset(
       'assets/images/walking.jpeg',
@@ -79,83 +121,55 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
-
   Widget buttonArrow(BuildContext context) {
-    return Opacity(
-      opacity: 0.6,
-      child: Container(
-        margin: const EdgeInsets.only(top: 25, left: 15),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-        ),
-        child: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-    );
-  }
-
-  Widget content() {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      maxChildSize: 1.0,
-      minChildSize: 0.6,
-      builder: (context, scrollController) {
-        return Container(
-          clipBehavior: Clip.hardEdge,
+    return Positioned(
+      top: 25,
+      left: 15,
+      child: Opacity(
+        opacity: 0.6,
+        child: Container(
           decoration: const BoxDecoration(
-            color: AppColor.backgroundColor,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
+            color: Colors.white,
+            shape: BoxShape.circle,
           ),
-          child: StreamBuilder<Map<String, UserData?>>(
-            stream: controller.combinedStream,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return const Center(child: Text('Error loading data'));
-              } else if (!snapshot.hasData || controller.state.serviceList.isEmpty) {
-                return const Center(child: Text('No data available'));
-              } else {
-                return buildContent(context, scrollController, snapshot.data!);
-              }
-            },
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_rounded),
+            onPressed: () => Navigator.pop(context),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
-  Widget buildContent(BuildContext context, ScrollController scrollController, Map<String, UserData?> data) {
-    var serviceData = controller.state.serviceList.first.data();
-    var reqUserId = serviceData.reqUserid;
-    var userData = data[reqUserId];
-
-    return SingleChildScrollView(
-      controller: scrollController,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          topIndicator(),
-          serviceName(serviceData.serviceName),
-          serviceDetailsCard(serviceData),
-          serviceDescription(serviceData.description),
-          requesterInfo(userData),
-          feeInfo(userData),
-          applyButton()
-        ],
-      ),
+  Widget buildContent(BuildContext context) {
+    return StreamBuilder<Map<String, UserData?>>(
+      stream: controller.combinedStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          var serviceData = controller.state.serviceList.first.data();
+          var reqUserId = serviceData.reqUserid;
+          var userData = snapshot.data![reqUserId];
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              topIndicator(),
+              serviceName(serviceData.serviceName),
+              serviceDetailsCard(serviceData),
+              serviceDescription(serviceData.description),
+              requesterInfo(userData),
+              feeInfo(userData),
+            ],
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 
   Widget topIndicator() {
     return Padding(
-      padding: const EdgeInsets.only(top: 10, bottom: 5),
+      padding: const EdgeInsets.only(bottom: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -171,7 +185,7 @@ class DetailPage extends GetView<DetailController> {
 
   Widget serviceName(String? name) {
     return Padding(
-      padding: const EdgeInsets.only(top: 16, left: 16, bottom: 10),
+      padding: const EdgeInsets.only(left: 16, bottom: 5),
       child: Text(
         name ?? "Service Name",
         style: const TextStyle(
@@ -191,7 +205,7 @@ class DetailPage extends GetView<DetailController> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.black26)
+          border: Border.all(color: Colors.black26),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -311,7 +325,7 @@ class DetailPage extends GetView<DetailController> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.black26)
+          border: Border.all(color: Colors.black26),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -354,8 +368,10 @@ class DetailPage extends GetView<DetailController> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text("Total"),
-                        Text("\$$totalCost", 
-                        style: const TextStyle(fontWeight: FontWeight.bold),)
+                        Text(
+                          "\$$totalCost",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        )
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -374,9 +390,7 @@ class DetailPage extends GetView<DetailController> {
                             const Text(
                               "Payment Method",
                               style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16
-                              ),
+                                  fontWeight: FontWeight.bold, fontSize: 16),
                             ),
                             const SizedBox(height: 5),
                             Padding(
@@ -392,9 +406,7 @@ class DetailPage extends GetView<DetailController> {
                                   const Text(
                                     "PayNow",
                                     style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14
-                                    ),
+                                        fontWeight: FontWeight.bold, fontSize: 14),
                                   ),
                                 ],
                               ),
@@ -414,17 +426,23 @@ class DetailPage extends GetView<DetailController> {
   }
 
   Widget applyButton() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: ApplyButton(  // button.dart
-        onPressed: () {
-
-        }, 
-        buttonText: "Apply Now", 
-        buttonWidth: double.infinity
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 6,
+            child: ApplyButton(
+                // button.dart
+                onPressed: () {},
+                buttonText: "Apply Now",
+                buttonWidth: 100),
+          ),
+        ],
       ),
     );
   }
+
   Widget userRating() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -585,7 +603,7 @@ class DetailPage extends GetView<DetailController> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        side: const BorderSide(color: Colors.black, width: 0.5), 
+        side: const BorderSide(color: Colors.black, width: 0.5),
       ),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10), // Set padding

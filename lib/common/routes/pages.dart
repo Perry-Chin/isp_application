@@ -27,7 +27,7 @@ class AppPages {
       middlewares: [
         //Redirect user directly to navbar
         //Comment off this line if need logout
-        RouteWelcomeMiddleware(priority: 1)
+        // RouteWelcomeMiddleware(priority: 1)
       ]
     ),
     //Navbar Page

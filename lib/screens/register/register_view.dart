@@ -81,7 +81,8 @@ class RegisterPage extends GetView<RegisterController> {
                     controller.handleRegister(context);
                   }, 
                   buttonText: "Create Account", 
-                  buttonWidth: double.infinity
+                  buttonWidth: double.infinity,
+                  textAlignment: Alignment.center
                 ),
                 // Row for navigation to the login screen
                 Row(

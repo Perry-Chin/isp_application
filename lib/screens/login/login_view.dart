@@ -91,7 +91,8 @@ class LoginPage extends GetView<LoginController> {
                     controller.handleSignIn(context);
                   }, 
                   buttonText: "Login", 
-                  buttonWidth: double.infinity
+                  buttonWidth: double.infinity,
+                  textAlignment: Alignment.center,
                 ),
                 //Sign up option
                 Row(

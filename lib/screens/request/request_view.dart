@@ -59,7 +59,8 @@ class RequestPage extends GetView<RequestController> {
                               controller.resetForm();
                             },
                             buttonText: "Reset",
-                            buttonWidth: double.infinity
+                            buttonWidth: double.infinity,
+                            textAlignment: Alignment.center
                           )
                         ],
                       ),

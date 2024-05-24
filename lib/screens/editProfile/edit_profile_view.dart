@@ -108,6 +108,7 @@ class EditProfilePage extends GetView<EditProfileController> {
                   },
                   buttonText: "Update Profile",
                   buttonWidth: double.infinity,
+                  textAlignment: Alignment.center
                 ),
               ],
             ),

@@ -47,12 +47,11 @@ class ScheduleController extends GetxController {
     });
   }
 
-    // Stream to handle fetching service data
+  // Stream to handle fetching service data
   Stream<List<QueryDocumentSnapshot<ServiceData>>> getServiceStream(String token) {
     return FirebaseFirestore.instance
       .collection('service')
-      .where('requester_uid', isNotEqualTo: token)
-      .where('status', isEqualTo: 'Requested')
+      .where('provider_uid', isEqualTo: token)
       .withConverter<ServiceData>(
         fromFirestore: ServiceData.fromFirestore,
         toFirestore: (ServiceData serviceData, _) => serviceData.toFirestore(),
@@ -77,7 +76,10 @@ class ScheduleController extends GetxController {
   // Combine the streams to get user data for each service item
   Stream<Map<String, UserData?>> getCombinedStream(String token) {
     return getServiceStream(token).switchMap((serviceDocs) {
-      List<String> userIds = serviceDocs.map((doc) => doc.data().reqUserid!).toList();
+      List<String> userIds = serviceDocs
+        .map((doc) => doc.data().reqUserid!)
+        .toSet()
+        .toList();
 
       if (userIds.isEmpty) {
         return Stream.value({});
@@ -99,7 +101,7 @@ class ScheduleController extends GetxController {
     var reqServices = await db.collection("service").withConverter(
       fromFirestore: ServiceData.fromFirestore,
       toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore(),
-    ).where("provider_uid", isNotEqualTo: token).get();
+    ).where("provider_uid", isEqualTo: token).get();
 
     _providerState.providerList.clear();
     _ratingState.ratingState.clear();

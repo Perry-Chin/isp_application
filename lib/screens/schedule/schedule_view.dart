@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../common/values/color.dart';
 import 'schedule_provider.dart'; // Ensure this imports the correct file
 import 'schedule_requester.dart'; // Ensure this imports the correct file
 // import '../../common/data/user.dart';
@@ -81,7 +82,7 @@ class _SchedulePageState extends State<SchedulePage> {
                   labelColor: Colors.black,
                   indicator: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: const Color(0xFFFFBA08),
+                    color: const Color(0xFF2C448A),
                   ),
                   tabs: const [
                     Tab(
@@ -102,8 +103,8 @@ class _SchedulePageState extends State<SchedulePage> {
               Expanded(
                 child: TabBarView(
                   children: [
-                    const ProviderCard(),
-                    RequesterProviderCards(statusFilter: selectedFilters, ratingFilter: selectedRating),
+                    ProviderCard(selectedStatus: selectedFilters, selectedRating: selectedRating,),
+                    RequesterCard(selectedStatus: selectedFilters, selectedRating: selectedRating,),
                   ],
                 ),
               ),
@@ -161,8 +162,8 @@ class _FilterState extends State<Filter> {
         }
 
         if (selectedStatus.contains('cancelled') &&
-            selectedStatus.contains('pending') &&
-            selectedStatus.contains('finished')) {
+            selectedStatus.contains('requested') &&
+            selectedStatus.contains('completed')) {
           selectedStatus = ['all'];
         } else if (selectedStatus.isEmpty) {
           selectedStatus = ['all'];
@@ -235,9 +236,9 @@ class _FilterState extends State<Filter> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildStatusButton('finished', Colors.green),
+                _buildStatusButton('completed', Colors.green),
                 _buildStatusButton('cancelled', Colors.red),
-                _buildStatusButton('pending', Colors.blue),
+                _buildStatusButton('requested', Colors.blue),
               ],
             ),
             const SizedBox(height: 20),
@@ -374,36 +375,37 @@ class RatedStar extends StatelessWidget {
   final double iconSize;
 
   const RatedStar({
-    super.key,
+    Key? key,
     required this.rating,
     required this.starColor,
-    this.iconSize = 18.0,
-  });
+    this.iconSize = 16.0,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(5), // Add padding around the content
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5), // Match the padding
       decoration: BoxDecoration(
-        color: Colors.yellow, // Set background color to yellow
-        borderRadius: BorderRadius.circular(12), // Add border radius for rounded corners
+        color: Colors.white, // Set background color to white
+        borderRadius: BorderRadius.circular(20), // Adjust the border radius
+        border: Border.all(color: AppColor.secondaryColor), // Use your AppColor.secondaryColor here
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          Text(
+            '$rating',
+            style: TextStyle(
+              fontSize: 14, // Adjust the font size
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(width: 3), // Add spacing between rating and star icon
           Icon(
             Icons.star,
             color: starColor,
             size: iconSize,
-          ),
-          const SizedBox(width: 3), // Add spacing between star icon and rating
-          Text(
-            '$rating',
-            style: TextStyle(
-              fontSize: iconSize - 4,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
           ),
         ],
       ),

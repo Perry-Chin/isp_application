@@ -1,24 +1,28 @@
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:get/get.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:rxdart/transformers.dart';
-
 
 import '../../common/data/service.dart';
 import '../../common/data/user.dart';
 import '../../common/storage/storage.dart';
 import 'schedule_state.dart';
 
-
 class ScheduleController extends GetxController {
+
+
   ScheduleController();
 
   final token = UserStore.to.token;
   final db = FirebaseFirestore.instance;
+  List<String> selectedStatus = ['all'];
+  List<String> selectedRating = ['all'];
   final ProviderState _providerState = ProviderState();
   final RatingState _ratingState = RatingState();
   final RefreshController refreshController = RefreshController(
+    initialRefresh: true,
+  );
+  final RefreshController refreshControllers = RefreshController(
     initialRefresh: true,
   );
 
@@ -28,11 +32,11 @@ class ScheduleController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    asyncLoadAllData();
+    asyncLoadAllDataForProvider();
   }
 
   void onRefresh() {
-    asyncLoadAllData().then((_) {
+    asyncLoadAllDataForProvider().then((_) {
       refreshController.refreshCompleted(resetFooterState: true);
     }).catchError((_) {
       refreshController.refreshFailed();
@@ -40,10 +44,26 @@ class ScheduleController extends GetxController {
   }
 
   void onLoading() {
-    asyncLoadAllData().then((_) {
+    asyncLoadAllDataForProvider().then((_) {
       refreshController.loadComplete();
     }).catchError((_) {
       refreshController.loadFailed();
+    });
+  }
+
+   void onRefreshControll() {
+    asyncLoadAllDataForRequester().then((_) {
+      refreshControllers.refreshCompleted(resetFooterState: true);
+    }).catchError((_) {
+      refreshControllers.refreshFailed();
+    });
+  }
+
+  void onLoadingControll() {
+    asyncLoadAllDataForRequester().then((_) {
+      refreshControllers.loadComplete();
+    }).catchError((_) {
+      refreshControllers.loadFailed();
     });
   }
 
@@ -52,6 +72,19 @@ class ScheduleController extends GetxController {
     return FirebaseFirestore.instance
       .collection('service')
       .where('provider_uid', isEqualTo: token)
+      .withConverter<ServiceData>(
+        fromFirestore: ServiceData.fromFirestore,
+        toFirestore: (ServiceData serviceData, _) => serviceData.toFirestore(),
+      )
+      .snapshots()
+      .map((snapshot) => snapshot.docs);
+  }
+
+  // Stream to handle fetching service data where the current user is the requester
+  Stream<List<QueryDocumentSnapshot<ServiceData>>> getRequesterServiceStream(String token) {
+    return FirebaseFirestore.instance
+      .collection('service')
+      .where('requester_uid', isEqualTo: token)
       .withConverter<ServiceData>(
         fromFirestore: ServiceData.fromFirestore,
         toFirestore: (ServiceData serviceData, _) => serviceData.toFirestore(),
@@ -91,14 +124,38 @@ class ScheduleController extends GetxController {
     });
   }
 
+  // Combine the streams to get user data for each service item where the current user is the requester
+  Stream<Map<String, UserData?>> getCombinedRequesterStream(String token) {
+    return getRequesterServiceStream(token).switchMap((serviceDocs) {
+      List<String> userIds = serviceDocs
+        .map((doc) => doc.data().reqUserid!)
+        .toSet()
+        .toList();
+
+      if (userIds.isEmpty) {
+        return Stream.value({});
+      }
+
+      return getUserStream(userIds).map((userDocs) {
+        return Map.fromEntries(userDocs.map((doc) => MapEntry(doc.id, doc.data())));
+      });
+    });
+  }
+
   // Stream to handle data fetching
   Stream<Map<String, UserData?>> get combinedStream async* {
-    await asyncLoadAllData();
+    await asyncLoadAllDataForProvider();
     yield* getCombinedStream(token);
   }
 
-  Future<void> asyncLoadAllData() async {
-    var reqServices = await db.collection("service").withConverter(
+  // Stream to handle data fetching where the current user is the requester
+  Stream<Map<String, UserData?>> get combinedRequesterStream async* {
+    await asyncLoadAllDataForRequester();
+    yield* getCombinedRequesterStream(token);
+  }
+
+  Future<void> asyncLoadAllDataForProvider() async {
+    var providerServices = await db.collection("service").withConverter(
       fromFirestore: ServiceData.fromFirestore,
       toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore(),
     ).where("provider_uid", isEqualTo: token).get();
@@ -106,11 +163,28 @@ class ScheduleController extends GetxController {
     _providerState.providerList.clear();
     _ratingState.ratingState.clear();
 
-    if (reqServices.docs.isNotEmpty) {
-      _providerState.providerList.assignAll(reqServices.docs);
+    if (providerServices.docs.isNotEmpty) {
+      _providerState.providerList.assignAll(providerServices.docs);
     }
 
     _state.value = ScheduleState(_providerState, _ratingState);
-    print("Data loaded: ${_state.value.providerState.providerList.length} services, ${_state.value.ratingState.ratingState.length} ratings");
+    print("Data loaded for provider: ${_state.value.providerState.providerList.length} services, ${_state.value.ratingState.ratingState.length} ratings");
+  }
+
+  Future<void> asyncLoadAllDataForRequester() async {
+    var requesterServices = await db.collection("service").withConverter(
+      fromFirestore: ServiceData.fromFirestore,
+      toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore(),
+    ).where("requester_uid", isEqualTo: token).get();
+
+    _providerState.providerList.clear();
+    _ratingState.ratingState.clear();
+
+    if (requesterServices.docs.isNotEmpty) {
+      _providerState.providerList.assignAll(requesterServices.docs);
+    }
+
+    _state.value = ScheduleState(_providerState, _ratingState);
+    print("Data loaded for requester: ${_state.value.providerState.providerList.length} services, ${_state.value.ratingState.ratingState.length} ratings");
   }
 }

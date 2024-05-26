@@ -7,14 +7,41 @@ import 'package:get/get.dart';
 import '../../common/data/service.dart';
 import '../../common/data/user.dart';
 // import '../../common/values/values.dart';
+import '../../common/values/color.dart';
 import '../../common/widgets/shimmer.dart';
 import 'schedule_index.dart';
 
 
 class ProviderCard extends GetView<ScheduleController> {
-  const ProviderCard({super.key});
+ final List<String> selectedStatus;
+  final List<String> selectedRating;
 
-  Widget providerListItem(QueryDocumentSnapshot<ServiceData> item, UserData? requesterData) {
+  const ProviderCard({
+    Key? key,
+    required this.selectedStatus,
+    required this.selectedRating,
+  }) : super(key: key);
+
+  Widget providerListItem(
+    QueryDocumentSnapshot<ServiceData> item,
+    UserData? requesterData,
+  ) {
+    // Check if the item matches the selected filters
+    if (!selectedStatus.contains('all') &&
+        !selectedStatus.contains(item.data().status?.toLowerCase())) {
+      return SizedBox(); // Return an empty SizedBox if status doesn't match
+    }
+
+    if (!selectedRating.contains('all')) {
+      // Filter based on rating
+      final rating = requesterData?.rating ?? 0;
+      if (selectedRating.contains('1 - 3') && rating > 3) {
+        return SizedBox(); // Return an empty SizedBox if rating doesn't match
+      } else if (selectedRating.contains('3 - 5') && rating < 3) {
+        return SizedBox(); // Return an empty SizedBox if rating doesn't match
+      }
+    }
+
     Color statusColor = Colors.green; // Default green for "Finished"
     if (item.data().status?.toLowerCase() == 'requested') {
       statusColor = Colors.blue; // Change color based on status
@@ -51,11 +78,24 @@ class ProviderCard extends GetView<ScheduleController> {
                 ),
                 const SizedBox(width: 10,),
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(requesterData?.username ?? "", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 5),
-                    RatedStar(rating: requesterData?.rating ?? 0, starColor: Colors.white),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(requesterData?.username ?? "", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                        const SizedBox(width: 6),
+                        RatedStar(rating: requesterData?.rating ?? 0, starColor: Colors.yellow),
+                    ],),
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Text("${item.data().date?.toString() ?? " "},"),
+                        SizedBox(width: 3,),
+                        Text(item.data().time!),
+                    ],)
+                    
                   ],
                 ),
               ],
@@ -63,7 +103,7 @@ class ProviderCard extends GetView<ScheduleController> {
             const SizedBox(height: 10),
             Row(
               children: [
-                const Icon(Icons.location_on, size: 28, color: Colors.grey),
+                const Icon(Icons.location_on, size: 28, color: AppColor.secondaryColor),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text("${item.data().location}", overflow: TextOverflow.ellipsis, maxLines: 1),
@@ -72,26 +112,30 @@ class ProviderCard extends GetView<ScheduleController> {
             ),
             const SizedBox(height: 10),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Flexible(
-                  child: Container(
-                    width: 200, // Adjust the width as needed
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 2,
+                  child:  Container(
+                      width: item.data().serviceName!.length * 11,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xffF2F2F2),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      borderRadius: BorderRadius.circular(10),
+                      child: Center(
+                        child: Text(
+                          item.data().serviceName ?? "",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
                     ),
-                    padding: const EdgeInsets.all(10),
-                    child: Text("${item.data().description}", overflow: TextOverflow.ellipsis, maxLines: 2),
-                  ),
                 ),
-                const SizedBox(width: 10),
+                // const SizedBox(width: 10),
                 Container(
                   height: 43,
-                  width: 110,
+                  width: item.data().status!.length * 11,
                   decoration: BoxDecoration(
                     color: statusColor,
                     borderRadius: BorderRadius.circular(20),
@@ -114,6 +158,7 @@ class ProviderCard extends GetView<ScheduleController> {
   @override
   Widget build(BuildContext context) {
     // Use a StreamBuilder to listen to the combined data stream from the controller
+    
     return StreamBuilder<Map<String, UserData?>>(
       stream: controller.combinedStream,
       builder: (context, snapshot) {

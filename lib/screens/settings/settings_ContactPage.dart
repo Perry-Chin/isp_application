@@ -4,8 +4,10 @@ import '../../common/values/values.dart';
 import '../../common/values/color.dart';
 
 class ContactPage extends StatelessWidget {
-  final String phoneNumber = '8768 9011'; // Replace with the actual phone number
-  final String emailAddress = 'furfriends23@gmail.com'; // Replace with the actual email address
+  final String phoneNumber =
+      '8768 9011'; // Replace with the actual phone number
+  final String emailAddress =
+      'furfriends23@gmail.com'; // Replace with the actual email address
 
   String selectedFeedbackOption = "General Feedback";
 
@@ -15,7 +17,7 @@ class ContactPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contact Us'),
+        title: const Text('Contact Us'),
         backgroundColor: AppColor.secondaryColor,
       ),
       body: Center(
@@ -24,7 +26,7 @@ class ContactPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Your feedback matters to us!',
                 style: TextStyle(
                   fontSize: 30.0,
@@ -33,16 +35,16 @@ class ContactPage extends StatelessWidget {
                 ),
               ),
               ListTile(
-                leading: Icon(Icons.phone),
-                title: Text('Call Us'),
+                leading: const Icon(Icons.phone),
+                title: const Text('Call Us'),
                 subtitle: Text(phoneNumber),
                 onTap: () {
                   _launchPhoneCall(phoneNumber);
                 },
               ),
               ListTile(
-                leading: Icon(Icons.email),
-                title: Text('Email Us'),
+                leading: const Icon(Icons.email),
+                title: const Text('Email Us'),
                 subtitle: Text(emailAddress),
                 onTap: () {
                   _launchEmail(emailAddress);
@@ -56,22 +58,21 @@ class ContactPage extends StatelessWidget {
   }
 
   // Function to launch a phone call
-void _launchPhoneCall(String phoneNumber) async {
-  final phoneCallUrl = Uri.parse('tel:$phoneNumber');
-  if (await canLaunchUrl(phoneCallUrl)) {
-    await launch(phoneCallUrl.toString());
-  } else {
-    throw 'Could not launch $phoneCallUrl';
+  void _launchPhoneCall(String phoneNumber) async {
+    final phoneCallUrl = Uri.parse('tel:$phoneNumber');
+    if (await canLaunchUrl(phoneCallUrl)) {
+      await launch(phoneCallUrl.toString());
+    } else {
+      throw 'Could not launch $phoneCallUrl';
+    }
   }
-}
 
-void _launchEmail(String emailAddress) async {
-  final emailLaunchUri = Uri.parse('mailto:$emailAddress');
-  if (await canLaunchUrl(emailLaunchUri)) {
-    await launch(emailLaunchUri.toString());
-  } else {
-    throw 'Could not launch $emailLaunchUri';
+  void _launchEmail(String emailAddress) async {
+    final emailLaunchUri = Uri.parse('mailto:$emailAddress');
+    if (await canLaunchUrl(emailLaunchUri)) {
+      await launch(emailLaunchUri.toString());
+    } else {
+      throw 'Could not launch $emailLaunchUri';
+    }
   }
-}
-
 }

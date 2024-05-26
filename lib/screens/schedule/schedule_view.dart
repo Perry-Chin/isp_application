@@ -7,13 +7,13 @@ import 'schedule_requester.dart'; // Ensure this imports the correct file
 // import 'package:get/get_utils/get_utils.dart';
 // import 'schedule_index.dart';
 
-
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
 
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp( // Use GetMaterialApp instead of MaterialApp for GetX integration
+    return const GetMaterialApp(
+      // Use GetMaterialApp instead of MaterialApp for GetX integration
       debugShowCheckedModeBanner: false,
       home: SchedulePage(),
     );
@@ -34,7 +34,10 @@ class _SchedulePageState extends State<SchedulePage> {
   Future<void> _navigateAndDisplayFilter(BuildContext context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Filter(selectedFilters: selectedFilters, selectedRating: selectedRating)),
+      MaterialPageRoute(
+          builder: (context) => Filter(
+              selectedFilters: selectedFilters,
+              selectedRating: selectedRating)),
     );
 
     if (result != null && result is Map<String, List<String>>) {
@@ -51,7 +54,8 @@ class _SchedulePageState extends State<SchedulePage> {
       appBar: AppBar(
         title: const Text(
           'Schedule',
-          style: TextStyle(color: Colors.black, fontSize: 28, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Colors.black, fontSize: 28, fontWeight: FontWeight.bold),
         ),
         toolbarHeight: 70,
         elevation: 0,
@@ -103,8 +107,14 @@ class _SchedulePageState extends State<SchedulePage> {
               Expanded(
                 child: TabBarView(
                   children: [
-                    ProviderCard(selectedStatus: selectedFilters, selectedRating: selectedRating,),
-                    RequesterCard(selectedStatus: selectedFilters, selectedRating: selectedRating,),
+                    ProviderCard(
+                      selectedStatus: selectedFilters,
+                      selectedRating: selectedRating,
+                    ),
+                    RequesterCard(
+                      selectedStatus: selectedFilters,
+                      selectedRating: selectedRating,
+                    ),
                   ],
                 ),
               ),
@@ -119,7 +129,9 @@ class _SchedulePageState extends State<SchedulePage> {
 class Filter extends StatefulWidget {
   final List<String> selectedFilters;
   final List<String> selectedRating;
-  const Filter({Key? key, required this.selectedFilters, required this.selectedRating}) : super(key: key);
+  const Filter(
+      {Key? key, required this.selectedFilters, required this.selectedRating})
+      : super(key: key);
 
   @override
   _FilterState createState() => _FilterState();
@@ -206,7 +218,8 @@ class _FilterState extends State<Filter> {
         leading: IconButton(
           icon: const Icon(Icons.close, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context, {'status': selectedStatus, 'rating': selectedRating});
+            Navigator.pop(
+                context, {'status': selectedStatus, 'rating': selectedRating});
           },
         ),
       ),
@@ -264,7 +277,8 @@ class _FilterState extends State<Filter> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context, {'status': selectedStatus, 'rating': selectedRating});
+                Navigator.pop(context,
+                    {'status': selectedStatus, 'rating': selectedRating});
               },
               child: const Text('Apply Filter'),
             ),
@@ -336,7 +350,9 @@ class _FilterState extends State<Filter> {
                 width: 20,
                 height: 20,
                 decoration: BoxDecoration(
-                  color: selectedRating.contains(rating) ? Colors.yellow : Colors.white,
+                  color: selectedRating.contains(rating)
+                      ? Colors.yellow
+                      : Colors.white,
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.black),
                 ),
@@ -361,13 +377,11 @@ class _FilterState extends State<Filter> {
   }
 }
 
-
 extension StringExtension on String {
   String capitalize() {
     return "${this[0].toUpperCase()}${substring(1)}";
   }
 }
-
 
 class RatedStar extends StatelessWidget {
   final double rating;
@@ -384,11 +398,14 @@ class RatedStar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5), // Match the padding
+      padding: const EdgeInsets.symmetric(
+          horizontal: 5, vertical: 5), // Match the padding
       decoration: BoxDecoration(
         color: Colors.white, // Set background color to white
         borderRadius: BorderRadius.circular(20), // Adjust the border radius
-        border: Border.all(color: AppColor.secondaryColor), // Use your AppColor.secondaryColor here
+        border: Border.all(
+            color: AppColor
+                .secondaryColor), // Use your AppColor.secondaryColor here
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

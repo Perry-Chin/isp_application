@@ -4,6 +4,7 @@ import 'settings_index.dart';
 import '../welcome/welcome_index.dart';
 import '../../common/values/values.dart';
 import 'settings_ContactPage.dart';
+import 'settings_logout.dart';
 
 class SettingsPage extends GetView<SettingsController> {
   const SettingsPage({super.key});
@@ -69,7 +70,7 @@ class SetSettingsPage extends StatelessWidget {
           height: 75,
           child: InkWell(
             onTap: () {
-             Navigator.push(
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => ContactPage(),
@@ -124,13 +125,10 @@ class SetSettingsPage extends StatelessWidget {
         SizedBox(
           height: 75,
           child: InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const WelcomePage(),
-                ),
-              );
+            onTap: () async {
+              await AuthService.logout(); // Call the logout method
+              Get.offAll(() =>
+                  const WelcomePage()); // Navigate to WelcomePage and remove all previous routes
             },
             child: Container(
               margin: EdgeInsets.all(8.0),

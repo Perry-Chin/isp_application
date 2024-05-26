@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'settings_index.dart';
 import '../welcome/welcome_index.dart';
 import '../../common/values/values.dart';
+import 'settings_ContactPage.dart';
 
 class SettingsPage extends GetView<SettingsController> {
   const SettingsPage({super.key});
@@ -68,8 +69,12 @@ class SetSettingsPage extends StatelessWidget {
           height: 75,
           child: InkWell(
             onTap: () {
-              // Handle the tap event for the blue box
-              print("box2 tapped");
+             Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ContactPage(),
+                ),
+              );
             },
             child: Container(
               margin: EdgeInsets.all(8.0),

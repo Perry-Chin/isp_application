@@ -3,15 +3,17 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../common/values/values.dart';
 import '../../../common/values/color.dart';
 
-class ContactPage extends StatelessWidget {
+class ContactPage extends StatefulWidget {
+  @override
+  _ContactPageState createState() => _ContactPageState();
+}
+
+class _ContactPageState extends State<ContactPage> {
   final String phoneNumber =
       '8768 9011'; // Replace with the actual phone number
   final String emailAddress =
       'furfriends23@gmail.com'; // Replace with the actual email address
-
   String selectedFeedbackOption = "General Feedback";
-
-  ContactPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,7 @@ class ContactPage extends StatelessWidget {
   void _launchPhoneCall(String phoneNumber) async {
     final phoneCallUrl = Uri.parse('tel:$phoneNumber');
     if (await canLaunchUrl(phoneCallUrl)) {
-      await launch(phoneCallUrl.toString());
+      await launchUrl(phoneCallUrl);
     } else {
       throw 'Could not launch $phoneCallUrl';
     }
@@ -70,7 +72,7 @@ class ContactPage extends StatelessWidget {
   void _launchEmail(String emailAddress) async {
     final emailLaunchUri = Uri.parse('mailto:$emailAddress');
     if (await canLaunchUrl(emailLaunchUri)) {
-      await launch(emailLaunchUri.toString());
+      await launchUrl(emailLaunchUri);
     } else {
       throw 'Could not launch $emailLaunchUri';
     }

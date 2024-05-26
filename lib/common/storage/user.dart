@@ -43,7 +43,7 @@ class UserStore extends GetxController {
     await prefs.remove(token_key);
     await prefs.remove(profile_key);
     token = '';
-    _isLogin.value = false; 
+    _isLogin.value = false;
     _profile(UserLoginResponseEntity());
     update(); // Notify all widgets listening to this controller
   }

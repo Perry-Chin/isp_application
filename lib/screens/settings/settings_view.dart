@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'settings_index.dart';
 import '../welcome/welcome_index.dart';
 import '../../common/values/values.dart';
-import 'settings_ContactPage.dart';
+import 'settings_contactpage.dart';
 import 'settings_logout.dart';
 
 class SettingsPage extends GetView<SettingsController> {

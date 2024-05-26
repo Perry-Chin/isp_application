@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -8,8 +9,7 @@ import '../../common/widgets/widgets.dart';
 import 'detail_index.dart';
 
 class DetailPage extends GetView<DetailController> {
-  DetailPage({super.key});
-  final imageController = TextEditingController();
+  const DetailPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class DetailPage extends GetView<DetailController> {
   Widget content(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
-         crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Stack(
             children: [
@@ -225,6 +225,68 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
+  Widget detail(ServiceData serviceData) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                alignment: Alignment.topCenter,
+                height: 120,
+                width: 40,
+                child: const Icon(Icons.date_range),
+              ),
+              const SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    serviceData.date ?? "Description",
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    serviceData.time ?? "Description",
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    "Unavailable at this time?",
+                    style: TextStyle(fontSize: 15, color: Color(0xFFCE761D)),
+                  ),
+                  const SizedBox(height: 8),
+                  proposeNewTimeButton(),
+                ],
+              ),
+            ],
+          ),
+          const Divider(
+            thickness: 2,
+            color: Colors.black12,
+            height: 35,
+          ),
+          Row(
+            children: [
+              Container(
+                alignment: Alignment.topCenter,
+                height: 25,
+                width: 40,
+                child: const Icon(Icons.location_on),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                serviceData.location ?? "Description",
+                style: const TextStyle(fontSize: 15),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget serviceDescription(String? description) {
     return Padding(
       padding: const EdgeInsets.only(left: 16, top: 10, right: 16),
@@ -316,7 +378,7 @@ class DetailPage extends GetView<DetailController> {
       ],
     );
   }
-
+  
   Widget feeInfo(UserData? userData) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -433,10 +495,11 @@ class DetailPage extends GetView<DetailController> {
           Expanded(
             flex: 6,
             child: ApplyButton(
-                // button.dart
-                onPressed: () {},
-                buttonText: "Apply Now",
-                buttonWidth: 100),
+              // button.dart
+              onPressed: () {},
+              buttonText: "Apply Now",
+              buttonWidth: 100
+            ),
           ),
         ],
       ),
@@ -524,68 +587,6 @@ class DetailPage extends GetView<DetailController> {
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget detail(ServiceData serviceData) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                alignment: Alignment.topCenter,
-                height: 120,
-                width: 40,
-                child: const Icon(Icons.date_range),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    serviceData.date ?? "Description",
-                    style: const TextStyle(fontSize: 15),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    serviceData.time ?? "Description",
-                    style: const TextStyle(fontSize: 15),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    "Unavailable at this time?",
-                    style: TextStyle(fontSize: 15, color: Color(0xFFCE761D)),
-                  ),
-                  const SizedBox(height: 8),
-                  proposeNewTimeButton(),
-                ],
-              ),
-            ],
-          ),
-          const Divider(
-            thickness: 2,
-            color: Colors.black12,
-            height: 35,
-          ),
-          Row(
-            children: [
-              Container(
-                alignment: Alignment.topCenter,
-                height: 25,
-                width: 40,
-                child: const Icon(Icons.location_on),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                serviceData.location ?? "Description",
-                style: const TextStyle(fontSize: 15),
-              ),
-            ],
           ),
         ],
       ),

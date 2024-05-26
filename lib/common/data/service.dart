@@ -1,30 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:isp_application/common/data/data.dart';
 
-import 'data.dart';
-
-//Service information
 class ServiceData {
-  //Service details
   final String? serviceid;
   final String? serviceName;
   final String? description;
   final int? rate;
   final String? image;
-  //Service personal info
   final String? location;
   final String? date;
   final String? time;
   final int? duration;
-  //Service info
   final String? status;
-  //Personal information of requester
   final String? reqUserid;
-  //Personal information of provider
   final String? provUserid;
-  // Associated user data
   UserData? userData;
 
-  //Constructor
   ServiceData({
     this.serviceid,
     this.serviceName,
@@ -41,11 +32,10 @@ class ServiceData {
     this.userData,
   });
 
-  // Create ServiceData object from Firestore document snapshot
   factory ServiceData.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> snapshot,
-      SnapshotOptions? options,
-      ) {
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
     final data = snapshot.data();
     return ServiceData(
       serviceid: data?['service_id'],
@@ -60,14 +50,10 @@ class ServiceData {
       status: data?['status'],
       reqUserid: data?['requester_uid'],
       provUserid: data?['provider_uid'],
-       // Retrieve userData from the map directly
-      userData: data!['userData'] != null ? UserData.fromFirestore(snapshot, options) : null,
+      userData: data?['userData'] != null ? UserData.fromFirestore(snapshot, options) : null,
     );
   }
 
-  get rating => null;
-
-  // Convert ServiceData object to Firestore document data
   Map<String, dynamic> toFirestore() {
     return {
       if (serviceid != null) "service_id": serviceid,
@@ -82,7 +68,7 @@ class ServiceData {
       if (status != null) "status": status,
       if (reqUserid != null) "requester_uid": reqUserid,
       if (provUserid != null) "provider_uid": provUserid,
-      'userData': userData?.toFirestore(), 
+      'userData': userData?.toFirestore(),
     };
   }
 }

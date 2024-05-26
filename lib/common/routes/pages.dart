@@ -57,7 +57,7 @@ class AppPages {
     //Detail Page
     GetPage(
       name: AppRoutes.detail,
-      page: () => DetailPage(),
+      page: () => const DetailPage(),
       binding: DetailBinding()
     ),
   ];

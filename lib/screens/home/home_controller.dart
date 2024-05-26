@@ -23,7 +23,7 @@ class HomeController extends GetxController {
 
   //The pull_to_refresh dependency requires this 2 functions to work
   void onRefresh() {
-    asyncLoadAllData(initialLoad: false, applyFilter: true).then((_){
+    asyncLoadAllData().then((_){
       refreshController.refreshCompleted(resetFooterState: true);
     }).catchError((_){
       refreshController.refreshFailed();
@@ -31,7 +31,7 @@ class HomeController extends GetxController {
   }
 
   void onLoading() {
-    asyncLoadAllData(initialLoad: false, applyFilter: true).then((_){
+    asyncLoadAllData().then((_){
       refreshController.loadComplete();
     }).catchError((_){
       refreshController.loadFailed();
@@ -105,13 +105,13 @@ class HomeController extends GetxController {
 
   // Stream to handle data fetching
   Stream<Map<String, UserData?>> get combinedStream async* {
-    await asyncLoadAllData(initialLoad: true, applyFilter: false);
+    await asyncLoadAllData();
     yield* getCombinedStream(token);
   }
   
   // This is required due to Firestore limitation 
   // You can't use orderBy on a field that is used in a where clause
-  Future<void> asyncLoadAllData({required initialLoad, required applyFilter}) async {
+  Future<void> asyncLoadAllData() async {
     try {
       // Add a delay of 1 second
       await Future.delayed(const Duration(seconds: 1));
@@ -135,12 +135,7 @@ class HomeController extends GetxController {
       state.serviceList.assignAll(documents);
 
       // Apply the filter only if the applyFilter flag is true
-      if (initialLoad) {
-        filterServiceList(searchController.text);
-      }
-      if (!initialLoad && applyFilter) {
-        filterServiceList(searchController.text);
-      }
+      filterServiceList(searchController.text);
     }
     catch(e) {
       print("Error fetching: $e");

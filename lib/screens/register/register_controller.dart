@@ -7,31 +7,34 @@ import '../login/login_index.dart';
 
 class RegisterController extends GetxController {
   RegisterController();
-  
+
   final usernameController = TextEditingController();
   final phoneNoController = TextEditingController();
   final emailController = TextEditingController();
   final pwdController = TextEditingController();
   final confirmpwdController = TextEditingController();
-  
 
   Future<void> handleRegister(BuildContext context) async {
-     // Show loading dialog
+    // Show loading dialog
     showDialog(
       context: context,
       builder: (context) => const Center(
         child: CircularProgressIndicator(),
       ),
     );
-    
+
     try {
       // Check if email and password fields are not empty
-      if (emailController.text.isEmpty || usernameController.text.isEmpty || phoneNoController.text.isEmpty || pwdController.text.isEmpty) {
+      if (emailController.text.isEmpty ||
+          usernameController.text.isEmpty ||
+          phoneNoController.text.isEmpty ||
+          pwdController.text.isEmpty) {
         throw 'Please fill in all fields';
       }
 
       // Check for valid email
-      if (!RegExp(r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+').hasMatch(emailController.text)) {
+      if (!RegExp(r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+')
+          .hasMatch(emailController.text)) {
         throw 'Please enter a valid email';
       }
 
@@ -41,11 +44,10 @@ class RegisterController extends GetxController {
       }
 
       // Create the user
-      UserCredential? userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text, 
-        password: pwdController.text
-      );
-      
+      UserCredential? userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: emailController.text, password: pwdController.text);
+
       // Create user document and add to Firestore
       await createUserDocument(userCredential);
 
@@ -54,12 +56,11 @@ class RegisterController extends GetxController {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => LoginPage(),
+            builder: (context) => const LoginPage(),
           ),
         );
       }
-    } 
-    catch (error) {
+    } catch (error) {
       // Dismiss loading dialog
       Navigator.pop(context);
 
@@ -81,7 +82,7 @@ class RegisterController extends GetxController {
       );
     }
   }
-  
+
   // Create user document
   Future<void> createUserDocument(UserCredential userCredential) async {
     String uid = userCredential.user!.uid;

@@ -9,6 +9,9 @@ import 'common/storage/storage.dart';
 
 Future<void> main() async {
 
+  // Initialize the PageController
+  Get.put(PageController());
+  
   // Ensuring Flutter widgets are initialized.
   WidgetsFlutterBinding.ensureInitialized();
 

@@ -3,11 +3,12 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../common/values/values.dart';
+import '../settingsx/settingsx_index.dart';
 import 'profile_index.dart';
-import '../settings/settings_index.dart';
 import '../editProfile/edit_profile_index.dart'; // Import the edit profile module
 
 class ProfilePage extends GetView<ProfileController> {
+  
   const ProfilePage({Key? key}) : super(key: key);
 
   AppBar _buildAppBar() {
@@ -23,17 +24,11 @@ class ProfilePage extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: const UserProfilePage(),
+      body: profileView(context),
     );
   }
-}
 
-class UserProfilePage extends StatelessWidget {
-  const UserProfilePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = Get.find<ProfileController>();
+  Widget profileView(BuildContext context) {
 
     return NestedScrollView(
       headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -80,12 +75,12 @@ class UserProfilePage extends StatelessWidget {
                       IconButton(
                         icon: const Icon(Icons.settings),
                         onPressed: () {
+                          // Navigate to the login screen
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const SettingsPage(),
-                            ),
-                          );
+                              builder: (context) => SettingsxPage(),
+                          ));
                         },
                       ),
                       IconButton(

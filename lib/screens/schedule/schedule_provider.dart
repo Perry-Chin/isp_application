@@ -29,16 +29,16 @@ class ProviderCard extends GetView<ScheduleController> {
     // Check if the item matches the selected filters
     if (!selectedStatus.contains('all') &&
         !selectedStatus.contains(item.data().status?.toLowerCase())) {
-      return SizedBox(); // Return an empty SizedBox if status doesn't match
+      return const SizedBox(); // Return an empty SizedBox if status doesn't match
     }
 
     if (!selectedRating.contains('all')) {
       // Filter based on rating
       final rating = requesterData?.rating ?? 0;
       if (selectedRating.contains('1 - 3') && rating > 3) {
-        return SizedBox(); // Return an empty SizedBox if rating doesn't match
+        return const SizedBox(); // Return an empty SizedBox if rating doesn't match
       } else if (selectedRating.contains('3 - 5') && rating < 3) {
-        return SizedBox(); // Return an empty SizedBox if rating doesn't match
+        return const SizedBox(); // Return an empty SizedBox if rating doesn't match
       }
     }
 
@@ -88,11 +88,11 @@ class ProviderCard extends GetView<ScheduleController> {
                         const SizedBox(width: 6),
                         RatedStar(rating: requesterData?.rating ?? 0, starColor: Colors.yellow),
                     ],),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Row(
                       children: [
                         Text("${item.data().date?.toString() ?? " "},"),
-                        SizedBox(width: 3,),
+                        const SizedBox(width: 3,),
                         Text(item.data().time!),
                     ],)
                     

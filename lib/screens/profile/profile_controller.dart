@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+
 import '../../common/data/data.dart';
 import '../../common/storage/storage.dart';
 
 class ProfileController extends GetxController {
+  ProfileController();
   final token = UserStore.to.token;
   final db = FirebaseFirestore.instance;
   final user = Rx<UserData?>(null);

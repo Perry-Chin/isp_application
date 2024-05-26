@@ -1,43 +1,36 @@
-// ignore_for_file: avoid_print
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:rxdart/rxdart.dart';
-
 import '../../common/data/data.dart';
 import '../../common/storage/storage.dart';
 import 'home_index.dart';
 
 class HomeController extends GetxController {
   HomeController();
-  //Grab current login user token
-  final token = UserStore.to.token;
+
   final db = FirebaseFirestore.instance;
   final HomeState state = HomeState();
   TextEditingController searchController = TextEditingController();
-  final RefreshController refreshController = RefreshController (
-    initialRefresh: false
-  );
+  final RefreshController refreshController = RefreshController(initialRefresh: false);
 
-  //The pull_to_refresh dependency requires this 2 functions to work
+  // The pull_to_refresh dependency requires these functions to work
   void onRefresh() {
-    asyncLoadAllData().then((_){
+    asyncLoadAllData().then((_) {
       refreshController.refreshCompleted(resetFooterState: true);
-    }).catchError((_){
+    }).catchError((_) {
       refreshController.refreshFailed();
     });
   }
 
   void onLoading() {
-    asyncLoadAllData().then((_){
+    asyncLoadAllData().then((_) {
       refreshController.loadComplete();
-    }).catchError((_){
+    }).catchError((_) {
       refreshController.loadFailed();
     });
   }
-  //
 
   /// Search filter logic
   void filterServiceList(String username) {
@@ -60,30 +53,30 @@ class HomeController extends GetxController {
   // Stream to handle fetching service data
   Stream<List<QueryDocumentSnapshot<ServiceData>>> getServiceStream(String token) {
     return FirebaseFirestore.instance
-      .collection('service')
-      .where('requester_uid', isNotEqualTo: token)
-      .where('status', isEqualTo: 'Requested')
-      .withConverter<ServiceData>(
-        fromFirestore: ServiceData.fromFirestore,
-        toFirestore: (ServiceData serviceData, _) => serviceData.toFirestore(),
-      )
-      .snapshots()
-      .map((snapshot) => snapshot.docs);
+        .collection('service')
+        .where('requester_uid', isNotEqualTo: token)
+        .where('status', isEqualTo: 'Requested')
+        .withConverter<ServiceData>(
+          fromFirestore: ServiceData.fromFirestore,
+          toFirestore: (ServiceData serviceData, _) => serviceData.toFirestore(),
+        )
+        .snapshots()
+        .map((snapshot) => snapshot.docs);
   }
 
   // Stream to handle fetching user data
   Stream<List<DocumentSnapshot<UserData>>> getUserStream(List<String> userIds) {
     return FirebaseFirestore.instance
-      .collection('users')
-      .where(FieldPath.documentId, whereIn: userIds)
-      .withConverter<UserData>(
-        fromFirestore: UserData.fromFirestore,
-        toFirestore: (UserData userData, _) => userData.toFirestore(),
-      )
-      .snapshots()
-      .map((snapshot) {
-        return snapshot.docs;
-      });
+        .collection('users')
+        .where(FieldPath.documentId, whereIn: userIds)
+        .withConverter<UserData>(
+          fromFirestore: UserData.fromFirestore,
+          toFirestore: (UserData userData, _) => userData.toFirestore(),
+        )
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs;
+        });
   }
 
   // Combine the streams to get user data for each service item
@@ -106,22 +99,32 @@ class HomeController extends GetxController {
   // Stream to handle data fetching
   Stream<Map<String, UserData?>> get combinedStream async* {
     await asyncLoadAllData();
-    yield* getCombinedStream(token);
+    yield* getCombinedStream(UserStore.to.token);
   }
-  
-  // This is required due to Firestore limitation 
-  // You can't use orderBy on a field that is used in a where clause
+
+  @override
+  void onInit() {
+    super.onInit();
+    asyncLoadAllData();
+    // Listen to token changes and refresh data accordingly
+    ever(UserStore.to.obs, (_) {
+      asyncLoadAllData();
+    });
+  }
+
   Future<void> asyncLoadAllData() async {
     try {
+      String token = UserStore.to.token;
+      
       // Add a delay of 1 second
       await Future.delayed(const Duration(seconds: 1));
 
       var reqServices = await db.collection("service").withConverter(
-      fromFirestore: ServiceData.fromFirestore, 
-      toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore()
-      ).where("requester_uid", isNotEqualTo: token)  // Make sure the field matches the orderBy field
-      .where("status", isEqualTo: "Requested").get();
-      
+          fromFirestore: ServiceData.fromFirestore,
+          toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore())
+          .where("requester_uid", isNotEqualTo: token)  // Make sure the field matches the orderBy field
+          .where("status", isEqualTo: "Requested").get();
+
       List<QueryDocumentSnapshot<ServiceData>> documents = reqServices.docs;
 
       // Sort the documents based on date and time
@@ -136,8 +139,7 @@ class HomeController extends GetxController {
 
       // Apply the filter only if the applyFilter flag is true
       filterServiceList(searchController.text);
-    }
-    catch(e) {
+    } catch (e) {
       print("Error fetching: $e");
     }
   }

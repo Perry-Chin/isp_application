@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+
 import '../login/login_index.dart';
 import 'register_index.dart';
 

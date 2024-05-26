@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../common/values/values.dart';
-import '../../common/values/color.dart';
+import '../../../common/values/values.dart';
+import '../../../common/values/color.dart';
 
 class ContactPage extends StatelessWidget {
   final String phoneNumber =

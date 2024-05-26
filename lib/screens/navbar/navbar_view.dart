@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:isp_application/common/values/color.dart';
 
-import '../../common/storage/storage.dart';
 import '../home/home_index.dart';
+import '../message/message_index.dart';
 import '../profile/profile_index.dart';
 import '../request/request_index.dart';
 import 'navbar_index.dart';
 import '../schedule/schedule_index.dart';
 
 class NavbarPage extends GetView<NavbarController> {
-  NavbarPage({super.key});
-  final token = UserStore.to.token;
+  const NavbarPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +23,7 @@ class NavbarPage extends GetView<NavbarController> {
         children: const [
           HomePage(),
           SchedulePage(),
-          Center(child: Text("Message Page")),
+          MessagePage(),
           ProfilePage(),
         ],
       );

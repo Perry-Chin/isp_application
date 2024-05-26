@@ -19,6 +19,7 @@ class RouteWelcomeMiddleware extends GetMiddleware {
 
   @override
   RouteSettings? redirect(String? route) {
+    print("redirect");
     print(ConfigStore.to.isFirstOpen); //Debugging
     // If it's not the first app open, no redirection needed.
     if (ConfigStore.to.isFirstOpen == false) {
@@ -26,10 +27,12 @@ class RouteWelcomeMiddleware extends GetMiddleware {
     } 
     // If user is logged in and it's the first app open, redirect to navbar
     else if (UserStore.to.isLogin == true) {
+      print("redirect to navbar");
       return const RouteSettings(name: AppRoutes.navbar);
     } 
     // If user is not logged in and it's the first app open, redirect to login
     else {
+      print("redirect to login");
       return const RouteSettings(name: AppRoutes.login);
     }
   }

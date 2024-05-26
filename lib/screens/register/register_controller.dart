@@ -54,7 +54,7 @@ class RegisterController extends GetxController {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const LoginPage(),
+            builder: (context) => LoginPage(),
           ),
         );
       }

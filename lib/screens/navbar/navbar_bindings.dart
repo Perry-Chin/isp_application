@@ -1,10 +1,11 @@
 import 'package:get/get.dart';
+
+import 'navbar_index.dart';
 import '../home/home_index.dart';
+import '../message/message_index.dart';
 import '../profile/profile_index.dart';
 import '../request/request_index.dart';
-import 'navbar_index.dart';
 import '../schedule/schedule_index.dart';
-import '../welcome/welcome_index.dart';
 
 class NavbarBinding implements Bindings {
   @override
@@ -15,6 +16,6 @@ class NavbarBinding implements Bindings {
     Get.lazyPut<ScheduleController>(() => ScheduleController());
     Get.lazyPut<RequestController>(() => RequestController());
     Get.lazyPut<ProfileController>(() => ProfileController());
-    Get.lazyPut<WelcomeController>(() => WelcomeController());
+    Get.lazyPut<MessageController>(() => MessageController());
   }
 }

@@ -5,12 +5,14 @@ import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:get/get.dart';
 
 import '../../common/data/data.dart';
+import '../../common/storage/storage.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'home_index.dart';
 
 class HomeList extends GetView<HomeController> {
-  const HomeList({super.key});
+  final token = UserStore.to.token;
+  HomeList({super.key});
   
   Widget homeListItem(QueryDocumentSnapshot<ServiceData> serviceItem, UserData? userData) {
     return Card(
@@ -21,7 +23,7 @@ class HomeList extends GetView<HomeController> {
         onTap: () {
           // Handle on tap
           var reqUserid = "";
-          if(serviceItem.data().reqUserid == controller.token) {
+          if(serviceItem.data().reqUserid == token) {
             reqUserid = serviceItem.data().reqUserid ?? "";
           }
           else {

@@ -1,21 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
-import '../../screens/detail/detail_index.dart';
-import '../../screens/settings/settings_index.dart';
 import 'routes.dart';
 import '../middlewares/middlewares.dart';
+import '../../screens/detail/detail_index.dart';
+import '../../screens/message/message_index.dart';
 import '../../screens/login/login_index.dart';
 import '../../screens/register/register_index.dart';
 import '../../screens/navbar/navbar_index.dart';
 import '../../screens/welcome/welcome_index.dart';
+import '../../screens/settingsx/settingsx_index.dart';
 
 //Basic structure for managing routes using the GetX package
 class AppPages {
   static const initial = AppRoutes.welcome;
-  static const navbar = AppRoutes.navbar;
-  static final RouteObserver<Route> observer =
-  RouteObservers(); //Observers.dart
+  static final RouteObserver<Route> observer = RouteObservers(); //Observers.dart
   static List<String> history = [];
 
   static final List<GetPage> routes = [
@@ -33,13 +32,13 @@ class AppPages {
     //Navbar Page
     GetPage(
       name: AppRoutes.navbar,
-      page: () => NavbarPage(),
+      page: () => NavbarPage(), // Pass pageController here
       binding: NavbarBinding()
     ),
     //Login Page
     GetPage(
       name: AppRoutes.login,
-      page: () => const LoginPage(),
+      page: () => LoginPage(),
       binding: LoginBinding()
     ),
     //Register Page
@@ -48,17 +47,23 @@ class AppPages {
       page: () => const RegisterPage(),
       binding: RegisterBinding()
     ),
-    //Settings Page
+    //Setting Page
     GetPage(
-      name: AppRoutes.settings,
-      page: () => const SettingsPage(),
-      binding: SettingsBinding()
+      name: AppRoutes.settingsx,
+      page: () => SettingsxPage(),
+      binding: SettingsxBinding()
     ),
     //Detail Page
     GetPage(
       name: AppRoutes.detail,
       page: () => const DetailPage(),
       binding: DetailBinding()
+    ),
+    //Message Page
+    GetPage(
+      name: AppRoutes.message,
+      page: () => const MessagePage(),
+      binding: MessageBinding()
     ),
   ];
 }

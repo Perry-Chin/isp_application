@@ -102,7 +102,7 @@ class RegisterPage extends GetView<RegisterController> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
+                            builder: (context) => LoginPage(),
                         ));
                       },
                       child: const Text(

@@ -4,8 +4,6 @@ import 'navbar_index.dart';
 
 class NavbarController extends GetxController {
   final state = NavbarState();
-  NavbarController();
-
   late final PageController pageController;
 
   void handlePageChanged(int index) {
@@ -19,12 +17,12 @@ class NavbarController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    pageController = PageController(initialPage: state.page);
+    // pageController = PageController(initialPage: state.page);
   }
 
   @override
-  void dispose() {
+  void onClose() {
     pageController.dispose();
-    super.dispose();
+    super.onClose();
   }
 }

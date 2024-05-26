@@ -5,6 +5,7 @@ import '../../common/values/values.dart';
 import 'home_index.dart';
 
 class HomePage extends GetView<HomeController> {
+
   const HomePage({super.key});
 
   AppBar _buildAppBar() {
@@ -74,20 +75,19 @@ class HomePage extends GetView<HomeController> {
       resizeToAvoidBottomInset: false,
       appBar: _buildAppBar(),
       body: Container(
-        // color: Colors.amber,
         height: 900,
         padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
         child: Column(
-            children: [
-              searchBar(),
-              const SizedBox(height: 10),
-              const SizedBox(
-                height: 470,
-                child: HomeList(),
-              )
-            ],
-          )
-      )
+          children: [
+            searchBar(),
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 470,
+              child: HomeList(),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

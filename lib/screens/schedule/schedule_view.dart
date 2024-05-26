@@ -321,7 +321,7 @@ class _FilterState extends State<Filter> {
               ),
               const SizedBox(width: 10),
               Text(
-                "${status}",
+                status,
                 style: const TextStyle(fontSize: 16),
               ),
             ],
@@ -412,7 +412,7 @@ class RatedStar extends StatelessWidget {
         children: [
           Text(
             '$rating',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14, // Adjust the font size
               fontWeight: FontWeight.bold,
               color: Colors.black,

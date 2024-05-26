@@ -1,70 +1,66 @@
 import 'dart:convert';
 import 'package:get/get.dart';
-
+import 'package:isp_application/common/storage/storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../data/user.dart';
 import '../values/storage.dart';
-import 'service.dart'; 
 
-// UserStore class responsible for managing user-related data and authentication state
 class UserStore extends GetxController {
-  // Get instance of UserStore using GetX dependency injection
   static UserStore get to => Get.find();
 
-  // Observable boolean indicating whether the user is logged in
   final _isLogin = false.obs;
-
-  // User token
   String token = '';
-
-  // Observable representing user profile
   final _profile = UserLoginResponseEntity().obs;
 
-  // Getter for checking if the user is logged in
   bool get isLogin => _isLogin.value;
-
-  // Getter for accessing user profile
   UserLoginResponseEntity get profile => _profile.value;
-
-  // Getter for checking if user has a token
   bool get hasToken => token.isNotEmpty;
 
   @override
   void onInit() {
     super.onInit();
-    // Get token from storage during initialization
-    token = StorageService.to.getString(token_key);
-    // Get profile from storage if available
+    token = StorageService.to.getString(token_key) ?? '';
     var profileOffline = StorageService.to.getString(profile_key);
     if (profileOffline.isNotEmpty) {
-      _isLogin.value = true; // Set login status to true
-      _profile(UserLoginResponseEntity.fromJson(jsonDecode(profileOffline))); // Set user profile
+      _isLogin.value = true;
+      _profile(UserLoginResponseEntity.fromJson(jsonDecode(profileOffline)));
     }
   }
 
-  // Method to save token in storage
-  Future<void> setToken(String value) async {
-    await StorageService.to.setString(token_key, value);
+  Future<void> setToken(String? value) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (value != null) {
+      await prefs.setString(token_key, value);
+    } else {
+      await prefs.remove(token_key);
+    }
+    token = value ?? ''; // Update the token in memory
+    update();
   }
 
-  // Method to get profile from storage
-  Future<String> getProfile() async {
-    if (token.isEmpty) return ""; // Return empty string if token is empty
-    return StorageService.to.getString(profile_key);
-  }
-
-  // Method to save profile in storage
-  Future<void> saveProfile(UserLoginResponseEntity profile) async {
-    _isLogin.value = true; // Set login status to true
-    StorageService.to.setString(profile_key, jsonEncode(profile)); // Save profile in storage
-    setToken(profile.accessToken!); // Save token
-  }
-
-  // Method to logout user
   Future<void> onLogout() async {
-    // Remove token and profile from storage
-    await StorageService.to.remove(token_key);
-    await StorageService.to.remove(profile_key);
-    _isLogin.value = false; // Set login status to false
-    token = ''; // Clear token
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(token_key);
+    await prefs.remove(profile_key);
+    token = '';
+    _isLogin.value = false; 
+    _profile(UserLoginResponseEntity());
+    update(); // Notify all widgets listening to this controller
+  }
+
+  Future<void> saveProfile(UserLoginResponseEntity profile) async {
+    _isLogin.value = true;
+    _profile(profile);
+    await StorageService.to.setString(profile_key, jsonEncode(profile));
+    await setToken(profile.accessToken!);
+  }
+
+  void reloadUserState() {
+    var profileOffline = StorageService.to.getString(profile_key);
+    if (profileOffline.isNotEmpty) {
+      _profile(UserLoginResponseEntity.fromJson(jsonDecode(profileOffline)));
+    }
+    _isLogin.value = StorageService.to.getString(token_key).isNotEmpty;
+    update(); // Notify all widgets listening to this controller
   }
 }

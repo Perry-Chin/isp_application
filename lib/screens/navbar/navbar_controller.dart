@@ -17,7 +17,7 @@ class NavbarController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // pageController = PageController(initialPage: state.page);
+    pageController = PageController(initialPage: state.page);
   }
 
   @override

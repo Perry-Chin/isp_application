@@ -1,60 +1,98 @@
 //Navbar View
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:isp_application/screens/home/home_index.dart';
-import 'package:isp_application/screens/message/message_index.dart';
-import 'package:isp_application/screens/profile/profile_index.dart';
-import 'package:isp_application/screens/schedule/schedule_index.dart';
+import 'package:isp_application/common/values/color.dart';
 
-import '../../common/values/values.dart';
+import '../home/home_index.dart';
+import '../message/message_index.dart';
+import '../profile/profile_index.dart';
+import '../request/request_index.dart';
 import 'navbar_index.dart';
+import '../schedule/schedule_index.dart';
 
 class NavbarPage extends GetView<NavbarController> {
   const NavbarPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Widget buildPageView() {
+      return PageView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: controller.pageController,
+        onPageChanged: controller.handlePageChanged,
+        children: const [
+          HomePage(),
+          SchedulePage(),
+          MessagePage(),
+          ProfilePage(),
+        ],
+      );
+    }
 
-    return GetBuilder<NavbarController>(
-      builder: (controller) {
-        return Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: Padding(
-            padding: const EdgeInsets.all(0.0),
-            child: IndexedStack(
-              index: controller.tabIndex,
-              children: const [
-                HomePage(),
-                SchedulePage(),
-                MessagePage(),
-                ProfilePage()
-              ],
-            )
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            unselectedItemColor: Colors.black45,
-            selectedItemColor: AppColor.secondaryColor,
-            onTap: controller.changeTabIndex,
-            currentIndex: controller.tabIndex,
-            showUnselectedLabels: false,
-            showSelectedLabels: false,
-            type: BottomNavigationBarType.fixed,
-            items: [
-              _bottomNavigationBarItem(Icons.home, 'Home'),
-              _bottomNavigationBarItem(Icons.calendar_month, 'Schedule'),
-              _bottomNavigationBarItem(Icons.message, 'Message'),
-              _bottomNavigationBarItem(Icons.person, 'Profile')
-            ],
-          ),
-        );
-      }
-    );
-  }
+    Widget buildBottomNavigationBar() { 
+      return BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        color: Colors.white,
+        notchMargin: 10.0,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              icon: Obx(() => Icon(
+                Icons.home,
+                color: controller.state.page == 0 ? AppColor.secondaryColor : Colors.black45,
+              )),
+              onPressed: () => controller.handleNavBarTap(0),
+            ),
+            IconButton(
+              icon: Obx(() => Icon(
+                Icons.calendar_month,
+                color: controller.state.page == 1 ? AppColor.secondaryColor : Colors.black45,
+              )),
+              onPressed: () => controller.handleNavBarTap(1),
+            ),
+            const SizedBox(width: 48.0), // Space for FAB
+            IconButton(
+              icon: Obx(() => Icon(
+                Icons.message,
+                color: controller.state.page == 2 ? AppColor.secondaryColor : Colors.black45,
+              )),
+              onPressed: () => controller.handleNavBarTap(2),
+            ),
+            IconButton(
+              icon: Obx(() => Icon(
+                Icons.person,
+                color: controller.state.page == 3 ? AppColor.secondaryColor : Colors.black45,
+              )),
+              onPressed: () => controller.handleNavBarTap(3),
+            ),
+          ],
+        ),
+      );
+    } 
 
-  _bottomNavigationBarItem(IconData icon, String label) {
-    return BottomNavigationBarItem(
-      icon: Icon(icon),
-      label: label
+    
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: buildPageView(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+        onPressed: () {
+          // Navigate to the login screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const RequestPage(),
+          ));
+        },
+        child: const Icon(
+          Icons.add,
+          color: Colors.black,
+        ),
+      ),
+      bottomNavigationBar: buildBottomNavigationBar(),
     );
   }
 }

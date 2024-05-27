@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import '../../common/values/values.dart';
 import 'settingsx_controller.dart';
+// import '../settings/contact/settings_contact_page.dart';
 
 class SettingsxPage extends GetView<SettingsxController> {
   SettingsxPage({super.key});
@@ -30,14 +31,14 @@ class SettingsxPage extends GetView<SettingsxController> {
           SizedBox(
             height: 75,
             child: InkWell(
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => ContactPage(),
-                //   ),
-                // );
-              },
+              // onTap: () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => ContactPage(),
+              //     ),
+              //   );
+              // },
               child: Container(
                 margin: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(

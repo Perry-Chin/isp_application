@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:isp_application/common/data/user.dart';
+import 'package:isp_application/common/data/user.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:get/get.dart';
 import '../../common/data/service.dart';
-import '../../common/data/user.dart';
-// import '../../common/values/values.dart';
+// import '../../common/data/user.dart';
+import '../../common/storage/user.dart';
+import '../../common/values/values.dart';
 import '../../common/values/color.dart';
 import '../../common/widgets/shimmer.dart';
 import 'schedule_index.dart';
@@ -15,8 +16,9 @@ import 'schedule_index.dart';
 class ProviderCard extends GetView<ScheduleController> {
  final List<String> selectedStatus;
   final List<String> selectedRating;
+  final token = UserStore.to.token;
 
-  const ProviderCard({
+   ProviderCard({
     Key? key,
     required this.selectedStatus,
     required this.selectedRating,
@@ -52,6 +54,21 @@ class ProviderCard extends GetView<ScheduleController> {
     return Card(
       elevation: 4, // Add elevation for a shadow effect
       margin: const EdgeInsets.all(16), // Add margin around the card
+       child: InkWell(
+        onTap: () {
+          // Handle on tap
+          var reqUserid = "";
+          if(item.data().reqUserid == token) {
+            reqUserid = item.data().reqUserid ?? "";
+          }
+          else {
+            reqUserid = item.data().reqUserid ?? "";
+          }
+          Get.toNamed("/detail", parameters: {
+            "doc_id": item.id,
+            "req_uid": reqUserid
+          });
+        },
       child: Container(
         decoration: BoxDecoration(border: Border(left: BorderSide(width: 10.0, color: statusColor))),
         padding: const EdgeInsets.all(16), // Add padding inside the card
@@ -152,6 +169,7 @@ class ProviderCard extends GetView<ScheduleController> {
           ],
         ),
       ),
+       ),
     );
   }
 

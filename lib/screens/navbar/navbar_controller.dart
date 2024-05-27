@@ -3,26 +3,10 @@ import 'package:get/get.dart';
 import 'navbar_index.dart';
 
 class NavbarController extends GetxController {
-  final state = NavbarState();
-  late final PageController pageController;
+  var tabIndex = 0;
 
-  void handlePageChanged(int index) {
-    state.page = index;
-  }
-
-  void handleNavBarTap(int index) {
-    pageController.jumpToPage(index);
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-    pageController = PageController(initialPage: state.page);
-  }
-
-  @override
-  void onClose() {
-    pageController.dispose();
-    super.onClose();
+  void changeTabIndex(int index) {
+    tabIndex = index;
+    update();
   }
 }

@@ -40,7 +40,7 @@ class LoginController extends GetxController {
       );
       await UserStore.to.saveProfile(userProfile);
 
-      Get.offAndToNamed(AppRoutes.navbar);
+      Get.offAllNamed(AppRoutes.navbar);
     } catch (error) {
       Navigator.pop(context);
 

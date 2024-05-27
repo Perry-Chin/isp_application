@@ -12,7 +12,6 @@ class SettingsxController extends GetxController {
   Future<void> onLogOut() async {
     await UserStore.to.onLogout();
     await FirebaseAuth.instance.signOut();
-    Get.offAndToNamed(AppRoutes.login);
+    Get.offAllNamed(AppRoutes.login);
   }
-  
 }

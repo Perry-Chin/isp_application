@@ -82,7 +82,7 @@ class HomePage extends GetView<HomeController> {
             searchBar(),
             const SizedBox(height: 10),
             SizedBox(
-              height: 470,
+              height: 460,
               child: HomeList(),
             ),
           ],

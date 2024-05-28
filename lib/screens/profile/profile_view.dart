@@ -49,8 +49,7 @@ class ProfilePage extends GetView<ProfileController> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color:
-                                  AppColor.secondaryColor, // Blue border color
+                              color: AppColor.secondaryColor, // Blue border color
                               width: 4.0, // Width of the border
                             ),
                           ),
@@ -58,7 +57,9 @@ class ProfilePage extends GetView<ProfileController> {
                             child: FadeInImage.assetNetwork(
                               placeholder:
                                   "assets/images/profile.png", // Placeholder image while loading
-                              image: photoUrl ?? "", // Image URL
+                              image: photoUrl?.isNotEmpty == true
+                                ? photoUrl!
+                                : "assets/images/profile.png",  // Image URL
                               fadeInDuration: const Duration(
                                   milliseconds: 500), // Fade-in duration
                               fit: BoxFit.cover,
@@ -75,12 +76,8 @@ class ProfilePage extends GetView<ProfileController> {
                       IconButton(
                         icon: const Icon(Icons.settings),
                         onPressed: () {
-                          // Navigate to the login screen
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SettingsxPage(),
-                          ));
+                          Get.to(() => SettingsxPage(),
+                              binding: SettingsxBinding());
                         },
                       ),
                       IconButton(

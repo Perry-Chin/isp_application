@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, prefer_typing_uninitialized_variables, avoid_print
+
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,13 +10,12 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../common/data/data.dart';
 import '../../../common/storage/storage.dart';
-import '../../../common/utils/utils.dart';
 import 'chat_index.dart';
 
 class ChatController extends GetxController {
   ChatController();
   ChatState state = ChatState();
-  var doc_id = null;
+  var doc_id;
   final textController = TextEditingController();
   ScrollController msgScrolling = ScrollController();
   FocusNode contentNode = FocusNode();
@@ -24,6 +25,7 @@ class ChatController extends GetxController {
   File? _photo;
 
   final ImagePicker _picker = ImagePicker();
+  final user = Rxn<UserData>();
 
   // Future<void> imgFromGallery() async {
   //   final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -38,7 +40,7 @@ class ChatController extends GetxController {
   Future getImgUrl(String name) async {
     final spaceRef = FirebaseStorage.instance.ref("chat").child(name);
     var str = await spaceRef.getDownloadURL();
-    return str ?? "";
+    return str;
   }
 
   sendImageMessage(String url) async {
@@ -46,29 +48,30 @@ class ChatController extends GetxController {
       uid: user_id,
       content: url,
       type: "image",
-      addtime: Timestamp.now()
+      addtime: Timestamp.now(),
     );
-    await db.collection("message").doc(doc_id).collection("msglist").
-    withConverter(
-      fromFirestore: Msgcontent.fromFirestore, 
-      toFirestore: (Msgcontent msgcontent, options) => msgcontent.toFirestore()
-    ).add(content).then((DocumentReference doc) {
-      print("Document snapshot added with id, ${doc.id}");
-      textController.clear();
-      Get.focusScope?.unfocus();
-    });
+    await db.collection("message").doc(doc_id).collection("msglist")
+      .withConverter(
+        fromFirestore: Msgcontent.fromFirestore, 
+        toFirestore: (Msgcontent msgcontent, options) => msgcontent.toFirestore()
+      ).add(content).then((DocumentReference doc) {
+        print("Document snapshot added with id, ${doc.id}");
+        textController.clear();
+        Get.focusScope?.unfocus();
+      });
     await db.collection("message").doc(doc_id).update({
       "last_msg": " [image] ",
-      "last_time": Timestamp.now()
+      "last_time": Timestamp.now(),
+      "msg_num": 1
     });
   }
 
   // Future uploadFile() async {
-  //   if(_photo == null) return;
+  //   if (_photo == null) return;
   //   final fileName = getRandomString(15) + extension(_photo!.path);
   //   try {
   //     final ref = FirebaseStorage.instance.ref("chat").child(fileName);
-  //     await ref.putFile(_photo!).snapshotEvents.listen((event) async { 
+  //     await ref.putFile(_photo!).snapshotEvents.listen((event) async {
   //       switch (event.state) {
   //         case TaskState.running:
   //           break;
@@ -78,14 +81,14 @@ class ChatController extends GetxController {
   //           String imgUrl = await getImgUrl(fileName);
   //           print(imgUrl + "this is");
   //           sendImageMessage(imgUrl);
+  //           break;
   //         case TaskState.canceled:
   //           break;
   //         case TaskState.error:
   //           break;
   //       }
   //     });
-  //   }
-  //   catch(e) {
+  //   } catch (e) {
   //     print("There's an error $e");
   //   }
   // }
@@ -95,9 +98,8 @@ class ChatController extends GetxController {
     super.onInit();
     var data = Get.parameters;
     doc_id = data['doc_id'];
-    state.to_uid.value = data['to_uid'] ?? "";
-    state.to_name.value = data['to_name'] ?? "";
-    state.to_avatar.value = data['to_avatar'] ?? "";
+    state.toUserid.value = data['to_uid'] ?? "";
+    state.toName.value = data['to_name'] ?? "";
   }
 
   sendMessage() async {
@@ -106,43 +108,41 @@ class ChatController extends GetxController {
       uid: user_id,
       content: sendContent,
       type: "text",
-      addtime: Timestamp.now()
+      addtime: Timestamp.now(),
     );
-    //Create a msglist collection and add a document
-    await db.collection("message").doc(doc_id).collection("msglist").
-    withConverter(
-      fromFirestore: Msgcontent.fromFirestore, 
-      toFirestore: (Msgcontent msgcontent, options) => msgcontent.toFirestore()
-    ).add(content).then((DocumentReference doc) {
-      print("Document snapshot added with id, ${doc.id}");
-      textController.clear();
-      Get.focusScope?.unfocus();
-    });
+    await db.collection("message").doc(doc_id).collection("msglist")
+      .withConverter(
+        fromFirestore: Msgcontent.fromFirestore, 
+        toFirestore: (Msgcontent msgcontent, options) => msgcontent.toFirestore()
+      ).add(content).then((DocumentReference doc) {
+        print("Document snapshot added with id, ${doc.id}");
+        textController.clear();
+        Get.focusScope?.unfocus();
+      });
     await db.collection("message").doc(doc_id).update({
       "last_msg": sendContent,
-      "last_time": Timestamp.now()
+      "last_time": Timestamp.now(),
+      "msg_num": 1
     });
   }
 
-  
   @override
   void onReady() {
     super.onReady();
     var messages = db.collection("message").doc(doc_id).collection("msglist")
-    .withConverter(
-      fromFirestore: Msgcontent.fromFirestore, 
-      toFirestore: (Msgcontent msgcontent, options) => msgcontent.toFirestore()
-    ).orderBy("addtime", descending: false);
-    //Clear old message
+      .withConverter(
+        fromFirestore: Msgcontent.fromFirestore, 
+        toFirestore: (Msgcontent msgcontent, options) => msgcontent.toFirestore()
+      ).orderBy("addtime", descending: false);
     state.msgcontentList.clear();
-    listener = messages.snapshots().listen((event) { 
-      for(var change in event.docChanges) {
-        switch(change.type) {
+    listener = messages.snapshots().listen((event) {
+      for (var change in event.docChanges) {
+        switch (change.type) {
           case DocumentChangeType.added:
-            if(change.doc.data() != null) {
+            if (change.doc.data() != null) {
               state.msgcontentList.insert(0, change.doc.data()!);
             }
-          break;
+            break;
           case DocumentChangeType.modified:
             break;
           case DocumentChangeType.removed:
@@ -150,11 +150,9 @@ class ChatController extends GetxController {
         }
       }
     },
-    onError: (error) => print("Listen failed:  $error")
-    );
+    onError: (error) => print("Listen failed:  $error"));
   }
 
-  //Prevent memory leaking
   @override
   void dispose() {
     msgScrolling.dispose();

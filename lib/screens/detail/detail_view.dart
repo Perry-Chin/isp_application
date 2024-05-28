@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 // Detail View
 
->>>>>>> 78fc015db7f261357f60470f135dd6edc384b973
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -116,7 +113,7 @@ class DetailPage extends GetView<DetailController> {
         default:
           // Default image if service name doesn't match predefined cases
           return Image.asset(
-            'assets/images/default_image.jpeg', // Default image asset
+            'assets/images/walking.jpeg', // Default image asset
             width: double.infinity,
             fit: BoxFit.cover,
           );
@@ -236,7 +233,6 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
-<<<<<<< HEAD
   Widget detail(ServiceData serviceData) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -298,70 +294,6 @@ class DetailPage extends GetView<DetailController> {
       ),
     );
   }
-=======
- Widget detail(ServiceData serviceData) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-    child: Column(
-      children: [
-        Row(
-          children: [
-            Container(
-              alignment: Alignment.topCenter,
-              height: 120,
-              width: 40,
-              child: const Icon(Icons.date_range),
-            ),
-            const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  serviceData.date ?? "Description",
-                  style: const TextStyle(fontSize: 15),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  serviceData.time ?? "Description",
-                  style: const TextStyle(fontSize: 15),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  "Unavailable at this time?",
-                  style: TextStyle(fontSize: 15, color: Color(0xFFCE761D)),
-                ),
-                const SizedBox(height: 8),
-                proposeNewTimeButton() // Pass the context here
-              ],
-            ),
-          ],
-        ),
-        const Divider(
-          thickness: 2,
-          color: Colors.black12,
-          height: 35,
-        ),
-        Row(
-          children: [
-            Container(
-              alignment: Alignment.topCenter,
-              height: 25,
-              width: 40,
-              child: const Icon(Icons.location_on),
-            ),
-            const SizedBox(width: 10),
-            Text(
-              serviceData.location ?? "Description",
-              style: const TextStyle(fontSize: 15),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
-
->>>>>>> 78fc015db7f261357f60470f135dd6edc384b973
 
   Widget serviceDescription(String? description) {
     return Padding(
@@ -669,18 +601,11 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
-<<<<<<< HEAD
   Widget proposeNewTimeButton() {
     return ElevatedButton(
       onPressed: () {
         // Navigate to ProposeNewPage
         proposeNewPage(Get.context!); // Make sure to pass the context
-=======
- Widget proposeNewTimeButton() {
-    return ElevatedButton(
-      onPressed: () {
-      //  proposeNewPage(context);
->>>>>>> 78fc015db7f261357f60470f135dd6edc384b973
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,

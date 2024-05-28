@@ -36,7 +36,7 @@ class SettingsxPage extends GetView<SettingsxController> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ContactPage(),
-                  ),
+                  ),//1
                 );
               },
               child: Container(

@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
@@ -99,6 +101,68 @@ class DetailController extends GetxController {
         taxFee.value = subtotal.value * 0.1;
         totalCost.value = subtotal.value - taxFee.value;
       }
+    }
+  }
+
+  void goChat(UserData userData) async {
+    try {
+      if (userData.id == null) {
+        print("Error: userData.id is null");
+        return;
+      }
+
+      var fromMessages = await db.collection("message").withConverter(
+        fromFirestore: Msg.fromFirestore, 
+        toFirestore: (Msg msg, options) => msg.toFirestore()
+      ).where("from_uid", isEqualTo: token)
+      .where("to_uid", isEqualTo: userData.id).get();
+
+      var toMessages = await db.collection("message").withConverter(
+        fromFirestore: Msg.fromFirestore, 
+        toFirestore: (Msg msg, options) => msg.toFirestore()
+      ).where("from_uid", isEqualTo: userData.id)
+      .where("to_uid", isEqualTo: token).get();
+
+      //If both users have not messaged before
+      if(fromMessages.docs.isEmpty && toMessages.docs.isEmpty) {
+        //Get user information
+        String profile = await UserStore.to.getProfile();
+        UserLoginResponseEntity userdata = UserLoginResponseEntity.fromJson(jsonDecode(profile));
+        var msgdata = Msg(
+          fromUserid: userdata.accessToken,
+          toUserid: userData.id,
+          lastMsg: "",
+          lastTime: Timestamp.now(),
+          msgNum: 0
+        );
+        db.collection("message").withConverter(
+          fromFirestore: Msg.fromFirestore, 
+          toFirestore: (Msg msg, options) => msg.toFirestore()
+        ).add(msgdata).then((value) {
+          Get.toNamed("/chat", parameters: {
+            "doc_id": value.id,
+            "to_uid": userData.id ?? ""
+          });
+        });
+      }
+      //If the user has messaged the other party
+      else {
+        if(fromMessages.docs.isNotEmpty) {
+          Get.toNamed("/chat", parameters: {
+            "doc_id": fromMessages.docs.first.id,
+            "to_uid": userData.id ?? "",
+            "to_avatar": ""
+          });
+        }
+        if(toMessages.docs.isNotEmpty) {
+          Get.toNamed("/chat", parameters: {
+            "doc_id": toMessages.docs.first.id,
+            "to_uid": userData.id ?? "",
+          });
+        }
+      }
+    } catch (e) {
+      print("Error in goChat: $e");
     }
   }
 }

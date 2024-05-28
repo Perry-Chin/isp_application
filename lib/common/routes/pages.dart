@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
+import '../../screens/message/chat/chat_index.dart';
 import 'routes.dart';
 import '../middlewares/middlewares.dart';
 import '../../screens/detail/detail_index.dart';
@@ -51,13 +52,21 @@ class AppPages {
         binding: SettingsxBinding()),
     //Detail Page
     GetPage(
-        name: AppRoutes.detail,
-        page: () => const DetailPage(),
-        binding: DetailBinding()),
+      name: AppRoutes.detail,
+      page: () => const DetailPage(),
+      binding: DetailBinding()
+    ),
     //Message Page
     GetPage(
-        name: AppRoutes.message,
-        page: () => const MessagePage(),
-        binding: MessageBinding()),
+      name: AppRoutes.message,
+      page: () => const MessagePage(),
+      binding: MessageBinding()
+    ),
+    //Chat Page
+    GetPage(
+      name: AppRoutes.chat,
+      page: () => const ChatPage(),
+      binding: ChatBinding()
+    ),
   ];
 }

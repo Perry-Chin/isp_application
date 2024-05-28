@@ -48,6 +48,11 @@ class UserStore extends GetxController {
     update(); // Notify all widgets listening to this controller
   }
 
+  Future<String> getProfile() async {
+    if (token.isEmpty) return "";
+   return StorageService.to.getString(profile_key);
+  }
+
   Future<void> saveProfile(UserLoginResponseEntity profile) async {
     _isLogin.value = true;
     _profile(profile);

@@ -1,5 +1,4 @@
-
-import 'dart:js';
+// Detail View
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -77,52 +76,58 @@ class DetailPage extends GetView<DetailController> {
   }
 
   Widget backgroundImage(ServiceData serviceData) {
-    if (controller.state.serviceList.isNotEmpty) {
-      if (serviceData.image != null && serviceData.image!.isNotEmpty) {
-        // Load image using photourl
-        return SizedBox(
-          width: double.infinity,
-          child: Image.network(
-            serviceData.image!,
+  if (controller.state.serviceList.isNotEmpty) {
+    String? imageUrl = serviceData.image;
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      // Load image using photourl
+      return SizedBox(
+        width: double.infinity,
+        child: Image.network(
+          imageUrl,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Image.asset(
+              'assets/images/default_image.jpeg', // Default image asset
+              fit: BoxFit.cover,
+              width: double.infinity,
+            );
+          },
+        ),
+      );
+    } else if (serviceData.serviceName != null) {
+      // Check service name for default image
+      switch (serviceData.serviceName) {
+        case 'Grooming':
+          return Image.asset(
+            'assets/images/grooming.jpg',
+            width: double.infinity,
             fit: BoxFit.cover,
-          ),
-        );
-      } else {
-        // Check service name for default image
-        if (serviceData.serviceName != null) {
-          // Load image based on service name
-          switch (serviceData.serviceName) {
-            case 'Grooming':
-              return Image.asset(
-                'assets/images/grooming.jpg',
-                width: double.infinity,
-                fit: BoxFit.cover,
-              );
-            case 'Walking':
-              return Image.asset(
-                'assets/images/walking.jpeg',
-                width: double.infinity,
-                fit: BoxFit.cover,
-              );
-            // Add cases for other service names if needed
-            default:
-              // Default image if service name doesn't match predefined cases
-              return Image.asset(
-                'assets/images/walking.jpeg',
-                width: double.infinity,
-                fit: BoxFit.cover,
-              );
-          }
-        }
+          );
+        case 'Walking':
+          return Image.asset(
+            'assets/images/walking.jpeg',
+            width: double.infinity,
+            fit: BoxFit.cover,
+          );
+        // Add cases for other service names if needed
+        default:
+          // Default image if service name doesn't match predefined cases
+          return Image.asset(
+            'assets/images/default_image.jpeg', // Default image asset
+            width: double.infinity,
+            fit: BoxFit.cover,
+          );
       }
     }
-    // Return a default image widget if no conditions are met
-    return Image.asset(
-      'assets/images/walking.jpeg',
-      width: double.infinity,
-      fit: BoxFit.cover,
-    );
   }
+  // Return a default image widget if no conditions are met
+  return Image.asset(
+    'assets/images/default_image.jpeg', // Default image asset
+    width: double.infinity,
+    fit: BoxFit.cover,
+  );
+}
+
 
   Widget buttonArrow(BuildContext context) {
     return Positioned(
@@ -221,14 +226,14 @@ class DetailPage extends GetView<DetailController> {
               ),
             ),
             const SizedBox(height: 10),
-            detail(serviceData),
+            detail(serviceData)
           ],
         ),
       ),
     );
   }
 
- Widget detail(ServiceData serviceData, BuildContext context) {
+ Widget detail(ServiceData serviceData) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
     child: Column(
@@ -260,7 +265,7 @@ class DetailPage extends GetView<DetailController> {
                   style: TextStyle(fontSize: 15, color: Color(0xFFCE761D)),
                 ),
                 const SizedBox(height: 8),
-                proposeNewTimeButton(context),  // Pass the context here
+                proposeNewTimeButton() // Pass the context here
               ],
             ),
           ],
@@ -370,7 +375,7 @@ class DetailPage extends GetView<DetailController> {
           ),
           subtitle: Text(userData?.email ?? ""),
         ),
-        actionButtons(),
+        actionButtons(userData!),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Divider(
@@ -540,7 +545,7 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
-  Widget actionButtons() {
+  Widget actionButtons(UserData userData) {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -572,7 +577,7 @@ class DetailPage extends GetView<DetailController> {
           Expanded(
             child: ElevatedButton(
               onPressed: () {
-                // Chat action
+                controller.goChat(userData);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
@@ -597,10 +602,10 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
- Widget proposeNewTimeButton(BuildContext context) {
+ Widget proposeNewTimeButton() {
     return ElevatedButton(
       onPressed: () {
-       proposeNewPage(context);
+      //  proposeNewPage(context);
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,

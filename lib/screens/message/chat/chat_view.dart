@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../common/values/values.dart';
 import 'chat_index.dart';
+import 'widgets/chat_list.dart';
 
 class ChatPage extends GetView<ChatController> {
   const ChatPage({super.key});
@@ -31,13 +32,13 @@ class ChatPage extends GetView<ChatController> {
               child: Row(
                 children: [
                   Text(
-                    "coo",
+                    controller.state.toName.value,
                     overflow: TextOverflow.clip,
                     maxLines: 1,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
-                  )
+                  ),
                 ],
               ),
             )
@@ -56,7 +57,7 @@ class ChatPage extends GetView<ChatController> {
           constraints: const BoxConstraints.expand(),
           child: Stack(
             children: [
-              // ChatList(),
+              const ChatList(),
               Positioned(
                 bottom: 0.h,
                 height: 50.h,
@@ -78,7 +79,7 @@ class ChatPage extends GetView<ChatController> {
                           autofocus: false,
                           focusNode: controller.contentNode,
                           decoration: InputDecoration(
-                            hintText: "Send messages..."
+                            hintText: "Send messages...",
                           ),
                         ),
                       ),
@@ -92,9 +93,9 @@ class ChatPage extends GetView<ChatController> {
                             size: 35.w,
                             color: Colors.blue,
                           ),
-                          // onTap: () {
-                          //   _showPicker(context);
-                          // },
+                          onTap: () {
+                            // controller.imgFromGallery();
+                          },
                         ),
                       ),
                       Container(
@@ -104,14 +105,14 @@ class ChatPage extends GetView<ChatController> {
                         child: ElevatedButton(
                           child: Text("Send"),
                           onPressed: () {
-                            // controller.sendMessage();
+                            controller.sendMessage();
                           },
                         ),
                       )
                     ],
                   ),
-                )
-              )
+                ),
+              ),
             ],
           ),
         ),

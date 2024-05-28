@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 // import 'package:cloud_firestore/cloud_firestore.dart';
+=======
+>>>>>>> 2b019c5a98dd10bc8e2eaa44e13f3a6ea5b5c0ec
 import 'package:flutter/material.dart';
 
 // import '../../common/data/service.dart';
@@ -8,7 +11,7 @@ Future<void> proposeNewPage(BuildContext context) async {
   showModalBottomSheet(
     context: context, 
     builder: (BuildContext bc) {
-      return SafeArea(
+      return const SafeArea(
         child: Wrap(
           children: [
             Padding(

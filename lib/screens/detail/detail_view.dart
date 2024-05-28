@@ -113,7 +113,7 @@ class DetailPage extends GetView<DetailController> {
         default:
           // Default image if service name doesn't match predefined cases
           return Image.asset(
-            'assets/images/default_image.jpeg', // Default image asset
+            'assets/images/walking.jpeg', // Default image asset
             width: double.infinity,
             fit: BoxFit.cover,
           );

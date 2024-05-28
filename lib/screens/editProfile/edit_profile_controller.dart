@@ -84,9 +84,18 @@ class EditProfileController extends GetxController {
     }
   }
 
-  Future<void> pickImage() async {
+  Future<void> pickImageFromGallery() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      File image = File(pickedFile.path);
+      await updateProfileImage(image);
+    }
+  }
+
+  Future<void> pickImageFromCamera() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       File image = File(pickedFile.path);
       await updateProfileImage(image);

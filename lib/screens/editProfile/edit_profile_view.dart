@@ -30,7 +30,7 @@ class EditProfilePage extends GetView<EditProfileController> {
                 const SizedBox(height: 30),
                 GestureDetector(
                   onTap: () async {
-                    await controller.pickImage();
+                    _showImageSourceDialog(context);
                   },
                   child: Obx(() {
                     return Stack(
@@ -103,18 +103,49 @@ class EditProfilePage extends GetView<EditProfileController> {
                 ),
                 const SizedBox(height: 30),
                 ApplyButton(
-                  onPressed: () {
-                    controller.handleUpdateProfile(context);
-                  },
-                  buttonText: "Update Profile",
-                  buttonWidth: double.infinity,
-                  textAlignment: Alignment.center
-                ),
+                    onPressed: () {
+                      controller.handleUpdateProfile(context);
+                    },
+                    buttonText: "Update Profile",
+                    buttonWidth: double.infinity,
+                    textAlignment: Alignment.center),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  void _showImageSourceDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Choose Image Source'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Gallery'),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  await controller.pickImageFromGallery();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Camera'),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  await controller.pickImageFromCamera();
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

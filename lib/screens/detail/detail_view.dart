@@ -1,15 +1,12 @@
-
-import 'dart:js';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:isp_application/screens/detail/proposepg.dart';
 
 import '../../common/data/data.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'detail_index.dart';
-import 'proposepg.dart';
 
 class DetailPage extends GetView<DetailController> {
   const DetailPage({super.key});
@@ -228,68 +225,67 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
- Widget detail(ServiceData serviceData, BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-    child: Column(
-      children: [
-        Row(
-          children: [
-            Container(
-              alignment: Alignment.topCenter,
-              height: 120,
-              width: 40,
-              child: const Icon(Icons.date_range),
-            ),
-            const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  serviceData.date ?? "Description",
-                  style: const TextStyle(fontSize: 15),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  serviceData.time ?? "Description",
-                  style: const TextStyle(fontSize: 15),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  "Unavailable at this time?",
-                  style: TextStyle(fontSize: 15, color: Color(0xFFCE761D)),
-                ),
-                const SizedBox(height: 8),
-                proposeNewTimeButton(context),  // Pass the context here
-              ],
-            ),
-          ],
-        ),
-        const Divider(
-          thickness: 2,
-          color: Colors.black12,
-          height: 35,
-        ),
-        Row(
-          children: [
-            Container(
-              alignment: Alignment.topCenter,
-              height: 25,
-              width: 40,
-              child: const Icon(Icons.location_on),
-            ),
-            const SizedBox(width: 10),
-            Text(
-              serviceData.location ?? "Description",
-              style: const TextStyle(fontSize: 15),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
-
+  Widget detail(ServiceData serviceData) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                alignment: Alignment.topCenter,
+                height: 120,
+                width: 40,
+                child: const Icon(Icons.date_range),
+              ),
+              const SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    serviceData.date ?? "Description",
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    serviceData.time ?? "Description",
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    "Unavailable at this time?",
+                    style: TextStyle(fontSize: 15, color: Color(0xFFCE761D)),
+                  ),
+                  const SizedBox(height: 8),
+                  proposeNewTimeButton(),
+                ],
+              ),
+            ],
+          ),
+          const Divider(
+            thickness: 2,
+            color: Colors.black12,
+            height: 35,
+          ),
+          Row(
+            children: [
+              Container(
+                alignment: Alignment.topCenter,
+                height: 25,
+                width: 40,
+                child: const Icon(Icons.location_on),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                serviceData.location ?? "Description",
+                style: const TextStyle(fontSize: 15),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget serviceDescription(String? description) {
     return Padding(
@@ -578,7 +574,7 @@ class DetailPage extends GetView<DetailController> {
                 backgroundColor: Colors.white,
                 elevation: 4, // Small shadow
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                 borderRadius: BorderRadius.circular(10),
                 ),
               ),
               child: Container(
@@ -597,10 +593,11 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
- Widget proposeNewTimeButton(BuildContext context) {
+  Widget proposeNewTimeButton() {
     return ElevatedButton(
       onPressed: () {
-       proposeNewPage(context);
+        // Navigate to ProposeNewPage
+        proposeNewPage(Get.context!); // Make sure to pass the context
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
@@ -628,3 +625,4 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 }
+

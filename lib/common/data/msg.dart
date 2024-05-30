@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'data.dart';
-
 class Msg {
   final String? fromUserid;
   final String? toUserid;

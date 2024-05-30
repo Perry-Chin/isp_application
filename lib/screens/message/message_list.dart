@@ -22,13 +22,14 @@ class MessageList extends GetView<MessageController> {
           if(item.data().fromUserid == controller.token) {
             toUserid = item.data().toUserid ?? "";
             toName = userData?.username ?? "";
-            toAvatar = userData?.photourl ?? "";
+            toAvatar = userData!.photourl!;
           }
           else {
             toUserid = item.data().fromUserid ?? "";
             toName = userData?.username ?? "";
-            toAvatar = userData?.photourl ?? "";
+            toAvatar = userData!.photourl!;
           }
+          print(toAvatar);
           Get.toNamed("/chat", parameters: {
             "doc_id": item.id,
             "to_uid": toUserid,

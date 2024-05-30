@@ -92,7 +92,6 @@ class MessageController extends GetxController {
 
       return getUserStream(userIds).map((userDocs) {
         var userDataMap = Map.fromEntries(userDocs.map((doc) {
-          print("Fetched User ID: ${doc.id}, Data: ${doc.data()}");
           return MapEntry(doc.id, doc.data());
         }));
         state.userDataMap.assignAll(userDataMap); // Update userDataMap in state

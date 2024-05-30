@@ -76,7 +76,7 @@ class EditProfileController extends GetxController {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
-            .update({'profile_image': imageUrl});
+            .update({'photourl': imageUrl});
 
         profileImageUrl.value = imageUrl;
         print('Profile image URL updated: $imageUrl');
@@ -152,6 +152,9 @@ class EditProfileController extends GetxController {
       }
 
       // Reauthenticate the user before updating email
+      if (currentPwdController.text.isEmpty) {
+        throw 'Please enter the password';
+      }
       AuthCredential credential = EmailAuthProvider.credential(
         email: user!.email!,
         password: currentPwdController.text,
@@ -159,15 +162,14 @@ class EditProfileController extends GetxController {
 
       await user.reauthenticateWithCredential(credential);
 
-      // Update user email
+      // Send email verification to the new email address
       if (user != null && user.email != emailController.text) {
-        await user.updateEmail(emailController.text);
+        await user.verifyBeforeUpdateEmail(emailController.text);
 
-        // Update email in Firestore
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .update({'email': emailController.text});
+        // Show a dialog informing the user to verify their new email
+        showEmailVerificationDialog(context);
+
+        return; // Exit the method to wait for email verification
       }
 
       // Update user password if provided
@@ -194,6 +196,28 @@ class EditProfileController extends GetxController {
 
       showRoundedErrorDialog(context, error.toString());
     }
+  }
+
+  void showEmailVerificationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: const Text('Verify Your Email'),
+        content: const Text(
+            'A verification email has been sent to your new email address. Confirmation would be needed to change your email.'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   void showRoundedErrorDialog(BuildContext context, String message) {

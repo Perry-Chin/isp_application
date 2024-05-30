@@ -1,5 +1,3 @@
-// Detail View
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -15,14 +13,16 @@ class DetailPage extends GetView<DetailController> {
 
   @override
   Widget build(BuildContext context) {
+    bool hideButtons = Get.parameters['hide_buttons'] == 'true';
+
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
-      bottomNavigationBar: applyButton(),
+      bottomNavigationBar: hideButtons ? null : applyButton(),
       body: FutureBuilder<void>(
         future: controller.asyncLoadAllData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return content(context);
+            return content(context, hideButtons);
           } else {
             return const Center(child: CircularProgressIndicator());
           }
@@ -31,7 +31,7 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
-  Widget content(BuildContext context) {
+  Widget content(BuildContext context, bool hideButtons) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,7 +43,8 @@ class DetailPage extends GetView<DetailController> {
                   height: MediaQuery.of(context).size.width - 133,
                   child: Obx(() {
                     if (controller.state.serviceList.isNotEmpty) {
-                      var serviceData = controller.state.serviceList.first.data();
+                      var serviceData =
+                          controller.state.serviceList.first.data();
                       return backgroundImage(serviceData);
                     }
                     return const SizedBox.shrink();
@@ -69,65 +70,211 @@ class DetailPage extends GetView<DetailController> {
               ),
             ],
           ),
-          buildContent(context)
+          buildContent(context, hideButtons)
+        ],
+      ),
+    );
+  }
+
+  Widget buildContent(BuildContext context, bool hideButtons) {
+    return StreamBuilder<Map<String, UserData?>>(
+      stream: controller.combinedStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          var serviceData = controller.state.serviceList.first.data();
+          var reqUserId = serviceData.reqUserid;
+          var userData = snapshot.data![reqUserId];
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              topIndicator(),
+              serviceName(serviceData.serviceName),
+              serviceDetailsCard(serviceData, hideButtons),
+              serviceDescription(serviceData.description),
+              requesterInfo(userData, hideButtons),
+              feeInfo(userData),
+            ],
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+
+  Widget requesterInfo(UserData? userData, bool hideButtons) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(left: 16, bottom: 5),
+          child: Text(
+            "Meet the Requester",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+        ),
+        ListTile(
+          leading: CircleAvatar(
+            radius: 28.0,
+            backgroundColor: Colors.transparent,
+            child: ClipOval(
+              child: FadeInImage.assetNetwork(
+                placeholder: "assets/images/profile.png",
+                image: userData?.photourl ?? "",
+                fadeInDuration: const Duration(milliseconds: 500),
+                fit: BoxFit.cover,
+                width: 54.w,
+                height: 54.w,
+                imageErrorBuilder: (context, error, stackTrace) =>
+                    Image.asset("assets/images/profile.png"),
+              ),
+            ),
+          ),
+          title: Padding(
+            padding: const EdgeInsets.only(bottom: 3),
+            child: Row(
+              children: [
+                Text(
+                  userData?.username ?? "Username",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                userRating(),
+              ],
+            ),
+          ),
+          subtitle: Text(userData?.email ?? ""),
+        ),
+        if (!hideButtons) actionButtons(userData!),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Divider(
+            thickness: 2,
+            color: Colors.black12,
+            height: 35,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget actionButtons(UserData userData) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {
+                // View reviews action
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                elevation: 4, // Small shadow
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15), // Set padding
+                child: const Text(
+                  "View reviews",
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {
+                controller.goChat(userData);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                elevation: 4, // Small shadow
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15), // Set padding
+                child: const Text(
+                  "Chat",
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget backgroundImage(ServiceData serviceData) {
-  if (controller.state.serviceList.isNotEmpty) {
-    String? imageUrl = serviceData.image;
-    if (imageUrl != null && imageUrl.isNotEmpty) {
-      // Load image using photourl
-      return SizedBox(
-        width: double.infinity,
-        child: Image.network(
-          imageUrl,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
+    if (controller.state.serviceList.isNotEmpty) {
+      String? imageUrl = serviceData.image;
+      if (imageUrl != null && imageUrl.isNotEmpty) {
+        // Load image using photourl
+        return SizedBox(
+          width: double.infinity,
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Image.asset(
+                'assets/images/default_image.jpeg', // Default image asset
+                fit: BoxFit.cover,
+                width: double.infinity,
+              );
+            },
+          ),
+        );
+      } else if (serviceData.serviceName != null) {
+        // Check service name for default image
+        switch (serviceData.serviceName) {
+          case 'Grooming':
             return Image.asset(
-              'assets/images/default_image.jpeg', // Default image asset
-              fit: BoxFit.cover,
+              'assets/images/grooming.jpg',
               width: double.infinity,
+              fit: BoxFit.cover,
             );
-          },
-        ),
-      );
-    } else if (serviceData.serviceName != null) {
-      // Check service name for default image
-      switch (serviceData.serviceName) {
-        case 'Grooming':
-          return Image.asset(
-            'assets/images/grooming.jpg',
-            width: double.infinity,
-            fit: BoxFit.cover,
-          );
-        case 'Walking':
-          return Image.asset(
-            'assets/images/walking.jpeg',
-            width: double.infinity,
-            fit: BoxFit.cover,
-          );
-        // Add cases for other service names if needed
-        default:
-          // Default image if service name doesn't match predefined cases
-          return Image.asset(
-            'assets/images/walking.jpeg', // Default image asset
-            width: double.infinity,
-            fit: BoxFit.cover,
-          );
+          case 'Walking':
+            return Image.asset(
+              'assets/images/walking.jpeg',
+              width: double.infinity,
+              fit: BoxFit.cover,
+            );
+          // Add cases for other service names if needed
+          default:
+            // Default image if service name doesn't match predefined cases
+            return Image.asset(
+              'assets/images/walking.jpeg', // Default image asset
+              width: double.infinity,
+              fit: BoxFit.cover,
+            );
+        }
       }
     }
+    // Return a default image widget if no conditions are met
+    return Image.asset(
+      'assets/images/default_image.jpeg', // Default image asset
+      width: double.infinity,
+      fit: BoxFit.cover,
+    );
   }
-  // Return a default image widget if no conditions are met
-  return Image.asset(
-    'assets/images/default_image.jpeg', // Default image asset
-    width: double.infinity,
-    fit: BoxFit.cover,
-  );
-}
-
 
   Widget buttonArrow(BuildContext context) {
     return Positioned(
@@ -146,32 +293,6 @@ class DetailPage extends GetView<DetailController> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget buildContent(BuildContext context) {
-    return StreamBuilder<Map<String, UserData?>>(
-      stream: controller.combinedStream,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          var serviceData = controller.state.serviceList.first.data();
-          var reqUserId = serviceData.reqUserid;
-          var userData = snapshot.data![reqUserId];
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              topIndicator(),
-              serviceName(serviceData.serviceName),
-              serviceDetailsCard(serviceData),
-              serviceDescription(serviceData.description),
-              requesterInfo(userData),
-              feeInfo(userData),
-            ],
-          );
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
     );
   }
 
@@ -204,7 +325,7 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
-  Widget serviceDetailsCard(ServiceData serviceData) {
+  Widget serviceDetailsCard(ServiceData serviceData, bool hideButtons) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -226,14 +347,14 @@ class DetailPage extends GetView<DetailController> {
               ),
             ),
             const SizedBox(height: 10),
-            detail(serviceData)
+            detail(serviceData, hideButtons)
           ],
         ),
       ),
     );
   }
 
-  Widget detail(ServiceData serviceData) {
+  Widget detail(ServiceData serviceData, bool hideButtons) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       child: Column(
@@ -259,13 +380,15 @@ class DetailPage extends GetView<DetailController> {
                     serviceData.time ?? "Description",
                     style: const TextStyle(fontSize: 15),
                   ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    "Unavailable at this time?",
-                    style: TextStyle(fontSize: 15, color: Color(0xFFCE761D)),
-                  ),
-                  const SizedBox(height: 8),
-                  proposeNewTimeButton(),
+                  if (!hideButtons) ...[
+                    const SizedBox(height: 10),
+                    const Text(
+                      "Unavailable at this time?",
+                      style: TextStyle(fontSize: 15, color: Color(0xFFCE761D)),
+                    ),
+                    const SizedBox(height: 8),
+                    proposeNewTimeButton(),
+                  ],
                 ],
               ),
             ],
@@ -325,68 +448,6 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
-  Widget requesterInfo(UserData? userData) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 16, bottom: 5),
-          child: Text(
-            "Meet the Requester",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-          ),
-        ),
-        ListTile(
-          leading: CircleAvatar(
-            radius: 28.0,
-            backgroundColor: Colors.transparent,
-            child: ClipOval(
-              child: FadeInImage.assetNetwork(
-                placeholder: "assets/images/profile.png",
-                image: userData?.photourl ?? "",
-                fadeInDuration: const Duration(milliseconds: 500),
-                fit: BoxFit.cover,
-                width: 54.w,
-                height: 54.w,
-                imageErrorBuilder: (context, error, stackTrace) =>
-                    Image.asset("assets/images/profile.png"),
-              ),
-            ),
-          ),
-          title: Padding(
-            padding: const EdgeInsets.only(bottom: 3),
-            child: Row(
-              children: [
-                Text(
-                  userData?.username ?? "Username",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                userRating(),
-              ],
-            ),
-          ),
-          subtitle: Text(userData?.email ?? ""),
-        ),
-        actionButtons(userData!),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Divider(
-            thickness: 2,
-            color: Colors.black12,
-            height: 35,
-          ),
-        ),
-      ],
-    );
-  }
-  
   Widget feeInfo(UserData? userData) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -420,18 +481,12 @@ class DetailPage extends GetView<DetailController> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text("Subtotal"),
-                        Text("\$$subtotal")
-                      ],
+                      children: [const Text("Subtotal"), Text("\$$subtotal")],
                     ),
                     const SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text("Tax Fee"),
-                        Text("\$$taxFee")
-                      ],
+                      children: [const Text("Tax Fee"), Text("\$$taxFee")],
                     ),
                     const SizedBox(height: 15),
                     Row(
@@ -468,7 +523,8 @@ class DetailPage extends GetView<DetailController> {
                               child: Row(
                                 children: [
                                   Image(
-                                    image: const AssetImage("assets/images/paynow.png"),
+                                    image: const AssetImage(
+                                        "assets/images/paynow.png"),
                                     width: 24.w,
                                     height: 24.w,
                                   ),
@@ -476,7 +532,8 @@ class DetailPage extends GetView<DetailController> {
                                   const Text(
                                     "PayNow",
                                     style: TextStyle(
-                                        fontWeight: FontWeight.bold, fontSize: 14),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14),
                                   ),
                                 ],
                               ),
@@ -495,6 +552,37 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
+  Widget proposeNewTimeButton() {
+    return ElevatedButton(
+      onPressed: () {
+        proposeNewPage(Get.context!); // Make sure to pass the context
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        elevation: 4, // Small shadow
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        side: const BorderSide(color: Colors.black, width: 0.5),
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10), // Set padding
+        child: const Row(
+          children: [
+            Icon(Icons.alarm, color: Colors.black),
+            SizedBox(width: 8),
+            Text(
+              "Propose a new time",
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget applyButton() {
     return Container(
       padding: const EdgeInsets.all(8.0),
@@ -503,11 +591,10 @@ class DetailPage extends GetView<DetailController> {
           Expanded(
             flex: 6,
             child: ApplyButton(
-              // button.dart
-              onPressed: () {},
-              buttonText: "Apply Now",
-              buttonWidth: 100
-            ),
+                // button.dart
+                onPressed: () {},
+                buttonText: "Apply Now",
+                buttonWidth: 100),
           ),
         ],
       ),
@@ -543,93 +630,4 @@ class DetailPage extends GetView<DetailController> {
       ),
     );
   }
-
-  Widget actionButtons(UserData userData) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Row(
-        children: [
-          Expanded(
-            child: ElevatedButton(
-              onPressed: () {
-                // View reviews action
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                elevation: 4, // Small shadow
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 15), // Set padding
-                child: const Text(
-                  "View reviews",
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: ElevatedButton(
-              onPressed: () {
-                controller.goChat(userData);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                elevation: 4, // Small shadow
-                shape: RoundedRectangleBorder(
-                 borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 15), // Set padding
-                child: const Text(
-                  "Chat",
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget proposeNewTimeButton() {
-    return ElevatedButton(
-      onPressed: () {
-        proposeNewPage(Get.context!); // Make sure to pass the context
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        elevation: 4, // Small shadow
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        side: const BorderSide(color: Colors.black, width: 0.5),
-      ),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10), // Set padding
-        child: const Row(
-          children: [
-            Icon(Icons.alarm, color: Colors.black),
-            SizedBox(width: 8),
-            Text(
-              "Propose a new time",
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
-

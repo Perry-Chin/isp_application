@@ -12,7 +12,7 @@ import '../../common/values/color.dart';
 import '../../common/widgets/shimmer.dart';
 import 'schedule_index.dart';
 
-// class RequesterProviderCards extends StatelessWidget{ 
+// class RequesterProviderCards extends StatelessWidget{
 //    final List<String> statusFilter;
 //   final List<String> ratingFilter;
 
@@ -62,13 +62,10 @@ import 'schedule_index.dart';
 //   }
 // }
 
-
-
-
 class RequesterCard extends GetView<ScheduleController> {
-   final List<String> selectedStatus;
-   final List<String> selectedRating;
-   final token = UserStore.to.token;
+  final List<String> selectedStatus;
+  final List<String> selectedRating;
+  final token = UserStore.to.token;
 
   RequesterCard({
     Key? key,
@@ -105,85 +102,98 @@ class RequesterCard extends GetView<ScheduleController> {
     return Card(
       elevation: 4, // Add elevation for a shadow effect
       margin: const EdgeInsets.all(16), // Add margin around the card
-        child: InkWell(
+      child: InkWell(
         onTap: () {
-          // Handle on tap
           var reqUserid = "";
-          if(item.data().reqUserid == token) {
+          if (item.data().reqUserid == token) {
             reqUserid = item.data().reqUserid ?? "";
-          }
-          else {
+          } else {
             reqUserid = item.data().reqUserid ?? "";
           }
           Get.toNamed("/detail", parameters: {
             "doc_id": item.id,
-            "req_uid": reqUserid
+            "req_uid": reqUserid,
+            "hide_buttons": "true" // Update parameter name to match detail_view
           });
         },
-      child: Container(
-        decoration: BoxDecoration(border: Border(left: BorderSide(width: 10.0, color: statusColor))),
-        padding: const EdgeInsets.all(16), // Add padding inside the card
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // Align children to the start of the column
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 28.0,
-                  backgroundColor: Colors.transparent,
-                  child: ClipOval(
-                    child: FadeInImage.assetNetwork(
-                      placeholder: "assets/images/profile.png", // Placeholder image while loading
-                      image: requesterData?.photourl ?? "", // Image URL
-                      fadeInDuration: const Duration(milliseconds: 500), // Fade-in duration
-                      fit: BoxFit.cover,
-                      width: 54.w,
-                      height: 54.w,
-                      imageErrorBuilder: (context, error, stackTrace) => Image.asset("assets/images/profile.png"), // Error placeholder image
+        child: Container(
+          decoration: BoxDecoration(
+              border:
+                  Border(left: BorderSide(width: 10.0, color: statusColor))),
+          padding: const EdgeInsets.all(16), // Add padding inside the card
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment
+                .start, // Align children to the start of the column
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 28.0,
+                    backgroundColor: Colors.transparent,
+                    child: ClipOval(
+                      child: FadeInImage.assetNetwork(
+                        placeholder:
+                            "assets/images/profile.png", // Placeholder image while loading
+                        image: requesterData?.photourl ?? "", // Image URL
+                        fadeInDuration: const Duration(
+                            milliseconds: 500), // Fade-in duration
+                        fit: BoxFit.cover,
+                        width: 54.w,
+                        height: 54.w,
+                        imageErrorBuilder: (context, error, stackTrace) =>
+                            Image.asset(
+                                "assets/images/profile.png"), // Error placeholder image
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 10,),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(requesterData?.username ?? "", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                        const SizedBox(width: 6),
-                        RatedStar(rating: requesterData?.rating ?? 0, starColor: Colors.yellow),
-                    ],),
-                    const SizedBox(height: 5),
-                    Row(
-                      children: [
-                        Text("${item.data().date?.toString() ?? " "},"),
-                        const SizedBox(width: 3,),
-                        Text(item.data().time!),
-                    ],)
-                    
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                const Icon(Icons.location_on, size: 28, color: AppColor.secondaryColor),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text("${item.data().location}", overflow: TextOverflow.ellipsis, maxLines: 1),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child:  Container(
+                  const SizedBox(width: 10),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(requesterData?.username ?? "",
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500)),
+                          const SizedBox(width: 6),
+                          RatedStar(
+                              rating: requesterData?.rating ?? 0,
+                              starColor: Colors.yellow),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Text("${item.data().date?.toString() ?? " "},"),
+                          const SizedBox(width: 3),
+                          Text(item.data().time!),
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  const Icon(Icons.location_on,
+                      size: 28, color: AppColor.secondaryColor),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text("${item.data().location}",
+                        overflow: TextOverflow.ellipsis, maxLines: 1),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Container(
                       width: item.data().serviceName!.length * 11,
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -199,39 +209,39 @@ class RequesterCard extends GetView<ScheduleController> {
                         ),
                       ),
                     ),
-                ),
-                // const SizedBox(width: 10),
-                Container(
-                  height: 43,
-                  width: item.data().status!.length * 11,
-                  decoration: BoxDecoration(
-                    color: statusColor,
-                    borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(13),
-                      child: Text("${item.data().status}", style: const TextStyle(fontSize: 15, color: Colors.white),),
+                  Container(
+                    height: 43,
+                    width: item.data().status!.length * 11,
+                    decoration: BoxDecoration(
+                      color: statusColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(13),
+                        child: Text(
+                          "${item.data().status}",
+                          style: const TextStyle(
+                              fontSize: 15, color: Colors.white),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            )
-          ],
+                ],
+              )
+            ],
+          ),
         ),
       ),
-        ),
     );
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
-    // Use a StreamBuilder to listen to the combined data stream from the controller
-    
     return StreamBuilder<Map<String, UserData?>>(
       stream: controller.combinedRequesterStream,
       builder: (context, snapshot) {
-        // Create a map to associate user data with service data based on the 'requester_uid'
         final userDataMap = snapshot.data ?? {};
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const ShimmerLoading();
@@ -251,19 +261,22 @@ class RequesterCard extends GetView<ScheduleController> {
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        var serviceItem = controller.state.providerState.providerList[index];
-                        var requesterData = userDataMap[serviceItem.data().reqUserid];
+                        var serviceItem =
+                            controller.state.providerState.providerList[index];
+                        var requesterData =
+                            userDataMap[serviceItem.data().reqUserid];
                         return requesterListItem(serviceItem, requesterData);
                       },
-                      childCount: controller.state.providerState.providerList.length
-                    )
+                      childCount:
+                          controller.state.providerState.providerList.length,
+                    ),
                   ),
                 ),
               ],
             ),
-          )
+          ),
         );
-      }
+      },
     );
   }
 }

@@ -51,7 +51,7 @@ class HomeList extends GetView<HomeController> {
                     child: FadeInImage.assetNetwork(
                       placeholder: "assets/images/profile.png", // Placeholder image while loading
                       image: userData?.photourl ?? "", // Image URL
-                      fadeInDuration: const Duration(milliseconds: 500), // Fade-in duration
+                      fadeInDuration: const Duration(milliseconds: 100), // Fade-in duration
                       fit: BoxFit.cover,
                       width: 54.w,
                       height: 54.w,

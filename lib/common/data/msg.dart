@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'data.dart';
+
 class Msg {
   final String? fromUserid;
   final String? toUserid;
@@ -12,7 +14,7 @@ class Msg {
     this.toUserid,
     this.lastMsg,
     this.lastTime,
-    this.msgNum,
+    this.msgNum
   });
 
   factory Msg.fromFirestore(

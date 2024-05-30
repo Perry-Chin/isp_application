@@ -69,7 +69,7 @@ class ChatPage extends GetView<ChatController> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Container(
+                      SizedBox(
                         width: 217.w,
                         height: 50.h,
                         child: TextField(
@@ -78,7 +78,7 @@ class ChatPage extends GetView<ChatController> {
                           controller: controller.textController,
                           autofocus: false,
                           focusNode: controller.contentNode,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: "Send messages...",
                           ),
                         ),
@@ -94,7 +94,7 @@ class ChatPage extends GetView<ChatController> {
                             color: Colors.blue,
                           ),
                           onTap: () {
-                            // controller.imgFromGallery();
+                            controller.imgFromGallery();
                           },
                         ),
                       ),
@@ -103,7 +103,7 @@ class ChatPage extends GetView<ChatController> {
                         width: 65.w,
                         height: 35.w,
                         child: ElevatedButton(
-                          child: Text("Send"),
+                          child: const Text("Send"),
                           onPressed: () {
                             controller.sendMessage();
                           },

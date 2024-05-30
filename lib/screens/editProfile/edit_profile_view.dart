@@ -30,27 +30,29 @@ class EditProfilePage extends GetView<EditProfileController> {
                 const SizedBox(height: 30),
                 GestureDetector(
                   onTap: () async {
-                    _showImageSourceDialog(context);
+                    showImagePicker(context, (selectedImage) async {
+                      if (selectedImage != null) {
+                        await controller.updateProfileImage(selectedImage);
+                      }
+                    });
                   },
                   child: Obx(() {
                     return Stack(
                       alignment: Alignment.center,
                       children: [
                         Container(
-                          width: 160, // Set the size of the border container
-                          height: 160, // Set the size of the border container
+                          width: 160,
+                          height: 160,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color:
-                                  AppColor.secondaryColor, // Blue border color
-                              width: 4.0, // Border width
+                              color: AppColor.secondaryColor,
+                              width: 4.0,
                             ),
                           ),
                         ),
                         CircleAvatar(
-                          radius:
-                              76, // Adjust the radius to fit inside the border
+                          radius: 76,
                           backgroundImage: controller
                                   .profileImageUrl.value.isNotEmpty
                               ? NetworkImage(controller.profileImageUrl.value)
@@ -86,66 +88,62 @@ class EditProfilePage extends GetView<EditProfileController> {
                   controller: controller.phoneNoController,
                 ),
                 const SizedBox(height: 10),
-                MyTextField(
-                  hinttext: 'Your password',
-                  labeltext: 'Password',
-                  prefixicon: Icons.key,
-                  obscuretext: true,
-                  controller: controller.pwdController,
-                ),
-                const SizedBox(height: 10),
-                MyTextField(
-                  hinttext: 'Confirm your password',
-                  labeltext: 'Confirm Password',
-                  prefixicon: Icons.key,
-                  obscuretext: true,
-                  controller: controller.confirmpwdController,
-                ),
+                Obx(() {
+                  return controller.isPasswordVerified.value
+                      ? Column(
+                          children: [
+                            MyTextField(
+                              hinttext: 'Your password',
+                              labeltext: 'Password',
+                              prefixicon: Icons.key,
+                              obscuretext: true,
+                              controller: controller.pwdController,
+                            ),
+                            const SizedBox(height: 10),
+                            MyTextField(
+                              hinttext: 'Confirm your password',
+                              labeltext: 'Confirm Password',
+                              prefixicon: Icons.key,
+                              obscuretext: true,
+                              controller: controller.confirmpwdController,
+                            ),
+                          ],
+                        )
+                      : MyTextField(
+                          hinttext: 'Current Password',
+                          labeltext: 'Current Password',
+                          prefixicon: Icons.lock,
+                          obscuretext: true,
+                          controller: controller.currentPwdController,
+                        );
+                }),
                 const SizedBox(height: 30),
+                Obx(() {
+                  return controller.isPasswordVerified.value
+                      ? Container()
+                      : ApplyButton(
+                          onPressed: () {
+                            controller.verifyCurrentPassword(context);
+                          },
+                          buttonText: "Verify Password",
+                          buttonWidth: double.infinity,
+                          textAlignment: Alignment.center,
+                        );
+                }),
+                const SizedBox(height: 10),
                 ApplyButton(
-                    onPressed: () {
-                      controller.handleUpdateProfile(context);
-                    },
-                    buttonText: "Update Profile",
-                    buttonWidth: double.infinity,
-                    textAlignment: Alignment.center),
+                  onPressed: () {
+                    controller.handleUpdateProfile(context);
+                  },
+                  buttonText: "Update Profile",
+                  buttonWidth: double.infinity,
+                  textAlignment: Alignment.center,
+                ),
               ],
             ),
           ),
         ),
       ),
-    );
-  }
-
-  void _showImageSourceDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Choose Image Source'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: const Text('Gallery'),
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  await controller.pickImageFromGallery();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.camera_alt),
-                title: const Text('Camera'),
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  await controller.pickImageFromCamera();
-                },
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

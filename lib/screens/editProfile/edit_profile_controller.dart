@@ -151,9 +151,23 @@ class EditProfileController extends GetxController {
         }
       }
 
+      // Reauthenticate the user before updating email
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user!.email!,
+        password: currentPwdController.text,
+      );
+
+      await user.reauthenticateWithCredential(credential);
+
       // Update user email
       if (user != null && user.email != emailController.text) {
         await user.updateEmail(emailController.text);
+
+        // Update email in Firestore
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({'email': emailController.text});
       }
 
       // Update user password if provided

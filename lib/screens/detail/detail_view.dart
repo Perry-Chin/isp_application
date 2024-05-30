@@ -604,8 +604,7 @@ class DetailPage extends GetView<DetailController> {
   Widget proposeNewTimeButton() {
     return ElevatedButton(
       onPressed: () {
-        // Navigate to ProposeNewPage
-        // proposeNewPage(Get.context!); // Make sure to pass the context
+        proposeNewPage(Get.context!); // Make sure to pass the context
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,

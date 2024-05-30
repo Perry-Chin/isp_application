@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+
 import '../profile/profile_index.dart'; // Import the ProfileController
 
 class EditProfileController extends GetxController {
@@ -15,7 +15,9 @@ class EditProfileController extends GetxController {
   final emailController = TextEditingController();
   final pwdController = TextEditingController();
   final confirmpwdController = TextEditingController();
+  final currentPwdController = TextEditingController();
   final profileImageUrl = ''.obs;
+  final isPasswordVerified = false.obs;
 
   @override
   void onInit() {
@@ -84,21 +86,29 @@ class EditProfileController extends GetxController {
     }
   }
 
-  Future<void> pickImageFromGallery() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      File image = File(pickedFile.path);
-      await updateProfileImage(image);
-    }
-  }
+  Future<void> verifyCurrentPassword(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
 
-  Future<void> pickImageFromCamera() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      File image = File(pickedFile.path);
-      await updateProfileImage(image);
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user!.email!,
+        password: currentPwdController.text,
+      );
+
+      await user.reauthenticateWithCredential(credential);
+      isPasswordVerified.value = true;
+
+      Navigator.pop(context); // Dismiss loading dialog
+    } catch (error) {
+      Navigator.pop(context); // Dismiss loading dialog
+
+      showRoundedErrorDialog(context, 'Wrong password, please try again.');
     }
   }
 
@@ -159,21 +169,28 @@ class EditProfileController extends GetxController {
     } catch (error) {
       Navigator.pop(context); // Dismiss loading dialog
 
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Error'),
-          content: Text(error.toString()),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
+      showRoundedErrorDialog(context, error.toString());
     }
+  }
+
+  void showRoundedErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: const Text('Error'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 }

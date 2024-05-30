@@ -87,6 +87,11 @@ class EditProfileController extends GetxController {
   }
 
   Future<void> verifyCurrentPassword(BuildContext context) async {
+    if (currentPwdController.text.isEmpty) {
+      showRoundedErrorDialog(context, 'Password field is empty.');
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (context) => const Center(
@@ -137,9 +142,13 @@ class EditProfileController extends GetxController {
       }
 
       // Check for password update and validation
-      if (pwdController.text.isNotEmpty &&
-          pwdController.text != confirmpwdController.text) {
-        throw 'Passwords do not match';
+      if (pwdController.text.isNotEmpty) {
+        if (pwdController.text == currentPwdController.text) {
+          throw 'New password cannot be the same as the current password';
+        }
+        if (pwdController.text != confirmpwdController.text) {
+          throw 'Passwords do not match';
+        }
       }
 
       // Update user email

@@ -159,7 +159,7 @@ class MessageList extends GetView<MessageController> {
                         var userData = userDataMap[
                           item.data().fromUserid == controller.token
                             ? item.data().toUserid!
-                            : item.data().toUserid!
+                            : item.data().fromUserid!
                           ]; 
                         return messageListItem(item, userData);
                       },

@@ -42,7 +42,8 @@ class MessageController extends GetxController {
   Stream<List<QueryDocumentSnapshot<Msg>>> getMessageStream(String token) {
     var fromStream = db
       .collection('message')
-      .where('from_uid', isEqualTo: token)
+      .where('from_uid', isNotEqualTo: token)
+      
       .withConverter<Msg>(
         fromFirestore: Msg.fromFirestore,
         toFirestore: (Msg msg, _) => msg.toFirestore(),
@@ -52,7 +53,7 @@ class MessageController extends GetxController {
 
     var toStream = db
       .collection('message')
-      .where('to_uid', isEqualTo: token)
+      .where('to_uid', isNotEqualTo: token)
       .withConverter<Msg>(
         fromFirestore: Msg.fromFirestore,
         toFirestore: (Msg msg, _) => msg.toFirestore(),

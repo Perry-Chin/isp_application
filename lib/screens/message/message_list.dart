@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,63 +11,59 @@ import 'message_index.dart';
 class MessageList extends GetView<MessageController> {
   const MessageList({super.key});
   
-  Widget messageListItem(QueryDocumentSnapshot<Msg> item) {
+  Widget messageListItem(QueryDocumentSnapshot<Msg> item, UserData? userData) {
     return Container(
       padding: EdgeInsets.only(top: 10.w, left: 15.w, right: 15.w),
       child: InkWell(
         onTap: () {
-          // var to_uid = "";
-          // var to_name = "";
-          // var to_avatar = "";
-          // if(item.data().fromUserid == controller.token) {
-          //   to_uid = item.data().toUserid ?? "";
-          //   to_name = item.data() ?? "";
-          //   to_avatar = item.data().to_avatar ?? "";
-          // }
-          // else {
-          //   to_uid = item.data().from_uid ?? "";
-          //   to_name = item.data().from_name ?? "";
-          //   to_avatar = item.data().from_avatar ?? "";
-          // }
-          // Get.toNamed("/chat", parameters: {
-          //   "doc_id": item.id,
-          //   "to_uid": to_uid,
-          //   "to_name": to_name,
-          //   "to_avatar": to_avatar
-          // });
+          var toUserid = "";
+          var toName = "";
+          var toAvatar = "";
+          if(item.data().fromUserid == controller.token) {
+            toUserid = item.data().toUserid ?? "";
+            toName = userData?.username ?? "";
+            toAvatar = userData!.photourl!;
+          }
+          else {
+            toUserid = item.data().fromUserid ?? "";
+            toName = userData?.username ?? "";
+            toAvatar = userData!.photourl!;
+          }
+          print(toAvatar);
+          Get.toNamed("/chat", parameters: {
+            "doc_id": item.id,
+            "to_uid": toUserid,
+            "to_name": toName,
+            "to_avatar": toAvatar
+          });
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Container(
-            //   padding: EdgeInsets.only(top: 0.w, left: 0.w, right: 15.w),
-            //   child: SizedBox(
-            //     width: 54.w,
-            //     height: 54.w,
-            //     child: CachedNetworkImage(
-            //       //Check the uid of the current user and show only other users
-            //       imageUrl: item.data().fromUserid == controller.token 
-            //         ? item.data().toUserid!:
-            //         item.data().from_avatar!,
-            //         imageBuilder: (context, ImageProvider) => Container(
-            //         width: 54.w,
-            //         height: 54.w,
-            //         decoration: BoxDecoration(
-            //           borderRadius: const BorderRadius.all(Radius.circular(54)),
-            //           image: DecorationImage(
-            //             image: ImageProvider,
-            //             fit: BoxFit.cover
-            //           )
-            //         ),
-            //       ),
-            //       //If the user does not have a profile picture
-            //       errorWidget: (context, url, error) => const Image(
-            //         image: AssetImage('assets/images/feature-1.png')
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            Padding(
+              padding: const EdgeInsets.only(right: 14.0),
+              child: Container(
+                width: 57.w,
+                height: 57.w,
+                child: ClipOval(
+                  child: userData?.photourl != null && userData!.photourl!.isNotEmpty
+                    ? FadeInImage.assetNetwork(
+                        placeholder: "assets/images/profile.png",
+                        image: userData.photourl!,
+                        fadeInDuration: const Duration(milliseconds: 100),
+                        fit: BoxFit.cover,
+                        width: 57.w,
+                        height: 57.w,
+                        imageErrorBuilder: (context, error, stackTrace) {
+                          print("Error loading image: $error");
+                          return Image.asset("assets/images/profile.png");
+                        },
+                      )
+                  : Image.asset("assets/images/profile.png"),
+                ),
+              ),
+            ),
             Container(
               padding: EdgeInsets.only(top: 0.w, left: 0.w, right: 5.w),
               decoration: const BoxDecoration(
@@ -87,9 +82,7 @@ class MessageList extends GetView<MessageController> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          item.data().fromUserid == controller.token
-                            ? item.data().toUserid!
-                            : item.data().toUserid!,
+                          userData?.username ?? "",
                           overflow: TextOverflow.clip,
                           maxLines: 1,   
                           style: TextStyle(
@@ -141,31 +134,45 @@ class MessageList extends GetView<MessageController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => SmartRefresher(
-        enablePullDown: true,
-        enablePullUp: true,
-        controller: controller.refreshController,
-        onLoading: controller.onLoading,
-        onRefresh: controller.onRefresh,
-        header: const WaterDropHeader(),
-        child: CustomScrollView(
-          slivers: [
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.w),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    var item = controller.state.msgList[index]; 
-                    return messageListItem(item);
-                  },
-                  childCount: controller.state.msgList.length
-                )
-              ),
+    return StreamBuilder<Map<String, UserData?>>(
+      stream: controller.combinedStream,
+      builder: (context, snapshot) {
+        final userDataMap = snapshot.data ?? {};
+        // if (snapshot.connectionState == ConnectionState.waiting) {
+        //   return const ShimmerLoading();
+        // }
+        return Obx(
+          () => SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: true,
+            controller: controller.refreshController,
+            onLoading: controller.onLoading,
+            onRefresh: controller.onRefresh,
+            header: const WaterDropHeader(),
+            child: CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.w),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        var item = controller.state.msgList[index];
+                        var userData = userDataMap[
+                          item.data().fromUserid == controller.token
+                            ? item.data().toUserid!
+                            : item.data().fromUserid!
+                          ]; 
+                        return messageListItem(item, userData);
+                      },
+                      childCount: controller.state.msgList.length
+                    )
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      )
+          )
+        );
+      }
     );
   }
 }

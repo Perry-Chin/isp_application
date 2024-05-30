@@ -1,6 +1,15 @@
+<<<<<<< HEAD
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+=======
+// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+// // import '../../common/data/service.dart';
+// // import '../../common/data/user.dart';
+
+>>>>>>> 8dc5a1a219270da6c6b5ae21cf7399339aa3ef2a
 Future<void> proposeNewPage(BuildContext context) async {
   showModalBottomSheet(
     context: context,
@@ -9,6 +18,7 @@ Future<void> proposeNewPage(BuildContext context) async {
     },
   );
 }
+<<<<<<< HEAD
 
 class ProposeTimeSheet extends StatefulWidget {
   @override
@@ -289,3 +299,5 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
   }
 }
 
+=======
+>>>>>>> 8dc5a1a219270da6c6b5ae21cf7399339aa3ef2a

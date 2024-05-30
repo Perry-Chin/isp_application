@@ -22,7 +22,7 @@ class MessagePage extends GetView<MessageController> {
       backgroundColor: AppColor.backgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: _buildAppBar(),
-      body: MessageList()
+      body: const MessageList()
     );
   }
 }

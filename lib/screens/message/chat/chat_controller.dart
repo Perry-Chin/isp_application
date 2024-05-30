@@ -7,9 +7,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 
 import '../../../common/data/data.dart';
 import '../../../common/storage/storage.dart';
+import '../../../common/utils/utils.dart';
 import 'chat_index.dart';
 
 class ChatController extends GetxController {
@@ -27,15 +29,15 @@ class ChatController extends GetxController {
   final ImagePicker _picker = ImagePicker();
   final user = Rxn<UserData>();
 
-  // Future<void> imgFromGallery() async {
-  //   final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-  //   if (pickedFile != null) {
-  //     _photo = File(pickedFile.path);
-  //     uploadFile();
-  //   } else {
-  //     print("No image selected");
-  //   }
-  // }
+  Future<void> imgFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      _photo = File(pickedFile.path);
+      uploadFile();
+    } else {
+      print("No image selected");
+    }
+  }
 
   Future getImgUrl(String name) async {
     final spaceRef = FirebaseStorage.instance.ref("chat").child(name);
@@ -66,32 +68,31 @@ class ChatController extends GetxController {
     });
   }
 
-  // Future uploadFile() async {
-  //   if (_photo == null) return;
-  //   final fileName = getRandomString(15) + extension(_photo!.path);
-  //   try {
-  //     final ref = FirebaseStorage.instance.ref("chat").child(fileName);
-  //     await ref.putFile(_photo!).snapshotEvents.listen((event) async {
-  //       switch (event.state) {
-  //         case TaskState.running:
-  //           break;
-  //         case TaskState.paused:
-  //           break;
-  //         case TaskState.success:
-  //           String imgUrl = await getImgUrl(fileName);
-  //           print(imgUrl + "this is");
-  //           sendImageMessage(imgUrl);
-  //           break;
-  //         case TaskState.canceled:
-  //           break;
-  //         case TaskState.error:
-  //           break;
-  //       }
-  //     });
-  //   } catch (e) {
-  //     print("There's an error $e");
-  //   }
-  // }
+  Future uploadFile() async {
+    if (_photo == null) return;
+    final fileName = getRandomString(15) + extension(_photo!.path);
+    try {
+      final ref = FirebaseStorage.instance.ref("chat").child(fileName);
+      ref.putFile(_photo!).snapshotEvents.listen((event) async {
+        switch (event.state) {
+          case TaskState.running:
+            break;
+          case TaskState.paused:
+            break;
+          case TaskState.success:
+            String imgUrl = await getImgUrl(fileName);
+            sendImageMessage(imgUrl);
+            break;
+          case TaskState.canceled:
+            break;
+          case TaskState.error:
+            break;
+        }
+      });
+    } catch (e) {
+      print("There's an error $e");
+    }
+  }
 
   @override
   void onInit() {
@@ -100,6 +101,7 @@ class ChatController extends GetxController {
     doc_id = data['doc_id'];
     state.toUserid.value = data['to_uid'] ?? "";
     state.toName.value = data['to_name'] ?? "";
+    state.toAvatar.value = data["to_avatar"] ?? "";
   }
 
   sendMessage() async {

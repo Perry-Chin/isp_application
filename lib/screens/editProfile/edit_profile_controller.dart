@@ -87,6 +87,11 @@ class EditProfileController extends GetxController {
   }
 
   Future<void> verifyCurrentPassword(BuildContext context) async {
+    if (currentPwdController.text.isEmpty) {
+      showRoundedErrorDialog(context, 'Password field is empty.');
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (context) => const Center(
@@ -137,14 +142,32 @@ class EditProfileController extends GetxController {
       }
 
       // Check for password update and validation
-      if (pwdController.text.isNotEmpty &&
-          pwdController.text != confirmpwdController.text) {
-        throw 'Passwords do not match';
+      if (pwdController.text.isNotEmpty) {
+        if (pwdController.text == currentPwdController.text) {
+          throw 'New password cannot be the same as the current password';
+        }
+        if (pwdController.text != confirmpwdController.text) {
+          throw 'Passwords do not match';
+        }
       }
+
+      // Reauthenticate the user before updating email
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user!.email!,
+        password: currentPwdController.text,
+      );
+
+      await user.reauthenticateWithCredential(credential);
 
       // Update user email
       if (user != null && user.email != emailController.text) {
         await user.updateEmail(emailController.text);
+
+        // Update email in Firestore
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({'email': emailController.text});
       }
 
       // Update user password if provided

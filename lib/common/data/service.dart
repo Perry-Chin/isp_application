@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:isp_application/common/data/data.dart';
+
+import 'data.dart';
 
 class ServiceData {
   final String? serviceid;

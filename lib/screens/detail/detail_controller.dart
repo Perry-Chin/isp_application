@@ -143,26 +143,26 @@ class DetailController extends GetxController {
             "doc_id": value.id,
             "to_uid": userData.id ?? "",
             "to_name": userData.username ?? "",
+            "to_avatar": userData.photourl ?? ""
           });
         });
       }
       //If the user has messaged the other party
       else {
         if(fromMessages.docs.isNotEmpty) {
-          print(userData.id);
-          print(userData.username);
           Get.toNamed("/chat", parameters: {
             "doc_id": fromMessages.docs.first.id,
             "to_uid": userData.id ?? "",
-            "to_name": userData.username ?? ""
+            "to_name": userData.username ?? "",
+            "to_avatar": userData.photourl ?? ""
           });
         }
         if(toMessages.docs.isNotEmpty) {
-          print("object");
           Get.toNamed("/chat", parameters: {
             "doc_id": toMessages.docs.first.id,
             "to_uid": userData.id ?? "",
-            "to_name": userData.username ?? ""
+            "to_name": userData.username ?? "",
+            "to_avatar": userData.photourl ?? ""
           });
         }
       }

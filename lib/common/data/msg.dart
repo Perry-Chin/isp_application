@@ -12,7 +12,7 @@ class Msg {
     this.toUserid,
     this.lastMsg,
     this.lastTime,
-    this.msgNum,
+    this.msgNum
   });
 
   factory Msg.fromFirestore(

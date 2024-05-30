@@ -101,6 +101,7 @@ class ChatController extends GetxController {
     doc_id = data['doc_id'];
     state.toUserid.value = data['to_uid'] ?? "";
     state.toName.value = data['to_name'] ?? "";
+    state.toAvatar.value = data["to_avatar"] ?? "";
   }
 
   sendMessage() async {

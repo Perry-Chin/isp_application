@@ -358,12 +358,13 @@ class DetailPage extends GetView<DetailController> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
                 alignment: Alignment.topCenter,
-                height: 120,
+                height: hideButtons ? 40 : 120,
                 width: 40,
                 child: const Icon(Icons.date_range),
               ),
@@ -402,17 +403,26 @@ class DetailPage extends GetView<DetailController> {
             children: [
               Container(
                 alignment: Alignment.topCenter,
-                height: 25,
+                height: 40,
                 width: 40,
                 child: const Icon(Icons.location_on),
               ),
               const SizedBox(width: 10),
-              Text(
-                serviceData.location ?? "Description",
-                style: const TextStyle(fontSize: 15),
+              Expanded(
+                child: Text(
+                  serviceData.location ?? "Description",
+                  style: const TextStyle(fontSize: 15),
+                ),
               ),
             ],
           ),
+          if (!hideButtons) ...[
+            const Divider(
+              thickness: 2,
+              color: Colors.black12,
+              height: 35,
+            ),
+          ],
         ],
       ),
     );

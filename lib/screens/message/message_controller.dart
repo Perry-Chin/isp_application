@@ -142,13 +142,18 @@ class MessageController extends GetxController {
         .where("msg_num", isGreaterThan: 0)
         .get();
 
-    state.messageCount.value = fromMessages.docs.length + toMessages.docs.length;
-
     var allMessages = [...fromMessages.docs, ...toMessages.docs];
+
+    // Sort messages by earliest date
+    allMessages.sort((b, a) {
+      var aTime = (a.data().lastTime as Timestamp).toDate();
+      var bTime = (b.data().lastTime as Timestamp).toDate();
+      return aTime.compareTo(bTime);
+    });
+
+    state.messageCount.value = allMessages.length;
     
     state.msgList.assignAll(allMessages);
-
-    // Apply the filter only if the applyFilter flag is true
     state.filteredMsgList.assignAll(allMessages);
-  }
+    }
 }

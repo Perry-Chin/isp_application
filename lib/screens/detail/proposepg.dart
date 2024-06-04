@@ -39,7 +39,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
         final RegExp timeRegExp =
             RegExp(r'^([0-1][0-9]|2[0-3]):([0-5][0-9])(?: (AM|PM))?$');
         if (!timeRegExp.hasMatch(startText) || !timeRegExp.hasMatch(endText)) {
-          throw FormatException(
+          throw const FormatException(
               "Invalid time format. Please use HH:MM (24-hour) or HH:MM AM/PM (12-hour).");
         }
 

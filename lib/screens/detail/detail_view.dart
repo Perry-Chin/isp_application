@@ -403,7 +403,7 @@ class DetailPage extends GetView<DetailController> {
             children: [
               Container(
                 alignment: Alignment.topCenter,
-                height: 40,
+                height: 25,
                 width: 40,
                 child: const Icon(Icons.location_on),
               ),
@@ -416,13 +416,6 @@ class DetailPage extends GetView<DetailController> {
               ),
             ],
           ),
-          if (!hideButtons) ...[
-            const Divider(
-              thickness: 2,
-              color: Colors.black12,
-              height: 35,
-            ),
-          ],
         ],
       ),
     );

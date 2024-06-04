@@ -5,12 +5,14 @@ Future<void> proposeNewPage(BuildContext context) async {
   showModalBottomSheet(
     context: context,
     builder: (BuildContext bc) {
-      return ProposeTimeSheet();
+      return const ProposeTimeSheet();
     },
   );
 }
 
 class ProposeTimeSheet extends StatefulWidget {
+  const ProposeTimeSheet({super.key});
+
   @override
   _ProposeTimeSheetState createState() => _ProposeTimeSheetState();
 }
@@ -62,11 +64,11 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
             totalHoursDouble.toStringAsFixed(2).replaceAll('.', ':');
 
         setState(() {
-          _totalHours = formattedHours + " hours";
+          _totalHours = "$formattedHours hours";
         });
       } on FormatException catch (e) {
         setState(() {
-          _totalHours = e.message!;
+          _totalHours = e.message;
         });
       } catch (e) {
         setState(() {

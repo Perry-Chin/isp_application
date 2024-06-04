@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -13,53 +15,51 @@ class ChatPage extends GetView<ChatController> {
     return AppBar(
       backgroundColor: AppColor.secondaryColor,
       elevation: 0,
-      title: Container(
-        padding: EdgeInsets.only(top: 0.w, bottom: 0.w, right: 0.w),
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.only(top: 0.w, bottom: 0.w, right: 0.w),
-              child: InkWell(
-                child: SizedBox(
-                  width: 44.w,
-                  height: 44.w,
-                  child: ClipOval(
-                    child: controller.state.toAvatar.value.isNotEmpty
-                    ? FadeInImage.assetNetwork(
-                        placeholder: "assets/images/profile.png",
-                        image: controller.state.toAvatar.value,
-                        fadeInDuration: const Duration(milliseconds: 100),
-                        fit: BoxFit.cover,
-                        width: 57.w,
-                        height: 57.w,
-                        imageErrorBuilder: (context, error, stackTrace) {
-                          print("Error loading image: $error");
-                          return Image.asset("assets/images/profile.png");
-                        },
-                      )
-                    : Image.asset("assets/images/profile.png"),
-                  )
-                ),
-              )
-            ),
-            Container(
-              width: 180.w,
-              padding: EdgeInsets.only(top: 0.w, bottom: 0.w, right: 0.w),
-              child: Row(
-                children: [
-                  Text(
-                    controller.state.toName.value,
-                    overflow: TextOverflow.clip,
-                    maxLines: 1,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            padding: EdgeInsets.only(top: 0.w, bottom: 0.w, right: 10.w),
+            child: InkWell(
+              child: SizedBox(
+                width: 40.w,
+                height: 40.w,
+                child: ClipOval(
+                  child: controller.state.toAvatar.value.isNotEmpty
+                  ? FadeInImage.assetNetwork(
+                      placeholder: "assets/images/profile.png",
+                      image: controller.state.toAvatar.value,
+                      fadeInDuration: const Duration(milliseconds: 100),
+                      fit: BoxFit.cover,
+                      width: 50.w,
+                      height: 50.w,
+                      imageErrorBuilder: (context, error, stackTrace) {
+                        print("Error loading image: $error");
+                        return Image.asset("assets/images/profile.png");
+                      },
+                    )
+                  : Image.asset("assets/images/profile.png"),
+                )
               ),
             )
-          ],
-        ),
+          ),
+          Container(
+            width: 180.w,
+            padding: EdgeInsets.only(top: 0.w, bottom: 0.w, right: 0.w),
+            child: Row(
+              children: [
+                Text(
+                  controller.state.toName.value,
+                  overflow: TextOverflow.clip,
+                  maxLines: 1,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

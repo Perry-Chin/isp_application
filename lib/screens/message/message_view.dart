@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/values/values.dart';
+import '../../common/widgets/widgets.dart';
 import 'message_index.dart';
 
 class MessagePage extends GetView<MessageController> {
@@ -22,7 +23,25 @@ class MessagePage extends GetView<MessageController> {
       backgroundColor: AppColor.backgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: _buildAppBar(),
-      body: const MessageList()
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
+            child: SearchBoxBar(
+              controller: controller.searchController, 
+              onChanged: (value) {
+                // Call controller function to filter service list based on username
+                controller.filterMessages(value);
+              },
+              showSuffixIcon: false,
+            ),
+          ),
+          const SizedBox(height: 15),
+          const Expanded(
+            child: MessageList()
+          ),
+        ]
+      ) 
     );
   }
 }

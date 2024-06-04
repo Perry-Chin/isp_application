@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/values/values.dart';
+import '../../common/widgets/widgets.dart';
 import 'home_index.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -17,57 +18,6 @@ class HomePage extends GetView<HomeController> {
     );
   }
 
-  // Search bar widget
-  Widget searchBar() {
-    return Container(
-      height: 50,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black45,
-            blurRadius: 1,
-            offset: Offset(1.6, 1.6)
-          )
-        ],
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: AppColor.secondaryColor,
-          width: 1
-        )
-      ),
-      child: Center(
-        child: TextField(
-          decoration: InputDecoration(
-            hintText: 'Search',
-            border: InputBorder.none,
-            prefixIcon: const Icon(
-              Icons.search,
-              color: AppColor.secondaryColor
-            ),
-            // Filter search results
-            suffixIcon: IconButton(
-              icon: const Icon(
-                Icons.filter_list,
-                color: AppColor.secondaryColor,
-              ),
-              onPressed: () {
-                
-              },
-            ),
-            contentPadding: const EdgeInsets.symmetric(vertical: 14),
-          ),
-          controller: controller.searchController,
-          onChanged: (value) {
-            // Call controller function to filter service list based on username
-            controller.filterServiceList(value);
-          },
-        ),
-      )
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,10 +29,17 @@ class HomePage extends GetView<HomeController> {
         padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
         child: Column(
           children: [
-            searchBar(),
+            SearchBoxBar(
+              controller: controller.searchController, 
+              onChanged: (value) {
+                // Call controller function to filter service list based on username
+                controller.filterServiceList(value);
+              },
+              showSuffixIcon: true,
+            ),
             const SizedBox(height: 10),
             SizedBox(
-              height: 460,
+              height: 470,
               child: HomeList(),
             ),
           ],

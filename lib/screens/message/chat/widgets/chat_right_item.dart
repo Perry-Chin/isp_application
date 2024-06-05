@@ -18,7 +18,7 @@ Widget chatRightItem(Msgcontent item) {
           ),
           child: Container(
             margin: EdgeInsets.only(right: 10.w, top: 0.w),
-            padding: EdgeInsets.only(top: 10.w, left: 10.w, right: 10.w),
+            padding: EdgeInsets.all(10.w),
             decoration: BoxDecoration(
               color: AppColor.secondaryColor,
               borderRadius: BorderRadius.all(Radius.circular(10.w))

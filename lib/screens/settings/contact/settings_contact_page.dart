@@ -4,6 +4,8 @@ import '../../../common/values/values.dart';
 import '../../../common/values/color.dart';
 
 class ContactPage extends StatefulWidget {
+  const ContactPage({super.key});
+
   @override
   _ContactPageState createState() => _ContactPageState();
 }

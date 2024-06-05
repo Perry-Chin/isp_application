@@ -12,6 +12,7 @@ import 'package:path/path.dart';
 import '../../../common/data/data.dart';
 import '../../../common/storage/storage.dart';
 import '../../../common/utils/utils.dart';
+import '../message_index.dart';
 import 'chat_index.dart';
 
 class ChatController extends GetxController {
@@ -92,6 +93,13 @@ class ChatController extends GetxController {
     } catch (e) {
       print("There's an error $e");
     }
+  }
+
+  final MessageController messageController = Get.find<MessageController>();
+  @override
+  void onClose() {
+    super.onClose();
+    messageController.asyncLoadAllData();
   }
 
   @override

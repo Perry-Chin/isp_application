@@ -1,6 +1,6 @@
 // settings View
 
-// ignore_for_file: unused_field
+// ignore_for_file: unused_field, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -37,7 +37,7 @@ class SettingsxPage extends GetView<SettingsxController> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ContactPage(),
+                    builder: (context) => const ContactPage(),
                   ),//1
                 );
               },

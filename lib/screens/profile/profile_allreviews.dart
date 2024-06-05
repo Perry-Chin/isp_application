@@ -38,7 +38,7 @@ class _ReviewsListState extends State<ReviewsList> {
                 onTap: () {
                   setState(() {
                     profileController.reviews
-                        .sort((a, b) => b.date.compareTo(a.date));
+                        .sort((a, b) => b.timestamp.compareTo(a.timestamp));
                   });
                   Navigator.pop(context);
                 },
@@ -48,7 +48,7 @@ class _ReviewsListState extends State<ReviewsList> {
                 onTap: () {
                   setState(() {
                     profileController.reviews
-                        .sort((a, b) => a.date.compareTo(b.date));
+                        .sort((a, b) => a.timestamp.compareTo(b.timestamp));
                   });
                   Navigator.pop(context);
                 },
@@ -84,7 +84,7 @@ class _ReviewsListState extends State<ReviewsList> {
   Widget build(BuildContext context) {
     return Obx(() {
       if (profileController.reviews.isEmpty) {
-        return const Center(
+        return Center(
           child: Text(
             'No Reviews',
             style: TextStyle(fontSize: 18),
@@ -143,7 +143,7 @@ class _ReviewsListState extends State<ReviewsList> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  review.user,
+                                  review.fromUid,
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -160,7 +160,7 @@ class _ReviewsListState extends State<ReviewsList> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                Text(review.review),
+                                Text(review.reviewText),
                               ],
                             ),
                           ),

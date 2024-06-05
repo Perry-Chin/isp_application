@@ -44,12 +44,8 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
         // Validate time format (HHMM)
         final RegExp timeRegExp = RegExp(r'^([01]?[0-9]|2[0-3])[0-5][0-9]$');
         if (!timeRegExp.hasMatch(startText) || !timeRegExp.hasMatch(endText)) {
-<<<<<<< HEAD
           throw const FormatException(
               "Invalid time format. Please use HH:MM (24-hour) or HH:MM AM/PM (12-hour).");
-=======
-          throw const FormatException("Invalid time format. Please use HHMM.");
->>>>>>> 7d0ec61aef9f250f20623862012c89b8536f1b65
         }
 
         // Parse times as DateTime objects

@@ -50,8 +50,20 @@ class ProfileController extends GetxController {
 
       QuerySnapshot<Map<String, dynamic>> querySnapshot = await query.get();
 
-      reviews.value =
+      final fetchedReviews =
           querySnapshot.docs.map((doc) => Review.fromFirestore(doc)).toList();
+
+      for (var review in fetchedReviews) {
+        DocumentSnapshot<Map<String, dynamic>> userDoc =
+            await db.collection('users').doc(review.fromUid).get();
+        if (userDoc.exists) {
+          final userData = userDoc.data();
+          review.fromUsername = userData?['username'];
+          review.fromPhotoUrl = userData?['photourl'];
+        }
+      }
+
+      reviews.value = fetchedReviews;
     } catch (e) {
       print('Error fetching reviews: $e');
     }
@@ -72,6 +84,8 @@ class Review {
   final String serviceId;
   final String serviceType;
   final DateTime timestamp;
+  String? fromUsername; // New field for from user's username
+  String? fromPhotoUrl; // New field for from user's photo URL
 
   Review({
     required this.id,
@@ -82,6 +96,8 @@ class Review {
     required this.serviceId,
     required this.serviceType,
     required this.timestamp,
+    this.fromUsername,
+    this.fromPhotoUrl,
   });
 
   factory Review.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {

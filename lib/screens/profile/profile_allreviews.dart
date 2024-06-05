@@ -14,6 +14,7 @@ class ReviewsList extends StatefulWidget {
 
 class _ReviewsListState extends State<ReviewsList> {
   final ProfileController profileController = Get.find<ProfileController>();
+  String sortType = 'Newest';
 
   @override
   void initState() {
@@ -37,6 +38,7 @@ class _ReviewsListState extends State<ReviewsList> {
                 title: const Text('Newest'),
                 onTap: () {
                   setState(() {
+                    sortType = 'Newest';
                     profileController.reviews
                         .sort((a, b) => b.timestamp.compareTo(a.timestamp));
                   });
@@ -47,6 +49,7 @@ class _ReviewsListState extends State<ReviewsList> {
                 title: const Text('Oldest'),
                 onTap: () {
                   setState(() {
+                    sortType = 'Oldest';
                     profileController.reviews
                         .sort((a, b) => a.timestamp.compareTo(b.timestamp));
                   });
@@ -57,6 +60,7 @@ class _ReviewsListState extends State<ReviewsList> {
                 title: const Text('Highest Rating'),
                 onTap: () {
                   setState(() {
+                    sortType = 'Highest Rating';
                     profileController.reviews
                         .sort((a, b) => b.rating.compareTo(a.rating));
                   });
@@ -67,6 +71,7 @@ class _ReviewsListState extends State<ReviewsList> {
                 title: const Text('Lowest Rating'),
                 onTap: () {
                   setState(() {
+                    sortType = 'Lowest Rating';
                     profileController.reviews
                         .sort((a, b) => a.rating.compareTo(b.rating));
                   });
@@ -84,7 +89,7 @@ class _ReviewsListState extends State<ReviewsList> {
   Widget build(BuildContext context) {
     return Obx(() {
       if (profileController.reviews.isEmpty) {
-        return Center(
+        return const Center(
           child: Text(
             'No Reviews',
             style: TextStyle(fontSize: 18),
@@ -104,7 +109,7 @@ class _ReviewsListState extends State<ReviewsList> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: const Text('Sort'),
+                  child: Text(sortType), // Update button text dynamically
                 ),
               ],
             ),
@@ -135,7 +140,14 @@ class _ReviewsListState extends State<ReviewsList> {
                         children: [
                           CircleAvatar(
                             backgroundColor: Colors.grey.shade200,
-                            child: const Icon(Icons.person, color: Colors.grey),
+                            backgroundImage: review.fromPhotoUrl != null &&
+                                    review.fromPhotoUrl!.isNotEmpty
+                                ? NetworkImage(review.fromPhotoUrl!)
+                                : null,
+                            child: review.fromPhotoUrl == null ||
+                                    review.fromPhotoUrl!.isEmpty
+                                ? const Icon(Icons.person, color: Colors.grey)
+                                : null,
                           ),
                           const SizedBox(width: 16),
                           Expanded(
@@ -143,7 +155,7 @@ class _ReviewsListState extends State<ReviewsList> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  review.fromUid,
+                                  review.fromUsername ?? 'Anonymous',
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold),
                                 ),

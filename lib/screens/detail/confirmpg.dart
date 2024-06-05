@@ -102,7 +102,9 @@ class ConfirmPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     const Text(
                       "Total fees",
                       style: TextStyle(
@@ -126,32 +128,33 @@ class ConfirmPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                              padding: EdgeInsets.only(
+                              padding: const EdgeInsets.only(
                                 left: 5,
                                 top: 5,
                                 bottom: 10,
                               ),
-                              child: Obx((){
+                              child: Obx(() {
                                 final totalCost = controller.totalCost.value;
                                 return Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Total Payout",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      "Total Payout",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    "\$$totalCost",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17,
+                                    Text(
+                                      "\$$totalCost",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              );
+                                  ],
+                                );
                               })),
                           Visibility(
                             visible: controller.showPaymentSection,
@@ -315,7 +318,9 @@ class ConfirmPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Container(
                       width: double.infinity,
                       height: 38,

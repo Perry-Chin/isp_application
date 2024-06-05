@@ -8,9 +8,10 @@ class Review {
   final double rating;
   final String reviewText;
   final Timestamp timestamp;
-  final String serviceType; // New field to differentiate the roles
+  final String serviceType;
+  String? fromUsername; // New field for from user's username
+  String? fromPhotoUrl; // New field for from user's photo URL
 
-  // Constructor
   Review({
     this.reviewId,
     required this.serviceId,
@@ -20,13 +21,12 @@ class Review {
     required this.reviewText,
     required this.timestamp,
     required this.serviceType,
+    this.fromUsername,
+    this.fromPhotoUrl,
   });
 
-  // Create Review object from Firestore document snapshot
   factory Review.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
-    SnapshotOptions? options,
-  ) {
+      DocumentSnapshot<Map<String, dynamic>> snapshot) {
     final data = snapshot.data();
     return Review(
       reviewId: snapshot.id,
@@ -40,7 +40,6 @@ class Review {
     );
   }
 
-  // Convert Review object to Firestore document data
   Map<String, dynamic> toFirestore() {
     return {
       if (reviewId != null) 'review_id': reviewId,
@@ -51,10 +50,11 @@ class Review {
       'review_text': reviewText,
       'timestamp': timestamp,
       'service_type': serviceType,
+      if (fromUsername != null) 'from_username': fromUsername,
+      if (fromPhotoUrl != null) 'from_photo_url': fromPhotoUrl,
     };
   }
 
-  // Create Review object from JSON data
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
       reviewId: json['review_id'],
@@ -65,10 +65,11 @@ class Review {
       reviewText: json['review_text'],
       timestamp: json['timestamp'],
       serviceType: json['service_type'],
+      fromUsername: json['from_username'],
+      fromPhotoUrl: json['from_photo_url'],
     );
   }
 
-  // Convert Review object to JSON data
   Map<String, dynamic> toJson() {
     return {
       'review_id': reviewId,
@@ -79,6 +80,8 @@ class Review {
       'review_text': reviewText,
       'timestamp': timestamp,
       'service_type': serviceType,
+      'from_username': fromUsername,
+      'from_photo_url': fromPhotoUrl,
     };
   }
 }

@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -21,6 +22,8 @@ class DetailController extends GetxController {
   final subtotal = 0.0.obs;
   final taxFee = 0.0.obs;
   final totalCost = 0.0.obs;
+  final selectedDate = DateTime.now().obs; // Observable for selected date
+  final selectedTime = TimeOfDay.now().obs; // Observable for selected time
 
    bool showPaymentSection = false; 
 

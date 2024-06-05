@@ -5,7 +5,8 @@ Future<void> proposeNewPage(BuildContext context) async {
   showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20))
+    ),
     builder: (BuildContext bc) {
       return const ProposeTimeSheet();
     },
@@ -43,12 +44,8 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
         // Validate time format (HHMM)
         final RegExp timeRegExp = RegExp(r'^([01]?[0-9]|2[0-3])[0-5][0-9]$');
         if (!timeRegExp.hasMatch(startText) || !timeRegExp.hasMatch(endText)) {
-<<<<<<< Updated upstream
           throw const FormatException(
               "Invalid time format. Please use HH:MM (24-hour) or HH:MM AM/PM (12-hour).");
-=======
-          throw const FormatException("Invalid time format. Please use HHMM.");
->>>>>>> Stashed changes
         }
 
         // Parse times as DateTime objects
@@ -63,8 +60,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
         double totalHoursDouble = duration.inMinutes / 60.0;
 
         // Format total hours as HH.MM
-        String formattedHours =
-            totalHoursDouble.toStringAsFixed(2).replaceAll('.', ':');
+        String formattedHours = totalHoursDouble.toStringAsFixed(2).replaceAll('.', ':');
 
         setState(() {
           _totalHours = "$formattedHours hours";
@@ -88,8 +84,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
   DateTime _parseTime(String timeText, String period) {
     final int hour = int.parse(timeText.substring(0, 2));
     final int minute = int.parse(timeText.substring(2, 4));
-    return DateFormat('hh:mm a')
-        .parse('${hour % 12}:${minute.toString().padLeft(2, '0')} $period');
+    return DateFormat('hh:mm a').parse('${hour % 12}:${minute.toString().padLeft(2, '0')} $period');
   }
 
   @override
@@ -104,8 +99,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SingleChildScrollView(
-        // Make the content scrollable
+      child: SingleChildScrollView( // Make the content scrollable
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -118,9 +112,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
                 ),
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15,),
               const Text(
                 "Once submitted, BuzzBuddy will share your proposed time with the Requester for their confirmation.",
                 style: TextStyle(fontSize: 15),
@@ -131,14 +123,15 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                 children: [
                   Text(
                     "Original Date & Time",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   )
                 ],
               ),
               const SizedBox(height: 10),
               Container(
-                padding:
-                    const EdgeInsets.all(16.0), // Set padding for the container
+                padding: const EdgeInsets.all(
+                    16.0), // Set padding for the container
                 decoration: BoxDecoration(
                   borderRadius:
                       BorderRadius.circular(10.0), // Set border radius
@@ -170,8 +163,8 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                         padding: const EdgeInsets.all(
                             16.0), // Set padding for the container
                         decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(10.0), // Set border radius
+                          borderRadius: BorderRadius.circular(
+                              10.0), // Set border radius
                           color: Colors.grey[200], // Set background color
                           border: Border.all(
                             // Add border
@@ -186,11 +179,11 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                                 controller: _startController,
                                 decoration: const InputDecoration(
                                   hintText: 'Start', // Placeholder text
-                                  border:
-                                      InputBorder.none, // Remove default border
+                                  border: InputBorder
+                                      .none, // Remove default border
                                 ),
-                                keyboardType:
-                                    TextInputType.number, // Ensure number input
+                                keyboardType: TextInputType
+                                    .number, // Ensure number input
                                 style: const TextStyle(
                                   fontSize: 16.0, // Set font size
                                   color: Colors.black, // Set text color
@@ -230,8 +223,8 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                         padding: const EdgeInsets.all(
                             16.0), // Set padding for the container
                         decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(10.0), // Set border radius
+                          borderRadius: BorderRadius.circular(
+                              10.0), // Set border radius
                           color: Colors.grey[200], // Set background color
                           border: Border.all(
                             // Add border
@@ -246,11 +239,11 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                                 controller: _endController,
                                 decoration: const InputDecoration(
                                   hintText: 'End', // Placeholder text
-                                  border:
-                                      InputBorder.none, // Remove default border
+                                  border: InputBorder
+                                      .none, // Remove default border
                                 ),
-                                keyboardType:
-                                    TextInputType.number, // Ensure number input
+                                keyboardType: TextInputType
+                                    .number, // Ensure number input
                                 style: const TextStyle(
                                   fontSize: 16.0, // Set font size
                                   color: Colors.black, // Set text color
@@ -285,8 +278,8 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
               ),
               const SizedBox(height: 20),
               Container(
-                padding:
-                    const EdgeInsets.all(16.0), // Set padding for the container
+                padding: const EdgeInsets.all(
+                    16.0), // Set padding for the container
                 decoration: BoxDecoration(
                   borderRadius:
                       BorderRadius.circular(10.0), // Set border radius
@@ -318,35 +311,6 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                       ),
                     ),
                   ],
-                ),
-              ),
-              const SizedBox(height: 20,),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(
-                      20.0), // Adjust the radius as needed
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3), // changes position of shadow
-                    ),
-                  ],
-                ),
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Add your onPressed logic here
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.blue, // Text color of the button
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          20.0), // Adjust the radius as needed
-                    ),
-                  ),
-                  child: const Text('Continue'),
                 ),
               ),
             ],

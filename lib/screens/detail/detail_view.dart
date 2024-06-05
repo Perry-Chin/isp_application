@@ -21,7 +21,7 @@ class DetailPage extends GetView<DetailController> {
 
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
-      bottomNavigationBar: hideButtons ? null : applyButton(),
+      bottomNavigationBar: hideButtons ? null : applyButton(context),
       body: FutureBuilder<void>(
         future: controller.asyncLoadAllData(),
         builder: (context, snapshot) {
@@ -590,7 +590,7 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
-  Widget applyButton() {
+  Widget applyButton(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -600,7 +600,7 @@ class DetailPage extends GetView<DetailController> {
             child: ApplyButton(
                 // button.dart
                 onPressed: () {
-                  ConfirmPage(Get.context!);
+                  confirmpg(Get.context!);
                 },
                 buttonText: "Apply Now",
                 buttonWidth: 100),
@@ -640,7 +640,4 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 }
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes

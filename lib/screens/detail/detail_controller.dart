@@ -10,6 +10,8 @@ import '../../common/data/data.dart';
 import '../../common/storage/storage.dart';
 import 'detail_index.dart';
 
+
+
 class DetailController extends GetxController {
   var doc_id;
   final token = UserStore.to.token;
@@ -19,6 +21,13 @@ class DetailController extends GetxController {
   final subtotal = 0.0.obs;
   final taxFee = 0.0.obs;
   final totalCost = 0.0.obs;
+
+   bool showPaymentSection = false; 
+
+  void togglePaymentSection() {
+    showPaymentSection = !showPaymentSection;
+    update(); // Notify listeners about the change
+  }
 
   Stream<List<QueryDocumentSnapshot<ServiceData>>> getServiceStream(String token) {
     return db
@@ -31,6 +40,9 @@ class DetailController extends GetxController {
       .snapshots()
       .map((snapshot) => snapshot.docs);
   }
+
+  
+
 
   Stream<List<DocumentSnapshot<UserData>>> getUserStream(List<String> userIds) {
     return db

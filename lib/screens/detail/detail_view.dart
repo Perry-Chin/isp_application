@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:isp_application/screens/detail/confirmpg.dart';
 import 'package:isp_application/screens/detail/proposepg.dart';
-
+// import 'package:path/path.dart';
+// import 'confirmpg.dart';
 import '../../common/data/data.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
+import '../schedule/schedule_view.dart';
 import 'detail_index.dart';
 
 class DetailPage extends GetView<DetailController> {
@@ -595,7 +599,9 @@ class DetailPage extends GetView<DetailController> {
             flex: 6,
             child: ApplyButton(
                 // button.dart
-                onPressed: () {},
+                onPressed: () {
+                  ConfirmPage(Get.context!);
+                },
                 buttonText: "Apply Now",
                 buttonWidth: 100),
           ),
@@ -634,3 +640,7 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 }
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes

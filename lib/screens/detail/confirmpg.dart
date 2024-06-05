@@ -1,197 +1,307 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:get/get.dart';
+import 'detail_view.dart';
+import '../../common/values/color.dart';
+import 'detail_controller.dart';
 
-Future<void> proposeNewPage(BuildContext context) async {
-  showModalBottomSheet(
-    context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20))
-    ),
-    builder: (BuildContext bc) {
-      return const ProposeTimeSheet();
-    },
-  );
-}
-
-class ProposeTimeSheet extends StatefulWidget {
-  const ProposeTimeSheet({super.key});
-
-  @override
-  // ignore: library_private_types_in_public_api
-  _ProposeTimeSheetState createState() => _ProposeTimeSheetState();
-}
-
-class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
-  final TextEditingController _startController = TextEditingController();
-  final TextEditingController _endController = TextEditingController();
-  final String _startPeriod = 'AM';
-  final String _endPeriod = 'AM';
-  // ignore: unused_field
-  String _totalHours = "";
-
-  @override
-  void initState() {
-    super.initState();
-    _startController.addListener(_calculateTotalHours);
-    _endController.addListener(_calculateTotalHours);
-  }
-
-  void _calculateTotalHours() {
-    final String startText = _startController.text;
-    final String endText = _endController.text;
-
-    if (startText.isNotEmpty && endText.isNotEmpty) {
-      try {
-        // Validate time format (HHMM)
-        final RegExp timeRegExp = RegExp(r'^([01]?[0-9]|2[0-3])[0-5][0-9]$');
-        if (!timeRegExp.hasMatch(startText) || !timeRegExp.hasMatch(endText)) {
-          throw const FormatException("Invalid time format. Please use HHMM.");
-        }
-
-        // Parse times as DateTime objects
-        final DateTime startTime = _parseTime(startText, _startPeriod);
-        final DateTime endTime = _parseTime(endText, _endPeriod);
-
-        // Calculate difference and convert to hours
-        Duration duration = endTime.difference(startTime);
-        if (duration.isNegative) {
-          duration += const Duration(hours: 24);
-        }
-        double totalHoursDouble = duration.inMinutes / 60.0;
-
-        // Format total hours as HH.MM
-        String formattedHours = totalHoursDouble.toStringAsFixed(2).replaceAll('.', ':');
-
-        setState(() {
-          _totalHours = "$formattedHours hours";
-        });
-      } on FormatException catch (e) {
-        setState(() {
-          _totalHours = e.message;
-        });
-      } catch (e) {
-        setState(() {
-          _totalHours = "An error occurred. Please try again.";
-        });
-      }
-    } else {
-      setState(() {
-        _totalHours = "";
-      });
-    }
-  }
-
-  DateTime _parseTime(String timeText, String period) {
-    final int hour = int.parse(timeText.substring(0, 2));
-    final int minute = int.parse(timeText.substring(2, 4));
-    return DateFormat('hh:mm a').parse('${hour % 12}:${minute.toString().padLeft(2, '0')} $period');
-  }
-
-  @override
-  void dispose() {
-    _startController.removeListener(_calculateTotalHours);
-    _endController.removeListener(_calculateTotalHours);
-    _startController.dispose();
-    _endController.dispose();
-    super.dispose();
-  }
+class ConfirmPage extends StatelessWidget {
+  const ConfirmPage(BuildContext buildContext, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SingleChildScrollView( // Make the content scrollable
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Center(
-                child: Text(
-                  "Confirm your booking",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
-                ),
-              ),
-              const SizedBox(height: 15,),
-              const Text(
-                "Once submitted, BuzzBuddy will send a confirmation to both parties for service to be carried out.",
-                style: TextStyle(fontSize: 15),
-              ),
-              const SizedBox(height: 15),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+      child: GetBuilder<DetailController>(
+        init: DetailController(), // Initialize the controller
+        builder: (controller) {
+          return SingleChildScrollView(
+            // Make the content scrollable
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Date & Time",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                  )
-                ],
-              ),
-              const SizedBox(height: 10),
-              Container(
-                padding: const EdgeInsets.all(
-                    16.0), // Set padding for the container
-                decoration: BoxDecoration(
-                  borderRadius:
-                      BorderRadius.circular(10.0), // Set border radius
-                  color: Colors.grey[200], // Set background color
-                ),
-                child: const Text(
-                  'Your original date and time here',
-                  style: TextStyle(
-                    fontSize: 16.0, // Set font size
-                    color: Colors.black, // Set text color
+                  const Center(
+                    child: Text(
+                      "Confirm your booking",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
+                    ),
                   ),
-                ),
-              ),
-              const Text(
-                "Total fees",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 17,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Container(
-                padding: const EdgeInsets.all(
-                    16.0), // Set padding for the container
-                decoration: BoxDecoration(
-                  borderRadius:
-                      BorderRadius.circular(10.0), // Set border radius
-                  color: Colors.grey[200], // Set background color
-                  border: Border.all(
-                    // Add border
-                    color: Colors.black, // Set border color
-                    width: 1.0, // Set border width
+                  const SizedBox(
+                    height: 15,
                   ),
-                ),
-                child: Column(children: [
+                  const Text(
+                    "Once submitted, BuzzBuddy will send a confirmation to both parties for service to be carried out.",
+                    style: TextStyle(fontSize: 15),
+                  ),
+                  const SizedBox(height: 15),
                   const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children:[
-                        Text('Total Payout: '),
-                        Text('SGD 40.00'),
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Date & Time",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),
+                      )
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.all(
+                        16.0), // Set padding for the container
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.circular(10.0), // Set border radius
+                      color: Colors.grey[200], // Set background color
+                    ),
+                    child: const Text(
+                      'Your original date and time here',
+                      style: TextStyle(
+                        fontSize: 16.0, // Set font size
+                        color: Colors.black, // Set text color
+                      ),
+                    ),
+                  ),
+                  const Text(
+                    "Total fees",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.all(
+                        16.0), // Set padding for the container
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.circular(10.0), // Set border radius
+                      color: Colors.grey[200], // Set background color
+                      border: Border.all(
+                        // Add border
+                        color: Colors.black, // Set border color
+                        width: 1.0, // Set border width
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Total Payout: '),
+                            Text('SGD 40.00'),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Fee Breakdown',
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                controller.togglePaymentSection(); // Toggle visibility
+                              },
+                              icon: const Icon(Icons.arrow_drop_down),
+                            ),
+                          ],
+                        ),
+                        Visibility(
+                          visible: controller.showPaymentSection,
+                          child: const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: 5, top: 5, bottom: 10),
+                                child: Text(
+                                  "Total Fees",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Payment Method",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Image(
+                                            image: AssetImage(
+                                                "assets/images/paynow.png"),
+                                            width: 24,
+                                            height: 24,
+                                          ),
+                                          SizedBox(width: 10),
+                                          Text(
+                                            "PayNow",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                    const Text('Fee Breakdown', style: TextStyle(color: Colors.blue), ),
-                    IconButton(
-                      onPressed:() {
-                        const Text('Hi');
+                      Text(
+                        'Requester',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: Colors.blueGrey,
+                            child: Icon(Icons.person, color: Colors.grey),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    'Username',
+                                    style: TextStyle(fontSize: 17),
+                                  ),
+                                  SizedBox(
+                                    width: 12,
+                                  ),
+                                  RatedStar(
+                                      rating: 3.5, starColor: Colors.yellow),
+                                ],
+                              ),
+                              Text(
+                                'user@mail.com',
+                                style: TextStyle(fontSize: 17),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                          20.0), // Adjust the radius as needed
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(
+                              0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Add your onPressed logic here
                       },
-                      icon: const Icon(Icons.arrow_drop_down))
-                  ],)
-                ]),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: const Color.fromRGBO(
+                            44, 68, 138, 1.0), // Text color of the button
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              20.0), // Adjust the radius as needed
+                        ),
+                      ),
+                      child: const Text(
+                        'Continue',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              
-               
-            ]
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class RatedStar extends StatelessWidget {
+  final double rating;
+  final Color starColor;
+  final double iconSize;
+
+  const RatedStar({
+    Key? key,
+    required this.rating,
+    required this.starColor,
+    this.iconSize = 16.0,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+          horizontal: 5, vertical: 5), // Match the padding
+      decoration: BoxDecoration(
+        color: Colors.white, // Set background color to white
+        borderRadius: BorderRadius.circular(20), // Adjust the border radius
+        border: Border.all(
+            color: AppColor
+                .secondaryColor), // Use your AppColor.secondaryColor here
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '$rating',
+            style: const TextStyle(
+              fontSize: 14, // Adjust the font size
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
           ),
-        ),
+          const SizedBox(width: 3), // Add spacing between rating and star icon
+          Icon(
+            Icons.star,
+            color: starColor,
+            size: iconSize,
+          ),
+        ],
       ),
     );
   }

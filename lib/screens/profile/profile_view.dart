@@ -8,7 +8,6 @@ import 'profile_index.dart';
 import '../editProfile/edit_profile_index.dart'; // Import the edit profile module
 
 class ProfilePage extends GetView<ProfileController> {
-  
   const ProfilePage({Key? key}) : super(key: key);
 
   AppBar _buildAppBar() {
@@ -29,7 +28,6 @@ class ProfilePage extends GetView<ProfileController> {
   }
 
   Widget profileView(BuildContext context) {
-
     return NestedScrollView(
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
@@ -49,7 +47,8 @@ class ProfilePage extends GetView<ProfileController> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: AppColor.secondaryColor, // Blue border color
+                              color:
+                                  AppColor.secondaryColor, // Blue border color
                               width: 4.0, // Width of the border
                             ),
                           ),
@@ -58,8 +57,8 @@ class ProfilePage extends GetView<ProfileController> {
                               placeholder:
                                   "assets/images/profile.png", // Placeholder image while loading
                               image: photoUrl?.isNotEmpty == true
-                                ? photoUrl!
-                                : "assets/images/profile.png",  // Image URL
+                                  ? photoUrl!
+                                  : "assets/images/profile.png", // Image URL
                               fadeInDuration: const Duration(
                                   milliseconds: 500), // Fade-in duration
                               fit: BoxFit.cover,

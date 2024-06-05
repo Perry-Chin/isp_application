@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../common/values/values.dart';
+import '../profile/profile_controller.dart';
 
 class ReviewsList extends StatefulWidget {
   final String reviewsType;
@@ -11,59 +13,12 @@ class ReviewsList extends StatefulWidget {
 }
 
 class _ReviewsListState extends State<ReviewsList> {
-  List<Map<String, dynamic>> reviews = [];
-  String sortType = 'Newest';
+  final ProfileController profileController = Get.find<ProfileController>();
 
   @override
   void initState() {
     super.initState();
-    fetchReviews();
-  }
-
-  void fetchReviews() {
-    // Hardcoded data for demonstration
-    setState(() {
-      reviews = [
-        {
-          'id': 1,
-          'user': 'User1',
-          'date': '2022-01-01',
-          'review': 'Review 1',
-          'rating': 4,
-        },
-        {
-          'id': 2,
-          'user': 'User2',
-          'date': '2022-02-01',
-          'review': 'Review 2',
-          'rating': 5,
-        },
-        {
-          'id': 3,
-          'user': 'User3',
-          'date': '2022-03-01',
-          'review': 'Review 3',
-          'rating': 3,
-        },
-      ];
-      sortReviews();
-    });
-  }
-
-  void sortReviews() {
-    if (sortType == 'Newest') {
-      reviews
-          .sort((a, b) => (b['date'] as String).compareTo(a['date'] as String));
-    } else if (sortType == 'Oldest') {
-      reviews
-          .sort((a, b) => (a['date'] as String).compareTo(b['date'] as String));
-    } else if (sortType == 'Highest Rating') {
-      reviews
-          .sort((a, b) => (b['rating'] as int).compareTo(a['rating'] as int));
-    } else if (sortType == 'Lowest Rating') {
-      reviews
-          .sort((a, b) => (a['rating'] as int).compareTo(b['rating'] as int));
-    }
+    profileController.fetchReviews(widget.reviewsType);
   }
 
   void _showSortOptions() {
@@ -82,8 +37,8 @@ class _ReviewsListState extends State<ReviewsList> {
                 title: const Text('Newest'),
                 onTap: () {
                   setState(() {
-                    sortType = 'Newest';
-                    sortReviews();
+                    profileController.reviews
+                        .sort((a, b) => b.date.compareTo(a.date));
                   });
                   Navigator.pop(context);
                 },
@@ -92,8 +47,8 @@ class _ReviewsListState extends State<ReviewsList> {
                 title: const Text('Oldest'),
                 onTap: () {
                   setState(() {
-                    sortType = 'Oldest';
-                    sortReviews();
+                    profileController.reviews
+                        .sort((a, b) => a.date.compareTo(b.date));
                   });
                   Navigator.pop(context);
                 },
@@ -102,8 +57,8 @@ class _ReviewsListState extends State<ReviewsList> {
                 title: const Text('Highest Rating'),
                 onTap: () {
                   setState(() {
-                    sortType = 'Highest Rating';
-                    sortReviews();
+                    profileController.reviews
+                        .sort((a, b) => b.rating.compareTo(a.rating));
                   });
                   Navigator.pop(context);
                 },
@@ -112,8 +67,8 @@ class _ReviewsListState extends State<ReviewsList> {
                 title: const Text('Lowest Rating'),
                 onTap: () {
                   setState(() {
-                    sortType = 'Lowest Rating';
-                    sortReviews();
+                    profileController.reviews
+                        .sort((a, b) => a.rating.compareTo(b.rating));
                   });
                   Navigator.pop(context);
                 },
@@ -127,88 +82,98 @@ class _ReviewsListState extends State<ReviewsList> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+    return Obx(() {
+      if (profileController.reviews.isEmpty) {
+        return const Center(
+          child: Text(
+            'No Reviews',
+            style: TextStyle(fontSize: 18),
+          ),
+        );
+      } else {
+        return Column(
           children: [
-            ElevatedButton(
-              onPressed: _showSortOptions,
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    AppColor.secondaryColor, // Same color as AppBar
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20), // Rounded corners
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  onPressed: _showSortOptions,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColor.secondaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: const Text('Sort'),
+                ),
+              ],
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: ListView.builder(
+                  itemCount: profileController.reviews.length,
+                  itemBuilder: (context, index) {
+                    final review = profileController.reviews[index];
+                    return Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            spreadRadius: 0,
+                            blurRadius: 6,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: Colors.grey.shade200,
+                            child: const Icon(Icons.person, color: Colors.grey),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  review.user,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Row(
+                                  children: List.generate(
+                                    5,
+                                    (starIndex) => Icon(
+                                      Icons.star,
+                                      color: starIndex < review.rating
+                                          ? AppColor.secondaryColor
+                                          : Colors.grey.shade300,
+                                      size: 16,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(review.review),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
-              child: Text(sortType),
             ),
           ],
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(
-                bottom: 16.0), // Add padding to the bottom
-            child: ListView.builder(
-              itemCount: reviews.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        spreadRadius: 0,
-                        blurRadius: 6,
-                        offset: const Offset(0, 3), // x=0, y=3
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.grey.shade200,
-                        child: const Icon(Icons.person, color: Colors.grey),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              reviews[index]['user'],
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Row(
-                              children: List.generate(
-                                5,
-                                (starIndex) => Icon(
-                                  Icons.star,
-                                  color: starIndex < reviews[index]['rating']
-                                      ? AppColor.secondaryColor
-                                      : Colors.grey.shade300,
-                                  size: 16,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(reviews[index]['review']),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-      ],
-    );
+        );
+      }
+    });
   }
 }

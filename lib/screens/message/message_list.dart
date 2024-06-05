@@ -48,20 +48,16 @@ class MessageList extends GetView<MessageController> {
               maxWidth: 50.w
             ),
             child: ClipOval(
-              child: userData?.photourl == null
-              ? Image.asset("assets/images/profile.png")
-              : FadeInImage.assetNetwork(
+              child: userData?.photourl != null && userData!.photourl!.isNotEmpty ?
+              FadeInImage.assetNetwork(
                 placeholder: "assets/images/profile.png",
-                image: userData!.photourl!,
+                image: userData.photourl ?? "",
                 fadeInDuration: const Duration(milliseconds: 100),
                 fit: BoxFit.cover,
-                width: 50.w,
-                height: 50.w,
-                imageErrorBuilder: (context, error, stackTrace) {
-                  print("Error loading image: $error");
-                  return Image.asset("assets/images/profile.png");
-                },
-              )
+                width: 54.w,
+                height: 54.w,
+              ) :
+              Image.asset("assets/images/profile.png"),
             ),
           ),
           title: Text(

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+// ignore_for_file: use_build_context_synchronously
+=======
 // ignore_for_file: avoid_print
+>>>>>>> cbbc89a97be7aa61f3d6f0b89d10eb6318fac7f6
 
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -49,7 +53,6 @@ class EditProfileController extends GetxController {
         profileImageUrl.value = userData.data().toString().contains('photourl')
             ? userData['photourl']
             : '';
-        print('Profile image URL loaded: ${profileImageUrl.value}');
       } else {
         // Handle the case where the document does not exist
         usernameController.text = '';
@@ -111,6 +114,7 @@ class EditProfileController extends GetxController {
       await user.reauthenticateWithCredential(credential);
       isPasswordVerified.value = true;
 
+      // ignore: use_build_context_synchronously
       Navigator.pop(context); // Dismiss loading dialog
     } catch (error) {
       Navigator.pop(context); // Dismiss loading dialog

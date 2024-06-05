@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-// ignore_for_file: use_build_context_synchronously
-=======
 // ignore_for_file: avoid_print
->>>>>>> cbbc89a97be7aa61f3d6f0b89d10eb6318fac7f6
 
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';

@@ -641,3 +641,5 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 }
+
+

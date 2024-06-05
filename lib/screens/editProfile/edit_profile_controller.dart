@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -47,7 +49,6 @@ class EditProfileController extends GetxController {
         profileImageUrl.value = userData.data().toString().contains('photourl')
             ? userData['photourl']
             : '';
-        print('Profile image URL loaded: ${profileImageUrl.value}');
       } else {
         // Handle the case where the document does not exist
         usernameController.text = '';
@@ -109,6 +110,7 @@ class EditProfileController extends GetxController {
       await user.reauthenticateWithCredential(credential);
       isPasswordVerified.value = true;
 
+      // ignore: use_build_context_synchronously
       Navigator.pop(context); // Dismiss loading dialog
     } catch (error) {
       Navigator.pop(context); // Dismiss loading dialog
@@ -163,7 +165,7 @@ class EditProfileController extends GetxController {
       await user.reauthenticateWithCredential(credential);
 
       // Send email verification to the new email address
-      if (user != null && user.email != emailController.text) {
+      if (user.email != emailController.text) {
         await user.verifyBeforeUpdateEmail(emailController.text);
 
         // Show a dialog informing the user to verify their new email
@@ -173,14 +175,14 @@ class EditProfileController extends GetxController {
       }
 
       // Update user password if provided
-      if (user != null && pwdController.text.isNotEmpty) {
+      if (pwdController.text.isNotEmpty) {
         await user.updatePassword(pwdController.text);
       }
 
       // Update user document in Firestore
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(user!.uid)
+          .doc(user.uid)
           .update({
         'username': usernameController.text,
         'phone_number': phoneNoController.text,

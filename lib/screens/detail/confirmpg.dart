@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:get/get.dart';
-import 'detail_view.dart';
+
 import '../../common/values/color.dart';
-import 'detail_controller.dart';
+import 'detail_index.dart';
 
 class ConfirmPage extends StatelessWidget {
   const ConfirmPage(BuildContext buildContext, {Key? key}) : super(key: key);

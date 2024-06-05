@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:isp_application/screens/detail/confirmpg.dart';
-import 'package:isp_application/screens/detail/proposepg.dart';
-// import 'package:path/path.dart';
-// import 'confirmpg.dart';
+
 import '../../common/data/data.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
-import '../schedule/schedule_view.dart';
+import 'confirmpg.dart';
 import 'detail_index.dart';
+import 'proposepg.dart';
 
 class DetailPage extends GetView<DetailController> {
   const DetailPage({super.key});
@@ -640,4 +637,7 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7d0ec61aef9f250f20623862012c89b8536f1b65

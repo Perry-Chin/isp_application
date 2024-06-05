@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:get/get.dart';
+<<<<<<< HEAD
 import '../schedule/schedule_view.dart';
 import 'detail_view.dart';
+=======
+
+>>>>>>> 7d0ec61aef9f250f20623862012c89b8536f1b65
 import '../../common/values/color.dart';
-import 'detail_controller.dart';
+import 'detail_index.dart';
 
 Future confirmpg(BuildContext context) {
   return showModalBottomSheet(

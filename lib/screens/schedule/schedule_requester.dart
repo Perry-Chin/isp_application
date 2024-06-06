@@ -9,7 +9,6 @@ import '../../common/data/user.dart';
 // import '../../common/values/values.dart';
 import '../../common/storage/user.dart';
 import '../../common/values/color.dart';
-import '../../common/widgets/shimmer.dart';
 import '../../common/widgets/widgets.dart';
 import 'schedule_index.dart';
 

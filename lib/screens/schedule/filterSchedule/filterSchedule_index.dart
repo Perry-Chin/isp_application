@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 library filterschedule;
 
 export 'filterSchedule_controller.dart';

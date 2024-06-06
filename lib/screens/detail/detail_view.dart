@@ -146,7 +146,7 @@ class DetailPage extends GetView<DetailController> {
                   ),
                 ),
                 const SizedBox(width: 6),
-                userRating(),
+                const Rating(rating: 4.5)
               ],
             ),
           ),
@@ -595,42 +595,13 @@ class DetailPage extends GetView<DetailController> {
           Expanded(
             flex: 6,
             child: ApplyButton(
-                // button.dart
-                onPressed: () {
-                  // confirmpg(Get.context!);
-                },
-                buttonText: "Apply Now",
-                buttonWidth: 100),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget userRating() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColor.secondaryColor),
-      ),
-      child: const Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            "4.5",
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+              // button.dart
+              onPressed: () {
+                confirmpg(Get.context!);
+              },
+              buttonText: "Apply Now",
+              buttonWidth: 100
             ),
-          ),
-          SizedBox(width: 3),
-          Icon(
-            Icons.star,
-            color: Colors.yellow,
-            size: 16,
           ),
         ],
       ),

@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-<<<<<<< HEAD
 import '../../common/data/user.dart';
 import '../schedule/schedule_view.dart';
-=======
-
 import '../../common/widgets/widgets.dart';
->>>>>>> 3156ef87f7a1e56b620243d5ec9f81a2e389c406
 import 'detail_index.dart';
 
 Future confirmpg(BuildContext context) {
@@ -15,18 +11,15 @@ Future confirmpg(BuildContext context) {
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
     builder: (BuildContext bc) {
-      // Assuming you have an instance of UserData named userDataInstance
-      final userDataInstance = UserData(); // Replace this with your actual instance
-      return ConfirmPage(userData: userDataInstance);
+      // final userDataInstance = UserData(username: 'JohnDoe', email: 'john.doe@example.com'); // Replace this with your actual instance
+      return const ConfirmPage();
     },
   );
 }
 
-
 class ConfirmPage extends StatelessWidget {
-  final UserData? userData;
 
-  const ConfirmPage({Key? key, required this.userData}) : super(key: key);
+  const ConfirmPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -84,10 +77,7 @@ class ConfirmPage extends StatelessWidget {
                           children: [
                             Text(
                               controller.state.serviceList.isNotEmpty
-                                  ? controller.state.serviceList.first
-                                          .data()
-                                          .date ??
-                                      "date"
+                                  ? controller.state.serviceList.first.data().date ?? "date"
                                   : "date",
                               style: const TextStyle(
                                 fontSize: 16,
@@ -99,10 +89,7 @@ class ConfirmPage extends StatelessWidget {
                             ),
                             Text(
                               controller.state.serviceList.isNotEmpty
-                                  ? controller.state.serviceList.first
-                                          .data()
-                                          .time ??
-                                      "time"
+                                  ? controller.state.serviceList.first.data().time ?? "time"
                                   : "time",
                               style: const TextStyle(
                                 fontSize: 16,
@@ -147,8 +134,7 @@ class ConfirmPage extends StatelessWidget {
                               child: Obx(() {
                                 final totalCost = controller.totalCost.value;
                                 return Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     const Text(
                                       "Total Payout",
@@ -178,8 +164,7 @@ class ConfirmPage extends StatelessWidget {
                                 return Column(
                                   children: [
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         const Text("Subtotal"),
                                         Text("\$$subtotal"),
@@ -187,8 +172,7 @@ class ConfirmPage extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 15),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         const Text("Tax Fee"),
                                         Text("\$$taxFee"),
@@ -196,14 +180,12 @@ class ConfirmPage extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 15),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         const Text("Total"),
                                         Text(
                                           "\$$totalCost",
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
                                         )
                                       ],
                                     ),
@@ -217,16 +199,12 @@ class ConfirmPage extends StatelessWidget {
                                     const Row(
                                       children: [
                                         Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Text(
                                               "Payment Method",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16),
+                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                             ),
                                             SizedBox(height: 5),
                                             Padding(
@@ -234,18 +212,14 @@ class ConfirmPage extends StatelessWidget {
                                               child: Row(
                                                 children: [
                                                   Image(
-                                                    image: AssetImage(
-                                                        "assets/images/paynow.png"),
+                                                    image: AssetImage("assets/images/paynow.png"),
                                                     width: 24,
                                                     height: 24,
                                                   ),
                                                   SizedBox(width: 10),
                                                   Text(
                                                     "PayNow",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 14),
+                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                                                   ),
                                                 ],
                                               ),
@@ -270,9 +244,7 @@ class ConfirmPage extends StatelessWidget {
                                 onPressed: () {
                                   controller.togglePaymentSection();
                                 },
-                                icon: Icon(controller.showPaymentSection
-                                    ? Icons.arrow_drop_up
-                                    : Icons.arrow_drop_down),
+                                icon: Icon(controller.showPaymentSection ? Icons.arrow_drop_up : Icons.arrow_drop_down),
                               ),
                             ],
                           ),
@@ -309,7 +281,7 @@ class ConfirmPage extends StatelessWidget {
                                 Row(
                                   children: [
                                     Text(
-                                      userData?.username ?? "Username",
+                                     'Username',
                                       style: TextStyle(fontSize: 17),
                                     ),
                                     SizedBox(width: 12),

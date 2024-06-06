@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../common/data/user.dart';
 import '../schedule/schedule_view.dart';
 import 'detail_index.dart';
 
@@ -9,13 +10,18 @@ Future confirmpg(BuildContext context) {
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
     builder: (BuildContext bc) {
-      return const ConfirmPage();
+      // Assuming you have an instance of UserData named userDataInstance
+      final userDataInstance = UserData(); // Replace this with your actual instance
+      return ConfirmPage(userData: userDataInstance);
     },
   );
 }
 
+
 class ConfirmPage extends StatelessWidget {
-  const ConfirmPage({Key? key}) : super(key: key);
+  final UserData? userData;
+
+  const ConfirmPage({Key? key, required this.userData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +50,7 @@ class ConfirmPage extends StatelessWidget {
                     const SizedBox(height: 15),
                     const Text(
                       "Once submitted, BuzzBuddy will send a confirmation to both parties for service to be carried out.",
-                      style: TextStyle(fontSize: 15),
+                      style: TextStyle(fontSize: 15, fontFamily: 'Open Sans', fontWeight: FontWeight.w300),
                     ),
                     const SizedBox(height: 15),
                     const Row(
@@ -298,7 +304,7 @@ class ConfirmPage extends StatelessWidget {
                                 Row(
                                   children: [
                                     Text(
-                                      'Username',
+                                      userData?.username ?? "Username",
                                       style: TextStyle(fontSize: 17),
                                     ),
                                     SizedBox(width: 12),

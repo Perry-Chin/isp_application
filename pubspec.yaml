@@ -159,7 +159,7 @@ flutter:
     - family: Open Sans
       fonts:
         - asset : fonts/opensans/OpenSans-Regular.ttf
-        - asset : fonts/opensans/OpenSans-Semibold.ttf
+        - asset : fonts/opensans/OpenSans-Bold.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

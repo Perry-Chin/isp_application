@@ -7,4 +7,5 @@ export './searchfield.dart';
 export './textfield.dart';
 export './shimmer.dart';
 export './shimmer_list.dart';
-export 'searchbox_bar.dart';
+export './searchbox_bar.dart';
+export './rating.dart';

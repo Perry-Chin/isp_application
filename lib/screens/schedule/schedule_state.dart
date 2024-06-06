@@ -1,18 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-
-import '../../common/data/data.dart';
-
-class ProviderState {
-  RxList<QueryDocumentSnapshot<ServiceData>> providerList = <QueryDocumentSnapshot<ServiceData>>[].obs;
-}
-
-class RatingState {
-  RxList<QueryDocumentSnapshot<UserData>> ratingState = <QueryDocumentSnapshot<UserData>>[].obs;
-}
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../common/data/service.dart';
+import '../../common/data/user.dart';
 
 class ScheduleState {
-  ProviderState providerState;
-  RatingState ratingState;
-  ScheduleState(this.providerState, this.ratingState);
+  final RxList<QueryDocumentSnapshot<ServiceData>> providerList = <QueryDocumentSnapshot<ServiceData>>[].obs;
+  final RxList<QueryDocumentSnapshot<UserData>> ratingState = <QueryDocumentSnapshot<UserData>>[].obs;
+
+  ScheduleState();
 }

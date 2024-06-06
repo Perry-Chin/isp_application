@@ -12,4 +12,5 @@ class AppRoutes {
   static const settingsx = '/settingsx';
   static const userSettings = '/userSettings';
   static const detail = '/detail';
+  static const filterHome = '/filterHome';
 }

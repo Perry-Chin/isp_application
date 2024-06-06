@@ -597,7 +597,7 @@ class DetailPage extends GetView<DetailController> {
             child: ApplyButton(
                 // button.dart
                 onPressed: () {
-                  confirmpg(Get.context!);
+                  // confirmpg(Get.context!);
                 },
                 buttonText: "Apply Now",
                 buttonWidth: 100),

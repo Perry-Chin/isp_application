@@ -100,7 +100,8 @@ class ChatPage extends GetView<ChatController> {
                               Expanded(
                                 child: TextField(
                                   keyboardType: TextInputType.multiline,
-                                  maxLines: null,
+                                  minLines: 1,
+                                  maxLines: 3,
                                   controller: controller.textController,
                                   autofocus: false,
                                   focusNode: controller.contentNode,

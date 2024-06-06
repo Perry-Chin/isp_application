@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../values/values.dart';
 
@@ -51,7 +52,7 @@ class SearchBoxBar extends StatelessWidget {
                     color: AppColor.secondaryColor,
                   ),
                   onPressed: () {
-                    // Add your filter logic here
+                    Get.toNamed('/filterHome');
                   },
                 )
               : null,

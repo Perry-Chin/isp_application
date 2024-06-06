@@ -1,0 +1,97 @@
+// ignore_for_file: file_names
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../../common/utils/utils.dart';
+import '../../../common/values/values.dart';
+
+class FilterSchedulePage extends StatelessWidget {
+  const FilterSchedulePage({super.key});
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      elevation: 0,
+      centerTitle: true,
+      title: const Text("Filter"),
+      backgroundColor: AppColor.secondaryColor,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+      ],
+    );
+  }
+  
+@override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: _buildAppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Status",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 20),
+            CustomStatusFilter(filters: FilterService.filters),
+            const SizedBox(height: 20),
+            const Text(
+              "Category",
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 10),
+            // Additional categories or other widgets can be added here.
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CustomStatusFilter extends StatelessWidget {
+  final List<FilterService> filters;
+  const CustomStatusFilter({
+    Key? key, 
+    required this.filters
+  }) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 10, // Horizontal spacing between the chips
+      runSpacing: 10, // Vertical spacing between the lines
+      children: filters
+        .map((filter) => Chip(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: const BorderSide(color: Colors.grey),
+          ),
+          label: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircleAvatar(
+                radius: 8,
+                backgroundColor: filter.color, // You can customize the color based on the filter
+              ),
+              const SizedBox(width: 8),
+              Text(filter.status),
+            ],
+          ),
+        ))
+        .toList(),
+    );
+  }
+}

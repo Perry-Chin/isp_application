@@ -133,6 +133,7 @@ class MessageController extends GetxController {
         fromFirestore: Msg.fromFirestore,
         toFirestore: (Msg msg, options) => msg.toFirestore())
         .where("from_uid", isEqualTo: token)
+        .where("msg_num", isGreaterThan: 0)
         .get();
 
     var toMessages = await db.collection("message").withConverter(

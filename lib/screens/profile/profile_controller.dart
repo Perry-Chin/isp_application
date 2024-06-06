@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import '../../common/data/data.dart';
@@ -39,7 +41,7 @@ class ProfileController extends GetxController {
   }
 
   // Method to fetch reviews from Firestore
-  void fetchReviews(String type) async {
+  Future<void> fetchReviews(String type) async {
     try {
       Query<Map<String, dynamic>> query =
           db.collection('reviews').where('to_uid', isEqualTo: user.value?.id);
@@ -74,43 +76,4 @@ class ProfileController extends GetxController {
   }
 }
 
-// Model class for Review
-class Review {
-  final String id;
-  final String fromUid;
-  final String toUid;
-  final String reviewText;
-  final int rating;
-  final String serviceId;
-  final String serviceType;
-  final DateTime timestamp;
-  String? fromUsername; // New field for from user's username
-  String? fromPhotoUrl; // New field for from user's photo URL
-
-  Review({
-    required this.id,
-    required this.fromUid,
-    required this.toUid,
-    required this.reviewText,
-    required this.rating,
-    required this.serviceId,
-    required this.serviceType,
-    required this.timestamp,
-    this.fromUsername,
-    this.fromPhotoUrl,
-  });
-
-  factory Review.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
-    final data = doc.data()!;
-    return Review(
-      id: doc.id,
-      fromUid: data['from_uid'],
-      toUid: data['to_uid'],
-      reviewText: data['review_text'],
-      rating: data['rating'],
-      serviceId: data['service_id'],
-      serviceType: data['service_type'],
-      timestamp: (data['timestamp'] as Timestamp).toDate(),
-    );
-  }
-}
+// Model class for Revie

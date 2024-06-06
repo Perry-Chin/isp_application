@@ -9,7 +9,7 @@ import '../../common/data/user.dart';
 // import '../../common/values/values.dart';
 import '../../common/storage/user.dart';
 import '../../common/values/color.dart';
-import '../../common/widgets/shimmer.dart';
+import '../../common/widgets/widgets.dart';
 import 'schedule_index.dart';
 
 // class RequesterProviderCards extends StatelessWidget{
@@ -159,9 +159,7 @@ class RequesterCard extends GetView<ScheduleController> {
                               style: const TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.w500)),
                           const SizedBox(width: 6),
-                          RatedStar(
-                              rating: requesterData?.rating ?? 0,
-                              starColor: Colors.yellow),
+                          Rating(rating: requesterData?.rating ?? 0),
                         ],
                       ),
                       const SizedBox(height: 5),
@@ -262,13 +260,13 @@ class RequesterCard extends GetView<ScheduleController> {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         var serviceItem =
-                            controller.state.providerState.providerList[index];
+                            controller.state.providerList[index];
                         var requesterData =
                             userDataMap[serviceItem.data().reqUserid];
                         return requesterListItem(serviceItem, requesterData);
                       },
                       childCount:
-                          controller.state.providerState.providerList.length,
+                          controller.state.providerList.length,
                     ),
                   ),
                 ),

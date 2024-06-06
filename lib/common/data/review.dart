@@ -37,6 +37,8 @@ class Review {
       reviewText: data?['review_text'],
       timestamp: data?['timestamp'],
       serviceType: data?['service_type'],
+      fromUsername: data?['from_username'],
+      fromPhotoUrl: data?['from_photo_url'],
     );
   }
 

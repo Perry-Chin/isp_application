@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+<<<<<<< HEAD
 import '../../common/data/user.dart';
 import '../schedule/schedule_view.dart';
+=======
+
+import '../../common/widgets/widgets.dart';
+>>>>>>> 3156ef87f7a1e56b620243d5ec9f81a2e389c406
 import 'detail_index.dart';
 
 Future confirmpg(BuildContext context) {
@@ -308,10 +313,7 @@ class ConfirmPage extends StatelessWidget {
                                       style: TextStyle(fontSize: 17),
                                     ),
                                     SizedBox(width: 12),
-                                    RatedStar(
-                                      rating: 3.5,
-                                      starColor: Colors.yellow,
-                                    ),
+                                    Rating(rating: 3.5)
                                   ],
                                 ),
                                 Text(

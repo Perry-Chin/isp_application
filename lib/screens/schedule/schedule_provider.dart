@@ -1,15 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:isp_application/common/data/user.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:get/get.dart';
-import '../../common/data/service.dart';
-// import '../../common/data/user.dart';
-import '../../common/storage/user.dart';
+
+
+import '../../common/data/data.dart';
+import '../../common/storage/storage.dart';
 import '../../common/values/values.dart';
-import '../../common/values/color.dart';
-import '../../common/widgets/shimmer.dart';
+import '../../common/widgets/widgets.dart';
 import 'schedule_index.dart';
 
 
@@ -103,8 +102,9 @@ class ProviderCard extends GetView<ScheduleController> {
                       children: [
                         Text(requesterData?.username ?? "", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                         const SizedBox(width: 6),
-                        RatedStar(rating: requesterData?.rating ?? 0, starColor: Colors.yellow),
-                    ],),
+                        Rating(rating: requesterData?.rating ?? 0),
+                      ]
+                    ),
                     const SizedBox(height: 5),
                     Row(
                       children: [
@@ -200,11 +200,11 @@ class ProviderCard extends GetView<ScheduleController> {
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        var serviceItem = controller.state.providerState.providerList[index];
+                        var serviceItem = controller.state.providerList[index];
                         var requesterData = userDataMap[serviceItem.data().reqUserid];
                         return providerListItem(serviceItem, requesterData);
                       },
-                      childCount: controller.state.providerState.providerList.length
+                      childCount: controller.state.providerList.length
                     )
                   ),
                 ),

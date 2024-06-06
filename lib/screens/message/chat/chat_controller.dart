@@ -113,8 +113,8 @@ class ChatController extends GetxController {
   }
 
   sendMessage() async {
-    String sendContent = textController.text;
-    if (textController.text.trim().isEmpty) return;
+    String sendContent = textController.text.trim();
+    if (sendContent.isEmpty) return;
     final content = Msgcontent(
       uid: user_id,
       content: sendContent,

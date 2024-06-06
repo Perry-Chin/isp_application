@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -151,24 +153,25 @@ class EditProfileController extends GetxController {
         }
       }
 
-      // Reauthenticate the user before updating email
-      if (currentPwdController.text.isEmpty) {
-        throw 'Please enter the password';
-      }
-      AuthCredential credential = EmailAuthProvider.credential(
-        email: user!.email!,
-        password: currentPwdController.text,
-      );
+      // Only reauthenticate if the email is being changed
+      if (user!.email != emailController.text) {
+        if (currentPwdController.text.isEmpty) {
+          throw 'Please enter the current password to change the email';
+        }
+        AuthCredential credential = EmailAuthProvider.credential(
+          email: user.email!,
+          password: currentPwdController.text,
+        );
 
-      await user.reauthenticateWithCredential(credential);
+        await user.reauthenticateWithCredential(credential);
 
-      // Send email verification to the new email address
-      if (user.email != emailController.text) {
+        // Send email verification to the new email address
         await user.verifyBeforeUpdateEmail(emailController.text);
 
         // Show a dialog informing the user to verify their new email
         showEmailVerificationDialog(context);
 
+        Navigator.pop(context); // Dismiss loading dialog
         return; // Exit the method to wait for email verification
       }
 

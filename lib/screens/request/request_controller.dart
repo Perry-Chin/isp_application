@@ -371,6 +371,7 @@ class RequestController extends GetxController {
         time: timeController.text,
         duration: int.tryParse(durationController.text),
         status: "Requested", //Default status
+        statusid: 0,
         reqUserid: token,
         provUserid: "");
 

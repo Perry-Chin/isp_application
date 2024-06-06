@@ -18,8 +18,8 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
   final db = FirebaseFirestore.instance;
   final List<String> selectedStatus = ['all'];
   final List<String> selectedRating = ['all'];
-  final RefreshController refreshController = RefreshController(initialRefresh: true);
-  final RefreshController refreshControllers = RefreshController(initialRefresh: true);
+  final RefreshController refreshController = RefreshController(initialRefresh: false);
+  final RefreshController refreshControllers = RefreshController(initialRefresh: false);
 
   final Rx<ScheduleState> _state = ScheduleState().obs;
   ScheduleState get state => _state.value;

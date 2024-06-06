@@ -52,16 +52,17 @@ class ProfilePage extends GetView<ProfileController> {
                             ),
                           ),
                           child: ClipOval(
-                            child: FadeInImage.assetNetwork(
-                              placeholder: "assets/images/profile.png",
-                              image: photoUrl ?? "assets/images/profile.png",
-                              fadeInDuration: const Duration(milliseconds: 500),
-                              fit: BoxFit.cover,
-                              width: 100.w,
-                              height: 100.w,
-                              imageErrorBuilder: (context, error, stackTrace) =>
-                                  Image.asset("assets/images/profile.png"),
-                            ),
+                            child: photoUrl != null && photoUrl.isNotEmpty
+                                ? FadeInImage.assetNetwork(
+                                    placeholder: "assets/images/profile.png",
+                                    image: photoUrl,
+                                    fadeInDuration:
+                                        const Duration(milliseconds: 100),
+                                    fit: BoxFit.cover,
+                                    width: 90.w,
+                                    height: 90.w,
+                                  )
+                                : Image.asset("assets/images/profile.png"),
                           ),
                         );
                       }),

@@ -197,11 +197,11 @@ class _ReviewsListState extends State<ReviewsList> {
                                 const SizedBox(height: 8),
                                 Text(review.reviewText),
                                 const SizedBox(height: 8),
-                                Text(
-                                  _formatTimestamp(review.timestamp),
-                                  style: const TextStyle(
-                                      color: Colors.grey, fontSize: 12),
-                                ),
+                                // Text(
+                                //   // _formatTimestamp(review.timestamp),
+                                //   style: const TextStyle(
+                                //       color: Colors.grey, fontSize: 12),
+                                // ),
                               ],
                             ),
                           ),

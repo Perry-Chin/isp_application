@@ -47,26 +47,20 @@ class ProfilePage extends GetView<ProfileController> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color:
-                                  AppColor.secondaryColor, // Blue border color
-                              width: 4.0, // Width of the border
+                              color: AppColor.secondaryColor,
+                              width: 4.0,
                             ),
                           ),
                           child: ClipOval(
                             child: FadeInImage.assetNetwork(
-                              placeholder:
-                                  "assets/images/profile.png", // Placeholder image while loading
-                              image: photoUrl?.isNotEmpty == true
-                                  ? photoUrl!
-                                  : "assets/images/profile.png", // Image URL
-                              fadeInDuration: const Duration(
-                                  milliseconds: 500), // Fade-in duration
+                              placeholder: "assets/images/profile.png",
+                              image: photoUrl ?? "assets/images/profile.png",
+                              fadeInDuration: const Duration(milliseconds: 500),
                               fit: BoxFit.cover,
-                              width: 100.w, // Image width
-                              height: 100.w, // Image height
+                              width: 100.w,
+                              height: 100.w,
                               imageErrorBuilder: (context, error, stackTrace) =>
-                                  Image.asset(
-                                      "assets/images/profile.png"), // Error placeholder image
+                                  Image.asset("assets/images/profile.png"),
                             ),
                           ),
                         );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import '../../common/values/values.dart';
 import '../profile/profile_controller.dart';
 
@@ -14,12 +15,19 @@ class ReviewsList extends StatefulWidget {
 
 class _ReviewsListState extends State<ReviewsList> {
   final ProfileController profileController = Get.find<ProfileController>();
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
   String sortType = 'Newest';
 
   @override
   void initState() {
     super.initState();
-    profileController.fetchReviews(widget.reviewsType);
+    _fetchReviews();
+  }
+
+  Future<void> _fetchReviews() async {
+    await profileController.fetchReviews(widget.reviewsType);
+    _refreshController.refreshCompleted();
   }
 
   void _showSortOptions() {
@@ -114,8 +122,10 @@ class _ReviewsListState extends State<ReviewsList> {
               ],
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
+              child: SmartRefresher(
+                controller: _refreshController,
+                onRefresh: _fetchReviews,
+                header: const WaterDropHeader(),
                 child: ListView.builder(
                   itemCount: profileController.reviews.length,
                   itemBuilder: (context, index) {
@@ -138,16 +148,29 @@ class _ReviewsListState extends State<ReviewsList> {
                       ),
                       child: Row(
                         children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.grey.shade200,
-                            backgroundImage: review.fromPhotoUrl != null &&
-                                    review.fromPhotoUrl!.isNotEmpty
-                                ? NetworkImage(review.fromPhotoUrl!)
-                                : null,
-                            child: review.fromPhotoUrl == null ||
-                                    review.fromPhotoUrl!.isEmpty
-                                ? const Icon(Icons.person, color: Colors.grey)
-                                : null,
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              // border: Border.all(
+                              //   color: AppColor.secondaryColor,
+                              //   width: 2.0,
+                              // ),
+                            ),
+                            child: ClipOval(
+                              child: FadeInImage.assetNetwork(
+                                placeholder: "assets/images/profile.png",
+                                image: review.fromPhotoUrl ??
+                                    "assets/images/profile.png",
+                                fadeInDuration:
+                                    const Duration(milliseconds: 500),
+                                fit: BoxFit.cover,
+                                imageErrorBuilder: (context, error,
+                                        stackTrace) =>
+                                    Image.asset("assets/images/profile.png"),
+                              ),
+                            ),
                           ),
                           const SizedBox(width: 16),
                           Expanded(
@@ -173,6 +196,12 @@ class _ReviewsListState extends State<ReviewsList> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(review.reviewText),
+                                const SizedBox(height: 8),
+                                Text(
+                                  _formatTimestamp(review.timestamp),
+                                  style: const TextStyle(
+                                      color: Colors.grey, fontSize: 12),
+                                ),
                               ],
                             ),
                           ),
@@ -187,5 +216,17 @@ class _ReviewsListState extends State<ReviewsList> {
         );
       }
     });
+  }
+
+  // Update the method to accept DateTime instead of Timestamp
+  String _formatTimestamp(DateTime timestamp) {
+    final date = timestamp;
+    final now = DateTime.now();
+    if (date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day) {
+      return 'Today, ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+    }
+    return '${date.day}/${date.month}/${date.year}';
   }
 }

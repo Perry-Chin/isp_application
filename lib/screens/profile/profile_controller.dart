@@ -39,7 +39,7 @@ class ProfileController extends GetxController {
   }
 
   // Method to fetch reviews from Firestore
-  void fetchReviews(String type) async {
+  Future<void> fetchReviews(String type) async {
     try {
       Query<Map<String, dynamic>> query =
           db.collection('reviews').where('to_uid', isEqualTo: user.value?.id);
@@ -112,5 +112,17 @@ class Review {
       serviceType: data['service_type'],
       timestamp: (data['timestamp'] as Timestamp).toDate(),
     );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'from_uid': fromUid,
+      'to_uid': toUid,
+      'review_text': reviewText,
+      'rating': rating,
+      'service_id': serviceId,
+      'service_type': serviceType,
+      'timestamp': Timestamp.fromDate(timestamp),
+    };
   }
 }

@@ -15,7 +15,7 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
     return AppBar(
       elevation: 0,
       centerTitle: true,
-      title: const Text("Filter Schedule"),
+      title: const Text("Filter"),
       backgroundColor: AppColor.secondaryColor,
       leading: IconButton(
         icon: const Icon(Icons.close),
@@ -30,7 +30,7 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
             style: TextStyle(color: Colors.white)
           ),
           onPressed: () {
-            Get.find<FilterScheduleController>().resetSelection();
+            controller.resetSelection();
           },
         ),
       ],
@@ -55,6 +55,7 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
               ),
             ),
             const SizedBox(height: 20),
+            // Add the status filter
             CustomStatusFilter(filters: FilterService.filters),
             const SizedBox(height: 20),
             const Text(
@@ -65,6 +66,7 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
               ),
             ),
             const SizedBox(height: 20),
+            // Add the Star Rating
             Obx(() => StarRatingFilter(
               rating: controller.selectedRating.value,
               onChanged: (selectedRating) {

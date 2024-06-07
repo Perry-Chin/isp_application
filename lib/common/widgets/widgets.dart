@@ -9,3 +9,5 @@ export './shimmer.dart';
 export './shimmer_list.dart';
 export './searchbox_bar.dart';
 export './rating.dart';
+export './category_dropdown.dart';
+export './rating_filter.dart';

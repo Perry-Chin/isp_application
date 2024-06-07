@@ -26,7 +26,8 @@ class HomePage extends GetView<HomeController> {
       appBar: _buildAppBar(),
       body: Container(
         height: 900,
-        padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
+        // padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
+        padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
         child: Column(
           children: [
             SearchBoxBar(

@@ -19,7 +19,7 @@ class ProposeTimeSheet extends StatefulWidget {
   const ProposeTimeSheet({super.key});
 
   @override
-  _ProposeTimeSheetState createState() => _ProposeTimeSheetState();
+  State<ProposeTimeSheet> createState() => _ProposeTimeSheetState();
 }
 
 class _ProposeTimeSheetState extends State<ProposeTimeSheet> {

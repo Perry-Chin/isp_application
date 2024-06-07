@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../common/data/user.dart';
-import '../schedule/schedule_view.dart';
 import '../../common/widgets/widgets.dart';
 import 'detail_index.dart';
 

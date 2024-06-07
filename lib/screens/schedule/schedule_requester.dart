@@ -12,59 +12,9 @@ import '../../common/values/color.dart';
 import '../../common/widgets/widgets.dart';
 import 'schedule_index.dart';
 
-// class RequesterProviderCards extends StatelessWidget{
-//    final List<String> statusFilter;
-//   final List<String> ratingFilter;
-
-//   const RequesterProviderCards({Key? key, required this.statusFilter, required this.ratingFilter}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     List<RequesterCard> allProviderCards = [
-//       const RequesterCard(rating: 4.5, starColor: Colors.white, status: 'finished'),
-//       const RequesterCard(rating: 4.2, starColor: Colors.white, status: 'pending'),
-//       const RequesterCard(rating: 3.9, starColor: Colors.white, status: 'cancelled'),
-//       const RequesterCard(rating: 2, starColor: Colors.white, status: 'pending'),
-//       // Add more ProviderCard widgets as needed
-//     ];
-
-//     List<RequesterCard> requesterProviderCards;
-
-//     if (statusFilter.contains('all') && ratingFilter.contains('all')) {
-//       // If both "all" status and "all" rating are selected, display all cards
-//       requesterProviderCards = allProviderCards;
-//     } else if (statusFilter.contains('all')) {
-//       // If "all" status is selected, filter cards based on rating
-//       requesterProviderCards = allProviderCards.where((card) {
-//         return ratingFilter.contains('all') ||
-//             ((ratingFilter.contains('3 - 5') && card.rating >= 3 && card.rating <= 5) ||
-//                 (ratingFilter.contains('1 - 3') && card.rating >= 1 && card.rating <= 3));
-//       }).toList();
-//     } else if (ratingFilter.contains('all')) {
-//       // If "all" rating is selected, filter cards based on status
-//       requesterProviderCards = allProviderCards.where((card) {
-//         return statusFilter.contains('all') || statusFilter.contains(card.status.toLowerCase());
-//       }).toList();
-//     } else {
-//       // Filter based on both status and rating filters
-//       requesterProviderCards = allProviderCards.where((card) {
-//         bool matchesStatus = statusFilter.contains(card.status.toLowerCase());
-//         bool matchesRating =
-//             (ratingFilter.contains('3 - 5') && card.rating >= 3 && card.rating <= 5) ||
-//                 (ratingFilter.contains('1 - 3') && card.rating >= 1 && card.rating <= 3);
-//         return matchesStatus && matchesRating;
-//       }).toList();
-//     }
-
-//     return ListView(
-//       children: requesterProviderCards,
-//     );
-//   }
-// }
-
 class RequesterCard extends GetView<ScheduleController> {
   final List<String> selectedStatus;
-  final List<String> selectedRating;
+  final int selectedRating;
   final token = UserStore.to.token;
 
   RequesterCard({
@@ -75,7 +25,7 @@ class RequesterCard extends GetView<ScheduleController> {
 
   Widget requesterListItem(
     QueryDocumentSnapshot<ServiceData> item,
-    UserData? requesterData,
+    UserData? userData,
   ) {
     // Check if the item matches the selected filters
     if (!selectedStatus.contains('all') &&
@@ -83,15 +33,16 @@ class RequesterCard extends GetView<ScheduleController> {
       return const SizedBox(); // Return an empty SizedBox if status doesn't match
     }
 
-    if (!selectedRating.contains('all')) {
+    if (selectedRating > 0) {
       // Filter based on rating
-      final rating = requesterData?.rating ?? 0;
-      if (selectedRating.contains('1 - 3') && rating > 3) {
+      final rating = userData?.rating ?? 0;
+      if (selectedRating == 1 && rating > 3) {
         return const SizedBox(); // Return an empty SizedBox if rating doesn't match
-      } else if (selectedRating.contains('3 - 5') && rating < 3) {
+      } else if (selectedRating == 2 && rating < 3) {
         return const SizedBox(); // Return an empty SizedBox if rating doesn't match
       }
     }
+    
     Color statusColor = Colors.green; // Default green for "Finished"
     if (item.data().status?.toLowerCase() == 'requested') {
       statusColor = Colors.blue; // Change color based on status
@@ -100,7 +51,7 @@ class RequesterCard extends GetView<ScheduleController> {
     }
 
     return Card(
-      elevation: 4, // Add elevation for a shadow effect
+      elevation: 8, // Add elevation for a shadow effect
       margin: const EdgeInsets.all(16), // Add margin around the card
       child: InkWell(
         onTap: () {
@@ -118,117 +69,117 @@ class RequesterCard extends GetView<ScheduleController> {
         },
         child: Container(
           decoration: BoxDecoration(
-              border:
-                  Border(left: BorderSide(width: 10.0, color: statusColor))),
-          padding: const EdgeInsets.all(16), // Add padding inside the card
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment
-                .start, // Align children to the start of the column
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey, width: 0.2),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(width: 8.0, color: statusColor)
+              )
+            ),
+            padding: const EdgeInsets.all(6), // Add padding inside the card
+            child: Column(
+              children: [
+                ListTile(
+                  leading: CircleAvatar(
                     radius: 28.0,
                     backgroundColor: Colors.transparent,
                     child: ClipOval(
-                      child: FadeInImage.assetNetwork(
-                        placeholder:
-                            "assets/images/profile.png", // Placeholder image while loading
-                        image: requesterData?.photourl ?? "", // Image URL
-                        fadeInDuration: const Duration(
-                            milliseconds: 500), // Fade-in duration
+                      child: userData?.photourl != null && userData!.photourl!.isNotEmpty ?
+                      FadeInImage.assetNetwork(
+                        placeholder: "assets/images/profile.png",
+                        image: userData.photourl ?? "",
+                        fadeInDuration: const Duration(milliseconds: 100),
                         fit: BoxFit.cover,
-                        width: 54.w,
-                        height: 54.w,
-                        imageErrorBuilder: (context, error, stackTrace) =>
-                            Image.asset(
-                                "assets/images/profile.png"), // Error placeholder image
-                      ),
+                        width: 58.w,
+                        height: 58.w,
+                      ) :
+                      Image.asset("assets/images/profile.png"),
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(requesterData?.username ?? "",
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w500)),
-                          const SizedBox(width: 6),
-                          Rating(rating: requesterData?.rating ?? 0),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-                      Row(
-                        children: [
-                          Text("${item.data().date?.toString() ?? " "},"),
-                          const SizedBox(width: 3),
-                          Text(item.data().time!),
-                        ],
-                      )
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  const Icon(Icons.location_on,
-                      size: 28, color: AppColor.secondaryColor),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text("${item.data().location}",
-                        overflow: TextOverflow.ellipsis, maxLines: 1),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Container(
-                      width: item.data().serviceName!.length * 11,
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffF2F2F2),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Text(
-                          item.data().serviceName ?? "",
+                  title: Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                    child: Row(
+                      children: [
+                        // Username of requester
+                        Text(
+                          userData?.username ?? "",
                           style: const TextStyle(
+                            fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                      ),
+                        const SizedBox(width: 6),
+                        // Rating
+                        const Rating(rating: 8.5),
+                      ],
                     ),
                   ),
-                  Container(
-                    height: 43,
-                    width: item.data().status!.length * 11,
-                    decoration: BoxDecoration(
-                      color: statusColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(13),
-                        child: Text(
-                          "${item.data().status}",
-                          style: const TextStyle(
-                              fontSize: 15, color: Colors.white),
+                  // Date and time
+                  subtitle: Text(
+                    "${item.data().date}, ${item.data().time}",
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, top: 5),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.location_on,
+                        color: AppColor.secondaryColor,
+                      ),
+                      const SizedBox(width: 2),
+                      Text(
+                        item.data().location ?? "",
+                        overflow: TextOverflow.ellipsis, 
+                        maxLines: 1
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: item.data().serviceName!.length * 11,
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xffF2F2F2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(
+                            item.data().serviceName ?? "",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      Container(
+                        width: item.data().status!.length * 11,
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: statusColor,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "${item.data().status}",
+                            style: const TextStyle(
+                                fontSize: 15, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -249,8 +200,8 @@ class RequesterCard extends GetView<ScheduleController> {
             enablePullDown: true,
             enablePullUp: true,
             controller: controller.refreshControllers,
-            onLoading: controller.onLoadingControll,
-            onRefresh: controller.onRefreshControll,
+            onLoading: controller.onLoading,
+            onRefresh: controller.onRefresh,
             header: const WaterDropHeader(),
             child: CustomScrollView(
               slivers: [
@@ -259,11 +210,9 @@ class RequesterCard extends GetView<ScheduleController> {
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        var serviceItem =
-                            controller.state.providerList[index];
-                        var requesterData =
-                            userDataMap[serviceItem.data().reqUserid];
-                        return requesterListItem(serviceItem, requesterData);
+                        var serviceItem = controller.state.providerList[index];
+                        var userData = userDataMap[serviceItem.data().reqUserid];
+                        return requesterListItem(serviceItem, userData);
                       },
                       childCount:
                           controller.state.providerList.length,

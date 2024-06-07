@@ -46,7 +46,7 @@ class FilterService extends Equatable {
     const FilterService(id: 0, status: 'All', color: AppColor.secondaryColor),
     const FilterService(id: 1, status: 'Started', color: Colors.redAccent),
     const FilterService(id: 2, status: 'Pending', color: Colors.orangeAccent),
-    const FilterService(id: 3, status: 'Booked', color: Colors.white),
+    const FilterService(id: 3, status: 'Booked', color: Colors.cyan),
     const FilterService(id: 4, status: 'Requested', color: Colors.blue),
     const FilterService(id: 5, status: 'Completed', color: Colors.green),
     const FilterService(id: 6, status: 'Cancelled', color: Colors.red),

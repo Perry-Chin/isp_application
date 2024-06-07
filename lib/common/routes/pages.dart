@@ -12,6 +12,7 @@ import '../../screens/navbar/navbar_index.dart';
 import '../../screens/welcome/welcome_index.dart';
 import '../../screens/settingsx/settingsx_index.dart';
 import '../../screens/home/filterHome/filterHome_index.dart';
+import '../../screens/schedule/filterSchedule/filterSchedule_index.dart';
 
 //Basic structure for managing routes using the GetX package
 class AppPages {
@@ -20,7 +21,7 @@ class AppPages {
   static List<String> history = [];
 
   static final List<GetPage> routes = [
-    //Welcome Page
+    // Welcome Page
     GetPage(
       name: AppRoutes.welcome,
       page: () => const WelcomePage(),
@@ -31,53 +32,59 @@ class AppPages {
         RouteWelcomeMiddleware(priority: 1)
       ]
     ),
-    //Navbar Page
+    // Navbar Page
     GetPage(
       name: AppRoutes.navbar,
       page: () => const NavbarPage(), // Pass pageController here
       binding: NavbarBinding()
     ),
-    //Login Page
+    // Login Page
     GetPage(
       name: AppRoutes.login,
       page: () => const LoginPage(),
       binding: LoginBinding()
     ),
-    //Register Page
+    // Register Page
     GetPage(
       name: AppRoutes.register,
       page: () => const RegisterPage(),
       binding: RegisterBinding()
     ),
-    //Setting Page
+    // Setting Page
     GetPage(
       name: AppRoutes.settingsx,
       page: () => SettingsxPage(),
       binding: SettingsxBinding()
     ),
-    //Detail Page
+    // Detail Page
     GetPage(
       name: AppRoutes.detail,
       page: () => const DetailPage(),
       binding: DetailBinding()
     ),
-    //Message Page
+    // Message Page
     GetPage(
       name: AppRoutes.message,
       page: () => const MessagePage(),
       binding: MessageBinding()
     ),
-    //Chat Page
+    // Chat Page
     GetPage(
       name: AppRoutes.chat,
       page: () => const ChatPage(),
       binding: ChatBinding()
     ),
-    //Filter Page
+    // Filter Home Page
     GetPage(
       name: AppRoutes.filterHome,
       page: () => const FilterHomePage(),
       binding: FilterHomeBinding()
+    ),
+    // Filter Schedule Page
+    GetPage(
+      name: AppRoutes.filterSchedule,
+      page: () => const FilterSchedulePage(),
+      binding: FilterScheduleBinding()
     ),
   ];
 }

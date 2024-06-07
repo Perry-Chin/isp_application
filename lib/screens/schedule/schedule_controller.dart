@@ -1,10 +1,12 @@
-// ignore_for_file: avoid_print
 
+// Import dependencies
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:rxdart/transformers.dart';
+
+// Import files
 import '../../common/data/service.dart';
 import '../../common/data/user.dart';
 import '../../common/storage/storage.dart';
@@ -17,9 +19,9 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
   final token = UserStore.to.token;
   final db = FirebaseFirestore.instance;
   final List<String> selectedStatus = ['all'];
-  final List<String> selectedRating = ['all'];
-  final RefreshController refreshController = RefreshController(initialRefresh: false);
-  final RefreshController refreshControllers = RefreshController(initialRefresh: false);
+  final int selectedRating = 0;
+  final RefreshController refreshController = RefreshController(initialRefresh: true);
+  final RefreshController refreshControllers = RefreshController(initialRefresh: true);
 
   final Rx<ScheduleState> _state = ScheduleState().obs;
   ScheduleState get state => _state.value;
@@ -114,20 +116,6 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
       .map((snapshot) => snapshot.docs);
   }
 
-  Stream<Map<String, UserData?>> getCombinedStream(String token) {
-    return getServiceStream(token).switchMap((serviceDocs) {
-      List<String> userIds = serviceDocs.map((doc) => doc.data().reqUserid!).toSet().toList();
-
-      if (userIds.isEmpty) {
-        return Stream.value({});
-      }
-
-      return getUserStream(userIds).map((userDocs) {
-        return Map.fromEntries(userDocs.map((doc) => MapEntry(doc.id, doc.data())));
-      });
-    });
-  }
-
   Stream<Map<String, UserData?>> getCombinedRequesterStream(String token) {
     return getRequesterServiceStream(token).switchMap((serviceDocs) {
       List<String> userIds = serviceDocs.map((doc) => doc.data().reqUserid!).toSet().toList();
@@ -180,7 +168,61 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
     if (requesterServices.docs.isNotEmpty) {
       state.providerList.assignAll(requesterServices.docs);
     }
-
-    print("Data loaded for for requester: ${state.providerList.length} services, ${state.ratingState.length} ratings");
   }
+
+  Stream<Map<String, UserData?>> getCombinedStream(String token) {
+    return getServiceStream(token).switchMap((serviceDocs) {
+      List<String> userIds = serviceDocs.map((doc) => doc.data().reqUserid!).toSet().toList();
+
+      if (userIds.isEmpty) {
+        return Stream.value({});
+      }
+
+      return getUserStream(userIds).map((userDocs) {
+        state.userDataMap.clear(); // Clear existing map
+        state.userDataMap.addEntries(userDocs.map((doc) => MapEntry(doc.id, doc.data())));
+        return state.userDataMap;
+      });
+    });
+  }
+
+  void filterServices({
+    required List<String> selectedStatus,
+    required int selectedRating,
+  }) {
+    if (currentTabIndex.value == 0) {
+      // Filter services for provider
+      state.providerList.assignAll(state.providerList.where((serviceDoc) {
+        final serviceData = serviceDoc.data();
+        return selectedStatus.contains('all') || selectedStatus.contains(serviceData.status?.toLowerCase());
+      }).toList());
+
+      // Apply rating filter
+      state.providerList.removeWhere((serviceDoc) {
+        final userData = state.userDataMap[serviceDoc.data().reqUserid];
+        if (userData != null) {
+          final rating = userData.rating ?? 0;
+          return (selectedRating == 1 && rating <= 3) || (selectedRating == 2 && rating > 3);
+        }
+        return false;
+      });
+    } else {
+      // Filter services for requester
+      state.requesterList.assignAll(state.requesterList.where((serviceDoc) {
+        final serviceData = serviceDoc.data();
+        return selectedStatus.contains('all') || selectedStatus.contains(serviceData.status?.toLowerCase());
+      }).toList());
+
+      // Apply rating filter
+      state.requesterList.removeWhere((serviceDoc) {
+        final userData = state.userDataMap[serviceDoc.data().reqUserid];
+        if (userData != null) {
+          final rating = userData.rating ?? 0;
+          return (selectedRating == 1 && rating <= 3) || (selectedRating == 2 && rating > 3);
+        }
+        return false;
+      });
+    }
+  }
+
 }

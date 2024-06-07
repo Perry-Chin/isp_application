@@ -4,8 +4,12 @@ import '../../common/data/service.dart';
 import '../../common/data/user.dart';
 
 class ScheduleState {
-  final RxList<QueryDocumentSnapshot<ServiceData>> providerList = <QueryDocumentSnapshot<ServiceData>>[].obs;
+  List<QueryDocumentSnapshot<ServiceData>> providerList = [];
+  List<QueryDocumentSnapshot<ServiceData>> requesterList = [];
   final RxList<QueryDocumentSnapshot<UserData>> ratingState = <QueryDocumentSnapshot<UserData>>[].obs;
 
+  // Map to store UserData objects with their IDs
+  Map<String, UserData?> userDataMap = {};
+  
   ScheduleState();
 }

@@ -31,7 +31,7 @@ class Rating extends StatelessWidget {
           const SizedBox(width: 3),
           const Icon(
             Icons.star,
-            color: Colors.yellow,
+            color: Colors.orange,
             size: 16,
           ),
         ],

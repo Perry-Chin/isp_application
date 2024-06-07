@@ -13,4 +13,6 @@ class AppRoutes {
   static const userSettings = '/userSettings';
   static const detail = '/detail';
   static const filterHome = '/filterHome';
+  static const schedule = '/schedule';
+  static const filterSchedule = '/filterSchedule';
 }

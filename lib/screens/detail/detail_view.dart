@@ -118,20 +118,21 @@ class DetailPage extends GetView<DetailController> {
           ),
         ),
         ListTile(
+          horizontalTitleGap: 12,
           leading: CircleAvatar(
             radius: 28.0,
             backgroundColor: Colors.transparent,
             child: ClipOval(
-              child: FadeInImage.assetNetwork(
+              child: userData?.photourl != null && userData!.photourl!.isNotEmpty ?
+              FadeInImage.assetNetwork(
                 placeholder: "assets/images/profile.png",
-                image: userData?.photourl ?? "",
-                fadeInDuration: const Duration(milliseconds: 500),
+                image: userData.photourl ?? "",
+                fadeInDuration: const Duration(milliseconds: 100),
                 fit: BoxFit.cover,
                 width: 54.w,
                 height: 54.w,
-                imageErrorBuilder: (context, error, stackTrace) =>
-                    Image.asset("assets/images/profile.png"),
-              ),
+              ) :
+              Image.asset("assets/images/profile.png"),
             ),
           ),
           title: Padding(

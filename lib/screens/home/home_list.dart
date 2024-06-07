@@ -40,6 +40,7 @@ class HomeList extends GetView<HomeController> {
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: Colors.grey, width: 0.2),
           ),
+          padding: const EdgeInsets.all(6),
           child: Column(
             children: [
               ListTile(

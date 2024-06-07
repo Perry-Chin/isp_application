@@ -1,8 +1,8 @@
-// ignore_for_file: unrelated_type_equality_checks
-
+// Import dependencies
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// Import local files
 import '../../common/values/values.dart';
 import 'schedule_index.dart';
 
@@ -45,7 +45,8 @@ class SchedulePage extends GetView<ScheduleController> {
         IconButton(
           icon: const Icon(Icons.filter_list),
           onPressed: () {
-            // Implement filter functionality if needed
+            // Redirect to filter page
+            Get.toNamed('/filterSchedule');
           },
         ),
       ],
@@ -62,7 +63,7 @@ class SchedulePage extends GetView<ScheduleController> {
         body: Padding(
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
           child: Obx(() {
-            if (controller.currentTabIndex == 0) {
+            if (controller.currentTabIndex.value == 0) {
               return ProviderCard(
                 selectedStatus: controller.selectedStatus,
                 selectedRating: controller.selectedRating,

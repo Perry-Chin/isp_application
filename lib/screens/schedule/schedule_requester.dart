@@ -42,7 +42,7 @@ class RequesterCard extends GetView<ScheduleController> {
         return const SizedBox(); // Return an empty SizedBox if rating doesn't match
       }
     }
-    
+
     Color statusColor = Colors.green; // Default green for "Finished"
     if (item.data().status?.toLowerCase() == 'requested') {
       statusColor = Colors.blue; // Change color based on status
@@ -196,32 +196,42 @@ class RequesterCard extends GetView<ScheduleController> {
           return const ShimmerLoading();
         }
         return Obx(
-          () => SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: true,
-            controller: controller.refreshControllers,
-            onLoading: controller.onLoading,
-            onRefresh: controller.onRefresh,
-            header: const WaterDropHeader(),
-            child: CustomScrollView(
-              slivers: [
-                SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.w),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        var serviceItem = controller.state.providerList[index];
-                        var userData = userDataMap[serviceItem.data().reqUserid];
-                        return requesterListItem(serviceItem, userData);
-                      },
-                      childCount:
-                          controller.state.providerList.length,
+          () {
+            final providerList = controller.state.providerList;
+            // Add a debug print to log the length of the providerList
+            print("ProviderList length: ${providerList.length}");
+            return SmartRefresher(
+              enablePullDown: true,
+              enablePullUp: true,
+              controller: controller.refreshControllers,
+              onLoading: controller.onLoading,
+              onRefresh: controller.onRefresh,
+              header: const WaterDropHeader(),
+              child: CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.w),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          // Check if index is within bounds before accessing
+                          if (index < providerList.length) {
+                            var serviceItem = providerList[index];
+                            var userData = userDataMap[serviceItem.data().reqUserid];
+                            return requesterListItem(serviceItem, userData);
+                          } else {
+                            // Return an empty SizedBox if index is out of bounds
+                            return const SizedBox();
+                          }
+                        },
+                        childCount: providerList.length,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
+                ],
+              ),
+            );
+          }
         );
       },
     );

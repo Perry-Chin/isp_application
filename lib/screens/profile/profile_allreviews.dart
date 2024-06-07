@@ -10,7 +10,7 @@ class ReviewsList extends StatefulWidget {
   const ReviewsList({required this.reviewsType, Key? key}) : super(key: key);
 
   @override
-  _ReviewsListState createState() => _ReviewsListState();
+  State<ReviewsList> createState() => _ReviewsListState();
 }
 
 class _ReviewsListState extends State<ReviewsList> {
@@ -216,17 +216,5 @@ class _ReviewsListState extends State<ReviewsList> {
         );
       }
     });
-  }
-
-  // Update the method to accept DateTime instead of Timestamp
-  String _formatTimestamp(DateTime timestamp) {
-    final date = timestamp;
-    final now = DateTime.now();
-    if (date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day) {
-      return 'Today, ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
-    }
-    return '${date.day}/${date.month}/${date.year}';
   }
 }

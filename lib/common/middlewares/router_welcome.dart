@@ -1,6 +1,6 @@
 // Router Welcome
 
-// ignore_for_file: overridden_fields, avoid_print
+// ignore_for_file: overridden_fields
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// Edit Profile Controller
 
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import '../profile/profile_index.dart'; // Import the ProfileController
+import '../profile/profile_index.dart';
 
 class EditProfileController extends GetxController {
   EditProfileController();

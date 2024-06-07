@@ -1,5 +1,3 @@
-// ignore_for_file: library_names
-
 library userSettings;
 
 export 'settingsx_bindings.dart';

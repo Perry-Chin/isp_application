@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// Chat View
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

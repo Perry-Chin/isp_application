@@ -1,6 +1,6 @@
 // Request Service Controller
 
-// ignore_for_file: depend_on_referenced_packages, avoid_init_to_null, non_constant_identifier_names, use_build_context_synchronously, avoid_print
+// ignore_for_file: avoid_init_to_null, non_constant_identifier_names, use_build_context_synchronously
 
 import 'dart:io';
 

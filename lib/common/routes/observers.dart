@@ -1,7 +1,7 @@
 //For route navigation between different pages, 
 //maintains a history of route names
 
-// ignore_for_file: unnecessary_overrides, avoid_print
+// ignore_for_file: unnecessary_overrides
 
 import 'package:flutter/material.dart';
 import 'routes.dart';

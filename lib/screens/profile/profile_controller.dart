@@ -1,7 +1,6 @@
-// ignore_for_file: avoid_print
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+
 import '../../common/data/data.dart';
 import '../../common/storage/storage.dart';
 

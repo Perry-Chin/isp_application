@@ -1,4 +1,3 @@
-
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -9,8 +8,13 @@ class FilterScheduleController extends GetxController {
   final box = GetStorage();
   
   // Initialize selectedStatus with stored value from GetStorage
-  var selectedStatus = List<bool>.filled(FilterService.filters.length, false).obs;
+  var selectedStatus = List<bool>.empty(growable: true).obs; // Initialize as empty and growable
   var selectedRating = 0.obs;
+
+  // To keep track of original selections before changes
+  List<bool> originalSelectedStatus = [];
+  int originalSelectedRating = 0;
+  bool changesMade = false;
 
   @override
   void onInit() {
@@ -18,51 +22,66 @@ class FilterScheduleController extends GetxController {
     // Load saved selections from GetStorage
     List<bool>? storedStatus = box.read('selectedStatus');
     int? storedRating = box.read('selectedRating');
+
     if (storedStatus != null) {
-      selectedStatus.clear();
-      selectedStatus.addAll(storedStatus);
+      selectedStatus.assignAll(storedStatus); // Assign stored status to observable list
+      originalSelectedStatus = List.from(storedStatus); // Keep a copy of the original selections
+    } else {
+      // Initialize selectedStatus with false values if not stored
+      selectedStatus.assignAll(List<bool>.filled(FilterStatus.filters.length, false));
     }
+
     if (storedRating != null) {
       selectedRating.value = storedRating;
+      originalSelectedRating = storedRating; // Keep the original rating
     }
   }
 
   void toggleSelection(int index) {
-    // Your existing toggleSelection logic remains the same...
-    if (index == 0) {
-      // If "All" is selected, deselect all others
-      selectedStatus.fillRange(0, selectedStatus.length, false);
-      selectedStatus[0] = true;
-    } else {
-      // If any other chip is selected, deselect "All"
-      selectedStatus[0] = false;
+    if (index >= 0 && index < selectedStatus.length) {
       selectedStatus[index] = !selectedStatus[index];
+      changesMade = true;
     }
   }
 
   void resetSelection() {
-    selectedStatus.fillRange(0, selectedStatus.length, false);
-    selectedStatus[0] = true;
+    selectedStatus.assignAll(List<bool>.filled(selectedStatus.length, false));
     selectedRating.value = 0;
     box.remove('selectedStatus');
     box.remove('selectedRating');
+    changesMade = true;
   }
+
+  void revertChanges() {
+    // Check if originalSelectedStatus is not empty and has the same length as selectedStatus
+    if (originalSelectedStatus.isNotEmpty && originalSelectedStatus.length == selectedStatus.length) {
+      selectedStatus.assignAll(originalSelectedStatus);
+    } else {
+      // Handle the case where originalSelectedStatus is empty or has a different length
+      selectedStatus.assignAll(List<bool>.filled(selectedStatus.length, false));
+    }
+    
+    selectedRating.value = originalSelectedRating;
+    applyFilters();
+  }
+
 
   void setSelectedRating(int rating) {
     selectedRating.value = rating;
-    box.write('selectedRating', rating);
+    changesMade = true;
   }
 
   void applyFilters() {
-    final selectedStatusValue = FilterService.filters
+    final selectedStatusValue = FilterStatus.filters
         .asMap()
         .entries
-        .where((entry) => selectedStatus[entry.key])
+        .where((entry) => selectedStatus.length > entry.key && selectedStatus[entry.key])
         .map((entry) => entry.value.status)
         .toList();
 
     // Store selected filters in GetStorage
-    box.write('selectedStatus', selectedStatus);
+    box.write('selectedStatus', selectedStatus.toList());
+    box.write('selectedRating', selectedRating.value);
 
     // Pass selected filters to ScheduleController
     Get.find<ScheduleController>().filterServices(

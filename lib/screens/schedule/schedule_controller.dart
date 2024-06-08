@@ -228,7 +228,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
         .orderBy("statusid", descending: false)
         .orderBy("date", descending: false);
       
-      if (!selectedStatus.contains('All')) {
+      if (!selectedStatus.contains('All') && selectedStatus.isNotEmpty) {
         query = query.where("status", whereIn: selectedStatus);
       }
 
@@ -277,7 +277,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
 
     if (storedStatus != null) {
       // Map boolean values to selected status strings
-      List<String> selectedStatus = FilterService.filters
+      List<String> selectedStatus = FilterStatus.filters
           .asMap()
           .entries
           .where((entry) => storedStatus[entry.key])

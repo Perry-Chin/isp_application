@@ -13,11 +13,12 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
   
   late TabController tabController;
   final ScheduleState state = ScheduleState();
+  final token = UserStore.to.token;
+  final db = FirebaseFirestore.instance;
   final List<String> selectedStatus = ['all'];
   final int selectedRating = 0;
-  final db = FirebaseFirestore.instance;
-  final token = UserStore.to.token;
   final RefreshController refreshController = RefreshController(initialRefresh: false);
+  RxInt currentTabIndex = 0.obs;
 
   @override
   void onInit() {
@@ -111,11 +112,16 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
       // Add a delay of 1 second
       await Future.delayed(const Duration(milliseconds: 500));
 
-      var reqServices = await db.collection("service").withConverter(
+      var reqServices = await db
+        .collection("service")
+        .withConverter(
           fromFirestore: ServiceData.fromFirestore,
-          toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore())
-          .where("requester_uid", isNotEqualTo: token)  // Make sure the field matches the orderBy field
-          .orderBy("statusid", descending: false).get();
+          toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore(),
+        )
+        .where("requester_uid", isEqualTo: token)  // Apply all filters on the same field
+        .where("statusid", isGreaterThanOrEqualTo: 0)
+        .orderBy("statusid", descending: false)
+        .get();
 
       List<QueryDocumentSnapshot<ServiceData>> documents = reqServices.docs;
 
@@ -178,11 +184,16 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
       // Add a delay of 1 second
       await Future.delayed(const Duration(milliseconds: 500));
 
-      var reqServices = await db.collection("service").withConverter(
+      var reqServices = await db
+        .collection("service")
+        .withConverter(
           fromFirestore: ServiceData.fromFirestore,
-          toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore())
-          .where("provider_uid", isNotEqualTo: token)  // Make sure the field matches the orderBy field
-          .orderBy("statusid", descending: false).get();
+          toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore(),
+        )
+        .where("provider_uid", isEqualTo: token)  // Apply all filters on the same field
+        .where("statusid", isGreaterThanOrEqualTo: 0)
+        .orderBy("statusid", descending: false)
+        .get();
 
       List<QueryDocumentSnapshot<ServiceData>> documents = reqServices.docs;
 

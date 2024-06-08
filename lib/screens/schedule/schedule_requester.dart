@@ -4,10 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:get/get.dart';
 
-import '../../common/data/service.dart';
-import '../../common/data/user.dart';
-import '../../common/storage/user.dart';
-import '../../common/values/color.dart';
+import '../../common/data/data.dart';
+import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'schedule_index.dart';
 
@@ -15,7 +13,7 @@ class RequesterCard extends GetView<ScheduleController> {
   final List<String> selectedStatus;
   final int selectedRating;
 
-  RequesterCard({
+  const RequesterCard({
     Key? key,
     required this.selectedStatus,
     required this.selectedRating,
@@ -189,7 +187,6 @@ class RequesterCard extends GetView<ScheduleController> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const ShimmerLoading();
         }
-
         final userDataMap = snapshot.data ?? {};
         return SmartRefresher(
           enablePullDown: true,

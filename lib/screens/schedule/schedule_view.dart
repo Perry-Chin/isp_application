@@ -18,7 +18,7 @@ class SchedulePage extends GetView<ScheduleController> {
       Tab(text: 'Requested'),
     ],
     onTap: (index) {
-      controller.tabController.index = index;
+      controller.currentTabIndex.value = index;
     },
   );
 
@@ -56,7 +56,7 @@ class SchedulePage extends GetView<ScheduleController> {
         body: Padding(
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
           child: Obx(() {
-            if (controller.tabController.index == 0) {
+            if (controller.currentTabIndex.value == 0) {
               return ProviderCard(
                 selectedStatus: controller.selectedStatus,
                 selectedRating: controller.selectedRating,

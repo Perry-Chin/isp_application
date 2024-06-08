@@ -8,7 +8,7 @@ import 'filterSchedule_index.dart';
 
 class FilterSchedulePage extends GetView<FilterScheduleController> {
   const FilterSchedulePage({super.key});
-
+  
   AppBar _buildAppBar() {
     return AppBar(
       elevation: 0,
@@ -109,7 +109,7 @@ class CustomStatusFilter extends StatelessWidget {
             controller.toggleSelection(index);
           },
           child: Obx(() {
-            bool isSelected = controller.selected[index];
+            bool isSelected = controller.selectedStatus[index];
             return Chip(
               backgroundColor: isSelected ? filter.color : Colors.white,
               shape: RoundedRectangleBorder(

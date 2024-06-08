@@ -1,45 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+
 import '../../common/values/values.dart';
 import 'schedule_index.dart';
 
 class SchedulePage extends GetView<ScheduleController> {
   const SchedulePage({Key? key}) : super(key: key);
 
-  // TabBar widget
-  TabBar get _tabBar => TabBar(
-    labelColor: AppColor.secondaryColor,
-    indicatorColor: AppColor.secondaryColor,
-    unselectedLabelColor: Colors.grey,
-    controller: controller.tabController,
-    tabs: const [
-      Tab(text: 'Provided'),
-      Tab(text: 'Requested'),
-    ],
-    onTap: (index) {
-      controller.currentTabIndex.value = index;
-    },
-  );
-
   AppBar _buildAppBar() {
     return AppBar(
       elevation: 0,
-      centerTitle: true,
       title: const Text("Schedule"),
       backgroundColor: AppColor.secondaryColor,
       bottom: PreferredSize(
-        preferredSize: _tabBar.preferredSize,
+        preferredSize: const Size.fromHeight(50),
         child: Material(
-          color: AppColor.backgroundColor,
-          child: _tabBar,
+          color: AppColor.secondaryColor,
+          child: TabBar(
+            labelColor: Colors.white,
+            indicatorColor: Colors.white,
+            unselectedLabelColor: Colors.grey,
+            controller: controller.tabController,
+            tabs: const [
+              Tab(text: 'Provided'),
+              Tab(text: 'Requested'),
+            ],
+          ),
         ),
       ),
       actions: [
         IconButton(
           icon: const Icon(Icons.filter_list),
           onPressed: () {
-            Get.toNamed('/filterSchedule');
+            // Redirect to filter page
+            Get.toNamed('/filterSchedule')!.then((_) {
+              // Update filter selections when returning from FilterSchedulePage
+              controller.updateFilterFromStorage();
+            });
           },
         ),
       ],
@@ -55,19 +53,27 @@ class SchedulePage extends GetView<ScheduleController> {
         appBar: _buildAppBar(),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-          child: Obx(() {
-            if (controller.currentTabIndex.value == 0) {
-              return ProviderCard(
-                selectedStatus: controller.selectedStatus,
-                selectedRating: controller.selectedRating,
-              );
-            } else {
-              return RequesterCard(
-                selectedStatus: controller.selectedStatus,
-                selectedRating: controller.selectedRating,
-              );
-            }
-          }),
+          child: TabBarView(
+            controller: controller.tabController,
+            children: [
+              GetBuilder<ScheduleController>(
+                builder: (controller) {
+                  return ProviderCard(
+                    selectedStatus: controller.selectedStatus,
+                    selectedRating: controller.selectedRating,
+                  );
+                },
+              ),
+              GetBuilder<ScheduleController>(
+                builder: (controller) {
+                  return RequesterCard(
+                    selectedStatus: controller.selectedStatus,
+                    selectedRating: controller.selectedRating,
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

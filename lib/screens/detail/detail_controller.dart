@@ -25,7 +25,9 @@ class DetailController extends GetxController {
   final selectedDate = DateTime.now().obs; // Observable for selected date
   final selectedTime = TimeOfDay.now().obs; // Observable for selected time
 
-   bool showPaymentSection = false; 
+  var userData = Rxn<UserData>(); // Observable for UserData
+
+  bool showPaymentSection = false; 
 
   void togglePaymentSection() {
     showPaymentSection = !showPaymentSection;
@@ -43,9 +45,6 @@ class DetailController extends GetxController {
       .snapshots()
       .map((snapshot) => snapshot.docs);
   }
-
-  
-
 
   Stream<List<DocumentSnapshot<UserData>>> getUserStream(List<String> userIds) {
     return db
@@ -82,6 +81,15 @@ class DetailController extends GetxController {
     super.onInit();
     var data = Get.parameters;
     doc_id = data['doc_id'];
+    
+    // Listen to the combined stream and assign the first user's data to userData
+    combinedStream.listen((userDataMap) {
+      if (userDataMap.isNotEmpty) {
+        userData.value = userDataMap.values.first;
+      }
+    });
+
+    asyncLoadAllData();
   }
 
   Future<void> asyncLoadAllData() async {

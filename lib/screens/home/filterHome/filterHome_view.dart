@@ -50,7 +50,7 @@ class FilterHomePage extends GetView<FilterHomeController> {
               ),
             ),
             const SizedBox(height: 20),
-            CustomStatusFilter(filters: Filter.filters),
+            CustomStatusFilter(filters: FilterService.filters),
             const SizedBox(height: 20),
             const Text(
               "Category",
@@ -68,7 +68,7 @@ class FilterHomePage extends GetView<FilterHomeController> {
 }
 
 class CustomStatusFilter extends StatelessWidget {
-  final List<Filter> filters;
+  final List<FilterService> filters;
   const CustomStatusFilter({
     Key? key, 
     required this.filters
@@ -86,17 +86,7 @@ class CustomStatusFilter extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             side: const BorderSide(color: Colors.grey),
           ),
-          label: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircleAvatar(
-                radius: 8,
-                backgroundColor: filter.color, // You can customize the color based on the filter
-              ),
-              const SizedBox(width: 8),
-              Text(filter.status),
-            ],
-          ),
+          label: Text(filter.status),
         ))
         .toList(),
     );

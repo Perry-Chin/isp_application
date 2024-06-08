@@ -8,8 +8,8 @@ import 'filterSchedule_index.dart';
 
 class FilterSchedulePage extends GetView<FilterScheduleController> {
   const FilterSchedulePage({super.key});
-  
-  AppBar _buildAppBar() {
+
+  AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       elevation: 0,
       centerTitle: true,
@@ -18,7 +18,11 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
       leading: IconButton(
         icon: const Icon(Icons.close),
         onPressed: () {
-          Get.back();
+          if(controller.changesMade) {
+            _showConfirmationDialog(context);
+          } else {
+            controller.revertChanges();
+          }
         },
       ),
       actions: [
@@ -34,12 +38,44 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
       ],
     );
   }
-  
+
+  void _showConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Save Changes?"),
+          content: const Text("Do you want to save the changes before exiting?"),
+          actions: [
+            TextButton(
+              child: const Text("No"),
+              onPressed: () {
+                // Revert to old selections if user chooses 'No'
+                controller.revertChanges(); // This will reload the stored values from GetStorage
+                Get.back(); // Close the dialog
+                Get.back(); // Close the filter page
+              },
+            ),
+            TextButton(
+              child: const Text("Yes"),
+              onPressed: () {
+                // Save changes and exit if user chooses 'Yes'
+                controller.applyFilters();
+                Get.back(); // Close the dialog
+                Get.back(); // Close the filter page
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -54,7 +90,7 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
             ),
             const SizedBox(height: 20),
             // Add the status filter
-            CustomStatusFilter(filters: FilterService.filters),
+            CustomStatusFilter(filters: FilterStatus.filters),
             const SizedBox(height: 20),
             const Text(
               "Rating",
@@ -88,7 +124,7 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
 }
 
 class CustomStatusFilter extends StatelessWidget {
-  final List<FilterService> filters;
+  final List<FilterStatus> filters;
   const CustomStatusFilter({
     Key? key, 
     required this.filters
@@ -103,7 +139,7 @@ class CustomStatusFilter extends StatelessWidget {
       runSpacing: 10, // Vertical spacing between the lines
       children: filters.asMap().entries.map((entry) {
         int index = entry.key;
-        FilterService filter = entry.value;
+        FilterStatus filter = entry.value;
         return GestureDetector(
           onTap: () {
             controller.toggleSelection(index);

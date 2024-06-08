@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
-import 'package:rxdart/rxdart.dart';
 
 import '../../common/data/data.dart';
 import '../../common/storage/storage.dart';
@@ -13,8 +12,6 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
   
   late TabController tabController;
   final ScheduleState state = ScheduleState();
-  final List<String> selectedStatus = ['all'];
-  final int selectedRating = 0;
   final db = FirebaseFirestore.instance;
   final token = UserStore.to.token;
   final RefreshController refreshController = RefreshController(initialRefresh: false);
@@ -69,40 +66,6 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
     }
   }
 
-  // Stream to handle fetching service data
-  Stream<List<QueryDocumentSnapshot<ServiceData>>> getRequesterStream(String token) {
-    return FirebaseFirestore.instance
-        .collection('service')
-        .where('requester_uid', isEqualTo: token)
-        .withConverter<ServiceData>(
-          fromFirestore: ServiceData.fromFirestore,
-          toFirestore: (ServiceData serviceData, _) => serviceData.toFirestore(),
-        )
-        .snapshots()
-        .map((snapshot) => snapshot.docs);
-  }
-
-  // Stream to handle fetching user data
-  Stream<List<DocumentSnapshot<UserData>>> getUserStream(List<String> userIds) {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .where(FieldPath.documentId, whereIn: userIds)
-        .withConverter<UserData>(
-          fromFirestore: UserData.fromFirestore,
-          toFirestore: (UserData userData, _) => userData.toFirestore(),
-        )
-        .snapshots()
-        .map((snapshot) {
-          return snapshot.docs;
-        });
-  }
-
-  // Stream to handle data fetching
-  Stream<Map<String, UserData?>> get combinedRequesterStream async* {
-    await asyncLoadAllDataForRequester();
-    yield* getCombinedStream(UserStore.to.token);
-  }
-
   // Load all data for requester
   Future<void> asyncLoadAllDataForRequester() async {
     try {
@@ -132,42 +95,6 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
     catch (e) {
       print("Error fetching: $e");
     }
-  }
-
-    // Stream to handle fetching service data
-  Stream<List<QueryDocumentSnapshot<ServiceData>>> getProviderStream(String token) {
-    return FirebaseFirestore.instance
-        .collection('service')
-        .where('requester_uid', isEqualTo: token)
-        .withConverter<ServiceData>(
-          fromFirestore: ServiceData.fromFirestore,
-          toFirestore: (ServiceData serviceData, _) => serviceData.toFirestore(),
-        )
-        .snapshots()
-        .map((snapshot) => snapshot.docs);
-  }
-
-  // Combine the streams to get user data for each service item
-  Stream<Map<String, UserData?>> getCombinedStream(String token) {
-    return getRequesterStream(token).switchMap((serviceDocs) {
-      List<String> userIds = serviceDocs.map((doc) => doc.data().reqUserid!).toList();
-
-      if (userIds.isEmpty) {
-        return Stream.value({});
-      }
-
-      return getUserStream(userIds).map((userDocs) {
-        var userDataMap = Map.fromEntries(userDocs.map((doc) => MapEntry(doc.id, doc.data())));
-        state.userDataMap.assignAll(userDataMap); // Update userDataMap in state
-        return userDataMap;
-      });
-    });
-  }
-
-  // Stream to handle data fetching
-  Stream<Map<String, UserData?>> get combinedProviderStream async* {
-    await asyncLoadAllDataForProvider();
-    yield* getCombinedStream(UserStore.to.token);
   }
 
   // Load all data for provider
@@ -200,7 +127,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
       print("Error fetching: $e");
     }
   }
-  
+
   // IGNORE: This function is for sorting date and time
   DateTime combineDateTime(String dateString, String timeString) {
     // Parse the date and time strings
@@ -225,44 +152,5 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
 
     // Construct and return the DateTime object using the correct year from the date
     return DateTime(DateTime.now().year, 1, 1, hours, minutes);
-  }
-
-  void filterServices({
-    required List<String> selectedStatus,
-    required int selectedRating,
-  }) {
-    if (tabController.index == 0) {
-      // Filter services for provider
-      state.providerList.assignAll(state.providerList.where((serviceDoc) {
-        final serviceData = serviceDoc.data();
-        return selectedStatus.contains('all') || selectedStatus.contains(serviceData.status?.toLowerCase());
-      }).toList());
-
-      // Apply rating filter
-      state.providerList.removeWhere((serviceDoc) {
-        final userData = state.userDataMap[serviceDoc.data().provUserid];
-        if (userData != null) {
-          final rating = userData.rating ?? 0;
-          return (selectedRating == 1 && rating <= 3) || (selectedRating == 2 && rating > 3);
-        }
-        return false;
-      });
-    } else {
-      // Filter services for requester
-      state.requesterList.assignAll(state.requesterList.where((serviceDoc) {
-        final serviceData = serviceDoc.data();
-        return selectedStatus.contains('all') || selectedStatus.contains(serviceData.status?.toLowerCase());
-      }).toList());
-
-      // Apply rating filter
-      state.requesterList.removeWhere((serviceDoc) {
-        final userData = state.userDataMap[serviceDoc.data().reqUserid];
-        if (userData != null) {
-          final rating = userData.rating ?? 0;
-          return (selectedRating == 1 && rating <= 3) || (selectedRating == 2 && rating > 3);
-        }
-        return false;
-      });
-    }
   }
 }

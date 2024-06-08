@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../common/data/service.dart';
 import '../../common/data/user.dart';
 

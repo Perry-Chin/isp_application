@@ -1,13 +1,11 @@
-// Import dependencies
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// Import local files
 import '../../common/values/values.dart';
 import 'schedule_index.dart';
 
 class SchedulePage extends GetView<ScheduleController> {
-  const SchedulePage({super.key});
+  const SchedulePage({Key? key}) : super(key: key);
 
   // TabBar widget
   TabBar get _tabBar => TabBar(
@@ -20,11 +18,7 @@ class SchedulePage extends GetView<ScheduleController> {
       Tab(text: 'Requested'),
     ],
     onTap: (index) {
-      if (index == 0) {
-        controller.filterByProvided();
-      } else {
-        controller.filterByRequested();
-      }
+      controller.tabController.index = index;
     },
   );
 
@@ -45,7 +39,6 @@ class SchedulePage extends GetView<ScheduleController> {
         IconButton(
           icon: const Icon(Icons.filter_list),
           onPressed: () {
-            // Redirect to filter page
             Get.toNamed('/filterSchedule');
           },
         ),
@@ -63,7 +56,7 @@ class SchedulePage extends GetView<ScheduleController> {
         body: Padding(
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
           child: Obx(() {
-            if (controller.currentTabIndex.value == 0) {
+            if (controller.tabController.index == 0) {
               return ProviderCard(
                 selectedStatus: controller.selectedStatus,
                 selectedRating: controller.selectedRating,

@@ -190,7 +190,7 @@ class ProviderCard extends GetView<ScheduleController> {
     // Use a StreamBuilder to listen to the combined data stream from the controller
     
     return StreamBuilder<Map<String, UserData?>>(
-      stream: controller.combinedStream,
+      stream: controller.combinedRequesterStream,
       builder: (context, snapshot) {
         // Create a map to associate user data with service data based on the 'requester_uid'
         final userDataMap = snapshot.data ?? {};

@@ -34,12 +34,7 @@ class SettingsxPage extends GetView<SettingsxController> {
             height: 75,
             child: InkWell(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ContactPage(),
-                  ),//1
-                );
+                contctpg(Get.context!);
               },
               child: Container(
                 margin: const EdgeInsets.all(8.0),

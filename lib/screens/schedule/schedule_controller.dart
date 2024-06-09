@@ -46,7 +46,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
   }
 
   // The pull_to_refresh dependency requires these functions to work
-    void onRefreshProv() {
+  void onRefreshProv() {
     asyncLoadAllDataForProvider().then((_) {
       refreshControllerProv.refreshCompleted(resetFooterState: true);
     }).catchError((_) {
@@ -118,7 +118,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
       String token = UserStore.to.token;
       
       // Add a delay of 1 second
-      await Future.delayed(const Duration(milliseconds: 500));
+      // await Future.delayed(const Duration(milliseconds: 200));
 
       Query<ServiceData> query = db
         .collection("service")
@@ -215,7 +215,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
       String token = UserStore.to.token;
       
       // Add a delay of 1 second
-      await Future.delayed(const Duration(milliseconds: 500));
+      // await Future.delayed(const Duration(milliseconds: 200));
 
       Query<ServiceData> query = db
         .collection("service")
@@ -251,23 +251,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
     this.selectedStatus.addAll(selectedStatus);
     this.selectedRating = selectedRating;
     currentTabIndex.value = tabController.index;
-    if (tabController.index == 0) {
-      asyncLoadAllDataForProvider().then((_) {
-        refreshControllerProv.refreshCompleted(resetFooterState: true);
-        update(); // Update the state to trigger a rebuild
-      }).catchError((_) {
-        refreshControllerProv.refreshFailed();
-      });
-    } else {
-      asyncLoadAllDataForRequester().then((_) {
-        refreshControllerReq.refreshCompleted(resetFooterState: true);
-        update(); // Update the state to trigger a rebuild
-      }).catchError((_) {
-        refreshControllerReq.refreshFailed();
-      });
-    }
-
-    update(); // Update the state to trigger a rebuild
+    update();
   }
 
   void updateFilterFromStorage() {

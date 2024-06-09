@@ -5,6 +5,7 @@ import '../../../common/utils/utils.dart';
 import '../schedule_index.dart';
 
 class FilterScheduleController extends GetxController {
+  FilterScheduleController();
   final box = GetStorage();
   
   // Initialize selectedStatus with stored value from GetStorage

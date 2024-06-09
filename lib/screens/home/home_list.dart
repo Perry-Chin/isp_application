@@ -146,7 +146,8 @@ class HomeList extends GetView<HomeController> {
         // Create a map to associate user data with service data based on the 'reqUserid'
         final userDataMap = snapshot.data ?? {};
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const ShimmerLoading();
+          // return const ShimmerLoading();
+          return const Center(child: CircularProgressIndicator());
         }
         return Obx(
           () => SmartRefresher(

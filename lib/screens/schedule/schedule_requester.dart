@@ -175,7 +175,8 @@ Color getStatusColor(String? status) {
       builder: (context, snapshot) {
         final userDataMap = snapshot.data ?? {};
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const ShimmerLoading();
+          // return const ShimmerLoading();
+          return const Center(child: CircularProgressIndicator());
         }
         // Filter requesterList based on selected rating
         final filteredList = controller.state.requesterList.where((item) {

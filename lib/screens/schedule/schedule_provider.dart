@@ -175,7 +175,8 @@ class ProviderCard extends GetView<ScheduleController> {
         builder: (context, snapshot) {
           final userDataMap = snapshot.data ?? {};
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const ShimmerLoading();
+            // return const ShimmerLoading();
+            return const Center(child: CircularProgressIndicator());
           }
           // Filter providerList based on selected rating
           final filteredList = controller.state.providerList.where((item) {

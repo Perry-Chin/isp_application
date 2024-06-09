@@ -52,7 +52,6 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
               onPressed: () {
                 // Revert to old selections if user chooses 'No'
                 controller.revertChanges(); // This will reload the stored values from GetStorage
-                Get.back(); // Close the dialog
                 Get.back(); // Close the filter page
               },
             ),
@@ -90,7 +89,7 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
             ),
             const SizedBox(height: 20),
             // Add the status filter
-            CustomStatusFilter(filters: FilterStatus.filters),
+            customStatusFilter(FilterStatus.filters),
             const SizedBox(height: 20),
             const Text(
               "Rating",
@@ -121,19 +120,8 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
       ),
     );
   }
-}
 
-class CustomStatusFilter extends StatelessWidget {
-  final List<FilterStatus> filters;
-  const CustomStatusFilter({
-    Key? key, 
-    required this.filters
-  }) : super(key: key);
-  
-  @override
-  Widget build(BuildContext context) {
-    final FilterScheduleController controller = Get.find();
-    
+  Widget customStatusFilter(List<FilterStatus> filters) {
     return Wrap(
       spacing: 10, // Horizontal spacing between the chips
       runSpacing: 10, // Vertical spacing between the lines
@@ -156,11 +144,11 @@ class CustomStatusFilter extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   isSelected
-                    ? const Icon(Icons.check, color: Colors.white, size: 16)
-                    : CircleAvatar(
-                        radius: 8,
-                        backgroundColor: filter.color,
-                      ),
+                      ? const Icon(Icons.check, color: Colors.white, size: 16)
+                      : CircleAvatar(
+                          radius: 8,
+                          backgroundColor: filter.color,
+                        ),
                   const SizedBox(width: 8),
                   Text(
                     filter.status,

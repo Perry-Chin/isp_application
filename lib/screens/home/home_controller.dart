@@ -117,7 +117,7 @@ class HomeController extends GetxController {
       String token = UserStore.to.token;
       
       // Add a delay of 1 second
-      await Future.delayed(const Duration(milliseconds: 500));
+      // await Future.delayed(const Duration(milliseconds: 200));
 
       var reqServices = await db.collection("service").withConverter(
           fromFirestore: ServiceData.fromFirestore,

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import '../profile/profile_index.dart';
+import '../profile_index.dart';
 
 class EditProfileController extends GetxController {
   EditProfileController();

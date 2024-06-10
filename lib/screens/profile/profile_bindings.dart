@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 
-
-import '../settingsx/settingsx_index.dart';
+import 'settingsx/settingsx_index.dart';
 import 'profile_index.dart';
 
 class ProfileBinding implements Bindings {

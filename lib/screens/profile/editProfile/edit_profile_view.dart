@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../common/values/values.dart';
-import '../../common/widgets/widgets.dart';
+import '../../../common/values/values.dart';
+import '../../../common/widgets/widgets.dart';
 import 'edit_profile_controller.dart';
 
 class EditProfilePage extends GetView<EditProfileController> {

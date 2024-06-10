@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../common/values/values.dart';
-import '../../../common/values/color.dart';
+import '../../../../../common/values/values.dart';
+import '../../../../../common/values/color.dart';
 
 Future contctpg(BuildContext context) {
   return showModalBottomSheet(
@@ -74,7 +74,8 @@ class ContactPage extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 12), // Added space between the image and options
+              const SizedBox(
+                  height: 12), // Added space between the image and options
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -83,13 +84,15 @@ class ContactPage extends StatelessWidget {
                       height: 40, // Reduced height of the container
                       decoration: BoxDecoration(
                         color: Colors.blue, // Container background color
-                        borderRadius: BorderRadius.circular(20), // Rounded corners
+                        borderRadius:
+                            BorderRadius.circular(20), // Rounded corners
                       ),
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.email, color: Colors.white), // Email icon
-                          SizedBox(width: 5), // Add spacing between icon and text
+                          SizedBox(
+                              width: 5), // Add spacing between icon and text
                           Text(
                             'Email',
                             style: TextStyle(color: Colors.white, fontSize: 16),
@@ -104,13 +107,15 @@ class ContactPage extends StatelessWidget {
                       height: 40, // Reduced height of the container
                       decoration: BoxDecoration(
                         color: Colors.blue, // Container background color
-                        borderRadius: BorderRadius.circular(20), // Rounded corners
+                        borderRadius:
+                            BorderRadius.circular(20), // Rounded corners
                       ),
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.phone, color: Colors.white), // Phone icon
-                          SizedBox(width: 5), // Add spacing between icon and text
+                          SizedBox(
+                              width: 5), // Add spacing between icon and text
                           Text(
                             'Call Us',
                             style: TextStyle(color: Colors.white, fontSize: 16),

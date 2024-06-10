@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../common/values/values.dart';
-import '../settingsx/settingsx_index.dart';
+import 'settingsx/settingsx_index.dart';
 import 'profile_index.dart';
-import '../editProfile/edit_profile_index.dart'; // Import the edit profile module
+import 'editProfile/edit_profile_index.dart'; // Import the edit profile module
 
 class ProfilePage extends GetView<ProfileController> {
   const ProfilePage({Key? key}) : super(key: key);

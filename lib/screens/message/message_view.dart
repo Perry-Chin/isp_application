@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,6 +21,7 @@ class MessagePage extends GetView<MessageController> {
   
   @override
   Widget build(BuildContext context) {
+    final MessageController messageController = Get.put(MessageController());
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
       resizeToAvoidBottomInset: false,

@@ -48,7 +48,7 @@ class LoginPage extends GetView<LoginController> {
                         ),
                         const SizedBox(width: 5),
                         Text(
-                          "BuzzBuddy",
+                          "FurFriends",
                           style: TextStyle(
                             color: AppColor.secondaryColor,
                             fontSize: 16.sp,

@@ -18,12 +18,12 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Floating Pop-up Widget Example'),
+        title: const Text('Floating Pop-up Widget Example'),
       ),
       body: Stack(
         children: <Widget>[
           // Main content of the screen
-          Center(
+          const Center(
             child: Text('Your main content here'),
           ),
           // Floating pop-up widget positioned at the bottom
@@ -43,21 +43,21 @@ class MyHomePage extends StatelessWidget {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              Text(
+                              const Text(
                                 'Popup Content',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 20),
-                              Text('This is a floating pop-up widget.'),
-                              SizedBox(height: 20),
+                              const SizedBox(height: 20),
+                              const Text('This is a floating pop-up widget.'),
+                              const SizedBox(height: 20),
                               ElevatedButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text('Close'),
+                                child: const Text('Close'),
                               ),
                             ],
                           ),
@@ -66,7 +66,7 @@ class MyHomePage extends StatelessWidget {
                     },
                   );
                 },
-                child: Text('Open Pop-up'),
+                child: const Text('Open Pop-up'),
               ),
             ),
           ),

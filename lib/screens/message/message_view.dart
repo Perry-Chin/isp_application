@@ -21,6 +21,7 @@ class MessagePage extends GetView<MessageController> {
   
   @override
   Widget build(BuildContext context) {
+    // IGNORE: Initiate controller if missing
     final MessageController messageController = Get.put(MessageController());
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,

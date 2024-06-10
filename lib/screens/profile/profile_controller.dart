@@ -74,5 +74,3 @@ class ProfileController extends GetxController {
     user.value = updatedUser;
   }
 }
-
-// Model class for Revie

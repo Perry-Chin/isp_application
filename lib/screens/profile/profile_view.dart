@@ -28,83 +28,86 @@ class ProfilePage extends GetView<ProfileController> {
   }
 
   Widget profileView(BuildContext context) {
-    return NestedScrollView(
-      headerSliverBuilder: (context, innerBoxIsScrolled) {
-        return [
-          SliverToBoxAdapter(
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              alignment: Alignment.centerLeft,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Obx(() {
-                        final photoUrl = controller.user.value?.photourl;
-                        return Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColor.secondaryColor,
-                              width: 4.0,
+    return Container(
+      color: AppColor.backgroundColor, // Set your desired background color here
+      child: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverToBoxAdapter(
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Obx(() {
+                          final photoUrl = controller.user.value?.photourl;
+                          return Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: AppColor.secondaryColor,
+                                width: 4.0,
+                              ),
                             ),
-                          ),
-                          child: ClipOval(
-                            child: photoUrl != null && photoUrl.isNotEmpty
-                                ? FadeInImage.assetNetwork(
-                                    placeholder: "assets/images/profile.png",
-                                    image: photoUrl,
-                                    fadeInDuration:
-                                        const Duration(milliseconds: 100),
-                                    fit: BoxFit.cover,
-                                    width: 90.w,
-                                    height: 90.w,
-                                  )
-                                : Image.asset("assets/images/profile.png"),
-                          ),
-                        );
-                      }),
-                      const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.settings),
-                        onPressed: () {
-                          Get.to(() => SettingsxPage(),
-                              binding: SettingsxBinding());
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () {
-                          Get.to(() => const EditProfilePage(),
-                              binding: EditProfileBinding());
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Obx(() {
-                        return Text(
-                          controller.user.value?.username ?? 'Username',
-                          style: const TextStyle(fontSize: 18),
-                        );
-                      }),
-                      const SizedBox(width: 8),
-                      _buildRatingRectangle(controller),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                ],
+                            child: ClipOval(
+                              child: photoUrl != null && photoUrl.isNotEmpty
+                                  ? FadeInImage.assetNetwork(
+                                      placeholder: "assets/images/profile.png",
+                                      image: photoUrl,
+                                      fadeInDuration:
+                                          const Duration(milliseconds: 100),
+                                      fit: BoxFit.cover,
+                                      width: 90.w,
+                                      height: 90.w,
+                                    )
+                                  : Image.asset("assets/images/profile.png"),
+                            ),
+                          );
+                        }),
+                        const Spacer(),
+                        IconButton(
+                          icon: const Icon(Icons.settings),
+                          onPressed: () {
+                            Get.to(() => SettingsxPage(),
+                                binding: SettingsxBinding());
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () {
+                            Get.to(() => const EditProfilePage(),
+                                binding: EditProfileBinding());
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Obx(() {
+                          return Text(
+                            controller.user.value?.username ?? 'Username',
+                            style: const TextStyle(fontSize: 18),
+                          );
+                        }),
+                        const SizedBox(width: 8),
+                        _buildRatingRectangle(controller),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
               ),
             ),
-          ),
-        ];
-      },
-      body: _buildReviewSection(),
+          ];
+        },
+        body: _buildReviewSection(),
+      ),
     );
   }
 

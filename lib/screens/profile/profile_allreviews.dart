@@ -153,10 +153,6 @@ class _ReviewsListState extends State<ReviewsList> {
                             height: 50,
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              // border: Border.all(
-                              //   color: AppColor.secondaryColor,
-                              //   width: 2.0,
-                              // ),
                             ),
                             child: ClipOval(
                               child: FadeInImage.assetNetwork(
@@ -197,11 +193,6 @@ class _ReviewsListState extends State<ReviewsList> {
                                 const SizedBox(height: 8),
                                 Text(review.reviewText),
                                 const SizedBox(height: 8),
-                                // Text(
-                                //   // _formatTimestamp(review.timestamp),
-                                //   style: const TextStyle(
-                                //       color: Colors.grey, fontSize: 12),
-                                // ),
                               ],
                             ),
                           ),

@@ -1,59 +1,41 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Review {
-  final String? reviewId;
-  final String serviceId;
   final String fromUid;
-  final String toUid;
-  final double rating;
+  final int rating;
+  final String reviewId;
   final String reviewText;
-  final Timestamp timestamp;
+  final String serviceId;
   final String serviceType;
+  final Timestamp timestamp;
+  final String toUid;
   String? fromUsername;
   String? fromPhotoUrl;
 
   Review({
-    this.reviewId,
-    required this.serviceId,
     required this.fromUid,
-    required this.toUid,
     required this.rating,
+    required this.reviewId,
     required this.reviewText,
-    required this.timestamp,
+    required this.serviceId,
     required this.serviceType,
+    required this.timestamp,
+    required this.toUid,
     this.fromUsername,
     this.fromPhotoUrl,
   });
 
-  factory Review.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> snapshot) {
-    final data = snapshot.data()!;
+  factory Review.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+    Map<String, dynamic> data = doc.data()!;
     return Review(
-      reviewId: snapshot.id,
-      serviceId: data['service_id'],
       fromUid: data['from_uid'],
-      toUid: data['to_uid'],
       rating: data['rating'],
+      reviewId: data['review_id'],
       reviewText: data['review_text'],
-      timestamp: data['timestamp'],
+      serviceId: data['service_id'],
       serviceType: data['service_type'],
-      fromUsername: data['from_username'],
-      fromPhotoUrl: data['from_photo_url'],
+      timestamp: data['timestamp'],
+      toUid: data['to_uid'],
     );
-  }
-
-  Map<String, dynamic> toFirestore() {
-    return {
-      if (reviewId != null) 'review_id': reviewId,
-      'service_id': serviceId,
-      'from_uid': fromUid,
-      'to_uid': toUid,
-      'rating': rating,
-      'review_text': reviewText,
-      'timestamp': timestamp,
-      'service_type': serviceType,
-      if (fromUsername != null) 'from_username': fromUsername,
-      if (fromPhotoUrl != null) 'from_photo_url': fromPhotoUrl,
-    };
   }
 }

@@ -31,6 +31,9 @@ class ProfileController extends GetxController {
 
       if (userDoc.exists) {
         user.value = userDoc.data();
+        await fetchReviews(
+            'All'); // Fetch all reviews when user data is fetched
+        await updateAverageRating(); // Calculate and update the average rating
       } else {
         print('User not found');
       }
@@ -67,6 +70,62 @@ class ProfileController extends GetxController {
       reviews.value = fetchedReviews;
     } catch (e) {
       print('Error fetching reviews: $e');
+    }
+  }
+
+  // Method to calculate and update the average rating
+  Future<void> updateAverageRating() async {
+    try {
+      if (reviews.isEmpty) return;
+
+      double sum = 0;
+      for (var review in reviews) {
+        sum += review.rating;
+      }
+
+      double averageRating = sum / reviews.length;
+
+      // Update user's document with the new average rating
+      await db.collection('users').doc(user.value?.id).update({
+        'rating': averageRating,
+      });
+
+      // Update the user object in memory
+      user.update((userData) {
+        if (userData != null) {
+          userData.rating = averageRating;
+        }
+      });
+    } catch (e) {
+      print('Error updating average rating: $e');
+    }
+  }
+
+  // Method to add a new review and update average rating
+  Future<void> addReview(Review newReview) async {
+    try {
+      // Add the review to Firestore
+      await db.collection('reviews').add(newReview.toFirestore());
+
+      // Fetch the updated reviews and update the average rating
+      await fetchReviews('All');
+      await updateAverageRating();
+    } catch (e) {
+      print('Error adding review: $e');
+    }
+  }
+
+  // Method to delete a review and update average rating
+  Future<void> deleteReview(String reviewId) async {
+    try {
+      // Delete the review from Firestore
+      await db.collection('reviews').doc(reviewId).delete();
+
+      // Fetch the updated reviews and update the average rating
+      await fetchReviews('All');
+      await updateAverageRating();
+    } catch (e) {
+      print('Error deleting review: $e');
     }
   }
 

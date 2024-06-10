@@ -38,4 +38,17 @@ class Review {
       toUid: data['to_uid'],
     );
   }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'from_uid': fromUid,
+      'rating': rating,
+      'review_id': reviewId,
+      'review_text': reviewText,
+      'service_id': serviceId,
+      'service_type': serviceType,
+      'timestamp': timestamp,
+      'to_uid': toUid,
+    };
+  }
 }

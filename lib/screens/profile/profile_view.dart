@@ -63,8 +63,22 @@ class ProfilePage extends GetView<ProfileController> {
                                       fit: BoxFit.cover,
                                       width: 90.w,
                                       height: 90.w,
+                                      imageErrorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Image.asset(
+                                          "assets/images/profile.png",
+                                          fit: BoxFit.cover,
+                                          width: 90.w,
+                                          height: 90.w,
+                                        );
+                                      },
                                     )
-                                  : Image.asset("assets/images/profile.png"),
+                                  : Image.asset(
+                                      "assets/images/profile.png",
+                                      fit: BoxFit.cover,
+                                      width: 90.w,
+                                      height: 90.w,
+                                    ),
                             ),
                           );
                         }),

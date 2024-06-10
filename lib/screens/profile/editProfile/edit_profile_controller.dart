@@ -1,5 +1,3 @@
-// Edit Profile Controller
-
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -93,8 +91,11 @@ class EditProfileController extends GetxController {
       return;
     }
 
+    // Store the context in a local variable before the await
+    BuildContext dialogContext = context;
+
     showDialog(
-      context: context,
+      context: dialogContext,
       builder: (context) => const Center(
         child: CircularProgressIndicator(),
       ),
@@ -110,18 +111,25 @@ class EditProfileController extends GetxController {
       await user.reauthenticateWithCredential(credential);
       isPasswordVerified.value = true;
 
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context); // Dismiss loading dialog
+      if (dialogContext.mounted) {
+        Navigator.pop(dialogContext); // Dismiss loading dialog
+      }
     } catch (error) {
-      Navigator.pop(context); // Dismiss loading dialog
+      if (dialogContext.mounted) {
+        Navigator.pop(dialogContext); // Dismiss loading dialog
+      }
 
-      showRoundedErrorDialog(context, 'Wrong password, please try again.');
+      showRoundedErrorDialog(
+          dialogContext, 'Wrong password, please try again.');
     }
   }
 
   Future<void> handleUpdateProfile(BuildContext context) async {
+    // Store the context in a local variable before the await
+    BuildContext dialogContext = context;
+
     showDialog(
-      context: context,
+      context: dialogContext,
       builder: (context) => const Center(
         child: CircularProgressIndicator(),
       ),
@@ -169,9 +177,13 @@ class EditProfileController extends GetxController {
         await user.verifyBeforeUpdateEmail(emailController.text);
 
         // Show a dialog informing the user to verify their new email
-        showEmailVerificationDialog(context);
+        if (dialogContext.mounted) {
+          showEmailVerificationDialog(dialogContext);
+        }
 
-        Navigator.pop(context); // Dismiss loading dialog
+        if (dialogContext.mounted) {
+          Navigator.pop(dialogContext); // Dismiss loading dialog
+        }
         return; // Exit the method to wait for email verification
       }
 
@@ -192,12 +204,16 @@ class EditProfileController extends GetxController {
       // Fetch and update the profile controller with new data
       Get.find<ProfileController>().fetchUserData();
 
-      Navigator.pop(context); // Dismiss loading dialog
-      Get.back(); // Go back to the previous screen
+      if (dialogContext.mounted) {
+        Navigator.pop(dialogContext); // Dismiss loading dialog
+        Get.back(); // Go back to the previous screen
+      }
     } catch (error) {
-      Navigator.pop(context); // Dismiss loading dialog
+      if (dialogContext.mounted) {
+        Navigator.pop(dialogContext); // Dismiss loading dialog
+      }
 
-      showRoundedErrorDialog(context, error.toString());
+      showRoundedErrorDialog(dialogContext, error.toString());
     }
   }
 

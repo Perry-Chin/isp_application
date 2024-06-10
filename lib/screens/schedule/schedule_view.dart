@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-
 import '../../common/values/values.dart';
 import 'schedule_index.dart';
+// import '../addreviews/addreviews_index.dart'; // Import the AddReviewPage
 
 class SchedulePage extends GetView<ScheduleController> {
   const SchedulePage({Key? key}) : super(key: key);
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       elevation: 0,
-      title: const Text("Schedule"),
+      title: const Text(
+        "Schedule",
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      centerTitle: true,
       backgroundColor: AppColor.secondaryColor,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(50),
@@ -40,6 +46,14 @@ class SchedulePage extends GetView<ScheduleController> {
             });
           },
         ),
+// schedule_view.dart
+        IconButton(
+          icon: const Icon(Icons.rate_review),
+          onPressed: () {
+            // Use named route navigation
+            Get.toNamed('/addReviews');
+          },
+        ),
       ],
     );
   }
@@ -50,7 +64,7 @@ class SchedulePage extends GetView<ScheduleController> {
       length: 2,
       child: Scaffold(
         backgroundColor: AppColor.backgroundColor,
-        appBar: _buildAppBar(),
+        appBar: _buildAppBar(context),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
           child: TabBarView(

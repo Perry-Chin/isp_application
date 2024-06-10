@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-//User information
+// User information
 class UserData {
-  final String? id;
-  final String? username;
-  final String? email;
-  final String? phoneNo;
-  final String? photourl;
-  final String? address;
-  final double? rating;
-  final String? account;
+  String? id;
+  String? username;
+  String? email;
+  String? phoneNo;
+  String? photourl;
+  String? address;
+  double? rating;
+  String? account;
 
-  //Constructor
+  // Constructor
   UserData({
     this.id,
     this.username,
@@ -25,9 +25,9 @@ class UserData {
 
   // Create UserData object from Firestore document snapshot
   factory UserData.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> snapshot,
-      SnapshotOptions? options,
-      ) {
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
     final data = snapshot.data();
     return UserData(
       id: data?['user_id'],
@@ -54,32 +54,31 @@ class UserData {
       if (account != null) "account_type": account,
     };
   }
-
 }
 
-//User login
+// User login
 class UserLoginResponseEntity {
   String? accessToken;
   String? email;
   String? username;
 
-  //Constructor
+  // Constructor
   UserLoginResponseEntity({
     this.accessToken,
     this.email,
-    this.username
+    this.username,
   });
 
   factory UserLoginResponseEntity.fromJson(Map<String, dynamic> json) =>
-    UserLoginResponseEntity(
-      accessToken: json["access_token"],
-      email: json["email"],
-      username: json["name"]
-    );
+      UserLoginResponseEntity(
+        accessToken: json["access_token"],
+        email: json["email"],
+        username: json["name"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "access_token": accessToken,
-    "email": email,
-    "name": username
-  };
+        "access_token": accessToken,
+        "email": email,
+        "name": username,
+      };
 }

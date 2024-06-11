@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class AddReviewController extends GetxController {
   final selectedUserId = ''.obs;
-  final role = 'requester'.obs;
+  final role = 'all'.obs; // Default to 'all'
   final rating = 0.obs;
   final reviewDescriptionController = TextEditingController();
   final userAccounts = <Map<String, dynamic>>[].obs;
@@ -19,15 +19,19 @@ class AddReviewController extends GetxController {
   }
 
   void loadUserAccounts() async {
+    String currentUserId = FirebaseAuth.instance.currentUser!.uid;
     QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection('users').limit(5).get();
 
-    userAccounts.value = snapshot.docs.map((doc) {
-      return {
-        'id': doc.id,
-        'name': doc['username'],
-      };
-    }).toList();
+    userAccounts.value = snapshot.docs
+        .map((doc) {
+          return {
+            'id': doc.id,
+            'name': doc['username'],
+          };
+        })
+        .where((user) => user['id'] != currentUserId)
+        .toList();
 
     if (userAccounts.isNotEmpty) {
       selectedUserId.value = userAccounts[0]['id'];
@@ -36,10 +40,19 @@ class AddReviewController extends GetxController {
   }
 
   void loadServices() async {
+    if (selectedUserId.value.isEmpty) {
+      services.clear();
+      return;
+    }
+
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('services')
-        .where(role.value == 'provider' ? 'provider_uid' : 'requester_uid',
+        .where(
+            (role.value == 'all' || role.value == 'provider')
+                ? 'provider_uid'
+                : 'requester_uid',
             isEqualTo: selectedUserId.value)
+        .where('status', isEqualTo: 'Completed')
         .get();
 
     services.value = snapshot.docs.map((doc) {
@@ -51,6 +64,8 @@ class AddReviewController extends GetxController {
 
     if (services.isNotEmpty) {
       selectedServiceId.value = services[0]['id'];
+    } else {
+      selectedServiceId.value = '';
     }
   }
 

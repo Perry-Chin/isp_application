@@ -93,7 +93,12 @@ class ProfilePage extends GetView<ProfileController> {
                         IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
-                            Get.to(() => const EditProfilePage(),
+                            final photoUrl =
+                                controller.user.value?.photourl ?? '';
+                            Get.to(
+                                () => EditProfilePage(
+                                      initialProfileImageUrl: photoUrl,
+                                    ),
                                 binding: EditProfileBinding());
                           },
                         ),
@@ -161,14 +166,25 @@ class ProfilePage extends GetView<ProfileController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 16.0, top: 16.0, right: 16.0),
-            child: Text(
-              'Reviews',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, top: 16.0, right: 16.0),
+            child: Row(
+              children: [
+                const Text(
+                  'Reviews',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.rate_review),
+                  onPressed: () {
+                    Get.toNamed('/addReviews');
+                  },
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 8),

@@ -69,6 +69,10 @@ class AddReviewPage extends GetView<AddReviewController> {
                     value: controller.role.value,
                     items: const [
                       DropdownMenuItem<String>(
+                        value: 'all',
+                        child: Text('All'),
+                      ),
+                      DropdownMenuItem<String>(
                         value: 'requester',
                         child: Text('Requester'),
                       ),
@@ -102,15 +106,19 @@ class AddReviewPage extends GetView<AddReviewController> {
                       value: controller.selectedServiceId.value.isNotEmpty
                           ? controller.selectedServiceId.value
                           : null,
-                      items: controller.services
-                          .map((service) => DropdownMenuItem<String>(
-                                value: service['id'],
-                                child: Text(service['name']),
-                              ))
-                          .toList(),
-                      onChanged: (value) {
-                        controller.selectedServiceId.value = value!;
-                      },
+                      items: controller.services.isNotEmpty
+                          ? controller.services
+                              .map((service) => DropdownMenuItem<String>(
+                                    value: service['id'],
+                                    child: Text(service['name']),
+                                  ))
+                              .toList()
+                          : [],
+                      onChanged: controller.services.isNotEmpty
+                          ? (value) {
+                              controller.selectedServiceId.value = value!;
+                            }
+                          : null,
                       decoration: InputDecoration(
                         labelText: 'Select Service',
                         border: OutlineInputBorder(
@@ -118,51 +126,59 @@ class AddReviewPage extends GetView<AddReviewController> {
                         ),
                         contentPadding: const EdgeInsets.all(10),
                       ),
+                      disabledHint: const Text('No services available'),
                     ),
                   );
                 }),
                 const SizedBox(height: 10),
                 Obx(() {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(5, (index) {
-                      return IconButton(
-                        icon: Icon(
-                          index < controller.rating.value
-                              ? Icons.star
-                              : Icons.star_border,
-                          color: Colors.amber,
-                        ),
-                        onPressed: () {
-                          controller.rating.value = index + 1;
-                        },
-                      );
-                    }),
-                  );
+                  return controller.selectedServiceId.value.isNotEmpty
+                      ? Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(5, (index) {
+                                return IconButton(
+                                  icon: Icon(
+                                    index < controller.rating.value
+                                        ? Icons.star
+                                        : Icons.star_border,
+                                    color: Colors.amber,
+                                  ),
+                                  onPressed: () {
+                                    controller.rating.value = index + 1;
+                                  },
+                                );
+                              }),
+                            ),
+                            const SizedBox(height: 10),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: TextField(
+                                controller:
+                                    controller.reviewDescriptionController,
+                                obscureText: false,
+                                maxLines: null,
+                                decoration: InputDecoration(
+                                  hintText: 'Write your review here...',
+                                  labelText: 'Review Description',
+                                  prefixIcon: const Icon(Icons.description),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  contentPadding: const EdgeInsets.all(10),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : Container();
                 }),
-                const SizedBox(height: 10),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: TextField(
-                    controller: controller.reviewDescriptionController,
-                    obscureText: false,
-                    maxLines: null,
-                    decoration: InputDecoration(
-                      hintText: 'Write your review here...',
-                      labelText: 'Review Description',
-                      prefixIcon: const Icon(Icons.description),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      contentPadding: const EdgeInsets.all(10),
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
-                  ),
-                ),
                 const SizedBox(height: 30),
                 ApplyButton(
                   onPressed: () {

@@ -25,6 +25,11 @@ class EditProfileController extends GetxController {
     loadUserData();
   }
 
+  // Method to set the initial profile image URL
+  void setInitialProfileImageUrl(String url) {
+    profileImageUrl.value = url;
+  }
+
   // Load current user data
   void loadUserData() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -44,11 +49,10 @@ class EditProfileController extends GetxController {
                 ? userData['phone_number']
                 : '';
         emailController.text = user.email!;
-        profileImageUrl.value = userData.data().toString().contains('photourl')
-            ? userData['photourl']
-            : '';
+        if (userData.data().toString().contains('photourl')) {
+          profileImageUrl.value = userData['photourl'];
+        }
       } else {
-        // Handle the case where the document does not exist
         usernameController.text = '';
         phoneNoController.text = '';
         emailController.text = user.email!;

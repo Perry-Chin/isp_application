@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../common/values/values.dart';
 import 'schedule_index.dart';
-// import '../addreviews/addreviews_index.dart'; // Import the AddReviewPage
 
 class SchedulePage extends GetView<ScheduleController> {
   const SchedulePage({Key? key}) : super(key: key);
@@ -44,14 +43,6 @@ class SchedulePage extends GetView<ScheduleController> {
               // Update filter selections when returning from FilterSchedulePage
               controller.updateFilterFromStorage();
             });
-          },
-        ),
-// schedule_view.dart
-        IconButton(
-          icon: const Icon(Icons.rate_review),
-          onPressed: () {
-            // Use named route navigation
-            Get.toNamed('/addReviews');
           },
         ),
       ],

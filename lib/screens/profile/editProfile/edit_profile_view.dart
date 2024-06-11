@@ -6,11 +6,13 @@ import '../../../common/widgets/widgets.dart';
 import 'edit_profile_controller.dart';
 
 class EditProfilePage extends GetView<EditProfileController> {
-  const EditProfilePage({super.key});
+  final String initialProfileImageUrl;
+
+  EditProfilePage({super.key, required this.initialProfileImageUrl});
 
   @override
   Widget build(BuildContext context) {
-    controller.loadUserData();
+    controller.setInitialProfileImageUrl(initialProfileImageUrl);
 
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
@@ -37,6 +39,11 @@ class EditProfilePage extends GetView<EditProfileController> {
                     });
                   },
                   child: Obx(() {
+                    final profileImage =
+                        controller.profileImageUrl.value.isNotEmpty
+                            ? NetworkImage(controller.profileImageUrl.value)
+                            : const AssetImage('assets/images/profile.png');
+
                     return Stack(
                       alignment: Alignment.center,
                       children: [
@@ -53,11 +60,7 @@ class EditProfilePage extends GetView<EditProfileController> {
                         ),
                         CircleAvatar(
                           radius: 76,
-                          backgroundImage: controller
-                                  .profileImageUrl.value.isNotEmpty
-                              ? NetworkImage(controller.profileImageUrl.value)
-                              : const AssetImage('assets/images/profile.png')
-                                  as ImageProvider,
+                          backgroundImage: profileImage as ImageProvider,
                         ),
                       ],
                     );

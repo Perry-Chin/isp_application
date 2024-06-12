@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../../screens/schedule/schedule_index.dart';
+import 'names.dart';
+import 'observers.dart';
 import 'routes.dart';
 import '../middlewares/middlewares.dart';
 import '../../screens/message/chat/chat_index.dart';

@@ -18,6 +18,7 @@ class DetailController extends GetxController {
   final token = UserStore.to.token;
   final DetailState state = DetailState();
   final db = FirebaseFirestore.instance;
+  var isServiceRequested = false.obs;
 
   final subtotal = 0.0.obs;
   final taxFee = 0.0.obs;
@@ -27,47 +28,51 @@ class DetailController extends GetxController {
 
   var userData = Rxn<UserData>(); // Observable for UserData
 
-  bool showPaymentSection = false; 
+  bool showPaymentSection = false;
 
   void togglePaymentSection() {
     showPaymentSection = !showPaymentSection;
     update(); // Notify listeners about the change
   }
 
-  Stream<List<QueryDocumentSnapshot<ServiceData>>> getServiceStream(String token) {
+  Stream<List<QueryDocumentSnapshot<ServiceData>>> getServiceStream(
+      String token) {
     return db
-      .collection('service')
-      .where(FieldPath.documentId, isEqualTo: doc_id)
-      .withConverter<ServiceData>(
-        fromFirestore: ServiceData.fromFirestore,
-        toFirestore: (ServiceData serviceData, _) => serviceData.toFirestore(),
-      )
-      .snapshots()
-      .map((snapshot) => snapshot.docs);
+        .collection('service')
+        .where(FieldPath.documentId, isEqualTo: doc_id)
+        .withConverter<ServiceData>(
+          fromFirestore: ServiceData.fromFirestore,
+          toFirestore: (ServiceData serviceData, _) =>
+              serviceData.toFirestore(),
+        )
+        .snapshots()
+        .map((snapshot) => snapshot.docs);
   }
 
   Stream<List<DocumentSnapshot<UserData>>> getUserStream(List<String> userIds) {
     return db
-      .collection('users')
-      .where(FieldPath.documentId, whereIn: userIds)
-      .withConverter<UserData>(
-        fromFirestore: UserData.fromFirestore,
-        toFirestore: (UserData userData, _) => userData.toFirestore(),
-      )
-      .snapshots()
-      .map((snapshot) => snapshot.docs);
+        .collection('users')
+        .where(FieldPath.documentId, whereIn: userIds)
+        .withConverter<UserData>(
+          fromFirestore: UserData.fromFirestore,
+          toFirestore: (UserData userData, _) => userData.toFirestore(),
+        )
+        .snapshots()
+        .map((snapshot) => snapshot.docs);
   }
 
   Stream<Map<String, UserData?>> getCombinedStream(String token) {
     return getServiceStream(token).switchMap((serviceDocs) {
-      List<String> userIds = serviceDocs.map((doc) => doc.data().reqUserid!).toList();
+      List<String> userIds =
+          serviceDocs.map((doc) => doc.data().reqUserid!).toList();
 
       if (userIds.isEmpty) {
         return Stream.value({});
       }
 
       return getUserStream(userIds).map((userDocs) {
-        return Map.fromEntries(userDocs.map((doc) => MapEntry(doc.id, doc.data())));
+        return Map.fromEntries(
+            userDocs.map((doc) => MapEntry(doc.id, doc.data())));
       });
     });
   }
@@ -81,7 +86,7 @@ class DetailController extends GetxController {
     super.onInit();
     var data = Get.parameters;
     doc_id = data['doc_id'];
-    
+
     // Listen to the combined stream and assign the first user's data to userData
     combinedStream.listen((userDataMap) {
       if (userDataMap.isNotEmpty) {
@@ -92,16 +97,37 @@ class DetailController extends GetxController {
     asyncLoadAllData();
   }
 
+  Future<void> updateServiceProvUserid(
+      String serviceId, String provUserid) async {
+    try {
+      await db
+          .collection('service')
+          .doc(serviceId)
+          .update({'provider_uid': provUserid});
+    } catch (e) {
+      print('Error updating provUserid: $e');
+    }
+  }
+
+  Future<void> updateServiceStatus(String serviceId, String status) async {
+    try {
+      await db.collection('service').doc(serviceId).update({'status': status});
+    } catch (e) {
+      print('Error updating status: $e');
+    }
+  }
+
   Future<void> asyncLoadAllData() async {
     try {
       var reqServices = await db
-        .collection("service")
-        .withConverter<ServiceData>(
-          fromFirestore: ServiceData.fromFirestore,
-          toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore(),
-        )
-        .where(FieldPath.documentId, isEqualTo: doc_id)
-        .get();
+          .collection("service")
+          .withConverter<ServiceData>(
+            fromFirestore: ServiceData.fromFirestore,
+            toFirestore: (ServiceData serviceData, options) =>
+                serviceData.toFirestore(),
+          )
+          .where(FieldPath.documentId, isEqualTo: doc_id)
+          .get();
 
       List<QueryDocumentSnapshot<ServiceData>> reqDocument = reqServices.docs;
 
@@ -113,13 +139,34 @@ class DetailController extends GetxController {
     }
   }
 
+  Future<void> createProposeDocument(
+      String startTime, String endTime, String totalHours) async {
+    final content = {
+      'start_time': startTime,
+      'end_time': endTime,
+      'total_hours': totalHours,
+      'timestamp': FieldValue.serverTimestamp(),
+      'userid': token,
+    };
+    await db
+        .collection('service')
+        .doc(doc_id)
+        .collection('propose')
+        .add(content)
+        .then((DocumentReference doc) {
+      print("Propose document added with id, ${doc.id}");
+    }).catchError((e) {
+      print("Error creating propose document: $e");
+    });
+  }
+
   void calculateCosts() {
     if (state.serviceList.isNotEmpty) {
       var service = state.serviceList.first.data();
-      if (service.rate != null && service.duration != null) {
+      if (service.rate != null && service.starttime != null && service.endtime != null) {
         double rate = service.rate!.toDouble();
         double duration = service.duration!.toDouble();
-        
+
         subtotal.value = rate * duration;
         taxFee.value = subtotal.value * 0.1;
         totalCost.value = subtotal.value - taxFee.value;
@@ -134,34 +181,43 @@ class DetailController extends GetxController {
         return;
       }
 
-      var fromMessages = await db.collection("message").withConverter(
-        fromFirestore: Msg.fromFirestore, 
-        toFirestore: (Msg msg, options) => msg.toFirestore()
-      ).where("from_uid", isEqualTo: token)
-      .where("to_uid", isEqualTo: userData.id).get();
+      var fromMessages = await db
+          .collection("message")
+          .withConverter(
+              fromFirestore: Msg.fromFirestore,
+              toFirestore: (Msg msg, options) => msg.toFirestore())
+          .where("from_uid", isEqualTo: token)
+          .where("to_uid", isEqualTo: userData.id)
+          .get();
 
-      var toMessages = await db.collection("message").withConverter(
-        fromFirestore: Msg.fromFirestore, 
-        toFirestore: (Msg msg, options) => msg.toFirestore()
-      ).where("from_uid", isEqualTo: userData.id)
-      .where("to_uid", isEqualTo: token).get();
+      var toMessages = await db
+          .collection("message")
+          .withConverter(
+              fromFirestore: Msg.fromFirestore,
+              toFirestore: (Msg msg, options) => msg.toFirestore())
+          .where("from_uid", isEqualTo: userData.id)
+          .where("to_uid", isEqualTo: token)
+          .get();
 
       //If both users have not messaged before
-      if(fromMessages.docs.isEmpty && toMessages.docs.isEmpty) {
+      if (fromMessages.docs.isEmpty && toMessages.docs.isEmpty) {
         //Get user information
         String profile = await UserStore.to.getProfile();
-        UserLoginResponseEntity userdata = UserLoginResponseEntity.fromJson(jsonDecode(profile));
+        UserLoginResponseEntity userdata =
+            UserLoginResponseEntity.fromJson(jsonDecode(profile));
         var msgdata = Msg(
-          fromUserid: userdata.accessToken,
-          toUserid: userData.id,
-          lastMsg: "",
-          lastTime: Timestamp.now(),
-          msgNum: 0
-        );
-        db.collection("message").withConverter(
-          fromFirestore: Msg.fromFirestore, 
-          toFirestore: (Msg msg, options) => msg.toFirestore()
-        ).add(msgdata).then((value) {
+            fromUserid: userdata.accessToken,
+            toUserid: userData.id,
+            lastMsg: "",
+            lastTime: Timestamp.now(),
+            msgNum: 0);
+        db
+            .collection("message")
+            .withConverter(
+                fromFirestore: Msg.fromFirestore,
+                toFirestore: (Msg msg, options) => msg.toFirestore())
+            .add(msgdata)
+            .then((value) {
           Get.toNamed("/chat", parameters: {
             "doc_id": value.id,
             "to_uid": userData.id ?? "",
@@ -172,7 +228,7 @@ class DetailController extends GetxController {
       }
       //If the user has messaged the other party
       else {
-        if(fromMessages.docs.isNotEmpty) {
+        if (fromMessages.docs.isNotEmpty) {
           Get.toNamed("/chat", parameters: {
             "doc_id": fromMessages.docs.first.id,
             "to_uid": userData.id ?? "",
@@ -180,7 +236,7 @@ class DetailController extends GetxController {
             "to_avatar": userData.photourl ?? ""
           });
         }
-        if(toMessages.docs.isNotEmpty) {
+        if (toMessages.docs.isNotEmpty) {
           Get.toNamed("/chat", parameters: {
             "doc_id": toMessages.docs.first.id,
             "to_uid": userData.id ?? "",

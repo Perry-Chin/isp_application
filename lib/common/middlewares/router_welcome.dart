@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../routes/names.dart';
 import '../routes/routes.dart';
 import '../storage/storage.dart';
 

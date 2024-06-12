@@ -129,8 +129,8 @@ class HomeController extends GetxController {
 
       // Sort the documents based on date and time
       documents.sort((a, b) {
-        DateTime dateTimeA = combineDateTime(a.data().date!, a.data().time!);
-        DateTime dateTimeB = combineDateTime(b.data().date!, b.data().time!);
+        DateTime dateTimeA = combineDateTime(a.data().date!, a.data().starttime!);
+        DateTime dateTimeB = combineDateTime(b.data().date!, b.data().starttime!);
         return dateTimeA.compareTo(dateTimeB);
       });
 

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../../common/routes/names.dart';
 import '../../common/routes/routes.dart';
 import '../../common/storage/storage.dart';
 import 'welcome_state.dart';

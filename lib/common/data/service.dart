@@ -10,7 +10,8 @@ class ServiceData {
   final String? image;
   final String? location;
   final String? date;
-  final String? time;
+  final String? starttime;
+  final String? endtime;
   final int? duration;
   final String? status;
   final int? statusid;
@@ -26,7 +27,8 @@ class ServiceData {
     this.image,
     this.location,
     this.date,
-    this.time,
+    this.starttime,
+    this.endtime,
     this.duration,
     this.status,
     this.statusid,
@@ -48,7 +50,8 @@ class ServiceData {
       image: data?['photourl'],
       location: data?['location'],
       date: data?['date'],
-      time: data?['start_time'],
+      starttime: data?['start_time'],
+      endtime: data?['end_time'],
       duration: data?['duration'],
       status: data?['status'],
       statusid: data?['statusid'],
@@ -67,7 +70,8 @@ class ServiceData {
       if (image != null) "photourl": image,
       if (location != null) "location": location,
       if (date != null) "date": date,
-      if (time != null) "start_time": time,
+      if (starttime != null) "start_time": starttime,
+      if (endtime != null) "end_time": endtime,
       if (duration != null) "duration": duration,
       if (status != null) "status": status,
       if (statusid != null) "statusid": statusid,

@@ -380,7 +380,7 @@ class DetailPage extends GetView<DetailController> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    serviceData.time ?? "Description",
+                    serviceData.starttime ?? "Description",
                     style: const TextStyle(fontSize: 15),
                   ),
                   if (!hideButtons) ...[

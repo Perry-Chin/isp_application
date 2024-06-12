@@ -368,7 +368,7 @@ class RequestController extends GetxController {
         image: imgUrl ?? "",
         location: locationController.text,
         date: dateController.text,
-        time: timeController.text,
+        starttime: timeController.text,
         duration: int.tryParse(durationController.text),
         status: "Requested", //Default status
         statusid: 0,

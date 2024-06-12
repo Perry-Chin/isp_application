@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:isp_application/common/widgets/button.dart';
 import 'detail_controller.dart';
@@ -26,9 +26,8 @@ class ProposeTimeSheet extends StatefulWidget {
 class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
   final TextEditingController _startController = TextEditingController();
   final TextEditingController _endController = TextEditingController();
-  String _startPeriod = 'AM';
-  String _endPeriod = 'AM';
   String _totalHours = "";
+  String _errorMessage = "";
 
   @override
   void initState() {
@@ -37,32 +36,54 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
     _endController.addListener(_calculateTotalHours);
   }
 
+  Future<void> _selectTime(BuildContext context, TextEditingController controller) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (picked != null) {
+      final now = DateTime.now();
+      final selectedTime = DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
+      final formattedTime = DateFormat('HH:mm').format(selectedTime);
+      setState(() {
+        controller.text = formattedTime;
+      });
+    }
+  }
+
   void _calculateTotalHours() {
     final String startText = _startController.text;
     final String endText = _endController.text;
 
     if (startText.isNotEmpty && endText.isNotEmpty) {
       try {
-        final RegExp timeRegExp = RegExp(r'^([01]?[0-9]|2[0-3])[0-5][0-9]$');
-        if (!timeRegExp.hasMatch(startText) || !timeRegExp.hasMatch(endText)) {
-          throw const FormatException(
-              "Invalid time format. Please use HHMM (24-hour) format.");
-        }
+        final DateTime startTime = DateFormat('HH:mm').parse(startText);
+        final DateTime endTime = DateFormat('HH:mm').parse(endText);
 
-        final DateTime startTime = _parseTime(startText, _startPeriod);
-        final DateTime endTime = _parseTime(endText, _endPeriod);
+        // Check if start time is equal to end time
+        if (startTime == endTime) {
+          setState(() {
+            _errorMessage = "Start time and end time cannot be equal";
+          });
+          return;
+        }
 
         Duration duration = endTime.difference(startTime);
         if (duration.isNegative) {
           duration += const Duration(hours: 24);
         }
-        double totalHoursDouble = duration.inMinutes / 60.0;
 
-        String formattedHours =
-            totalHoursDouble.toStringAsFixed(2).replaceAll('.', ':');
+        String formattedHours;
+        if (duration.inMinutes < 60) {
+          formattedHours = '${duration.inMinutes} mins';
+        } else {
+          double totalHoursDouble = duration.inMinutes / 60.0;
+          formattedHours = '${totalHoursDouble.toStringAsFixed(2).replaceAll('.', ':')} h';
+        }
 
         setState(() {
-          _totalHours = "$formattedHours hours";
+          _totalHours = formattedHours;
+          _errorMessage = ""; // Clear error message if calculation is successful
         });
       } on FormatException catch (e) {
         setState(() {
@@ -78,13 +99,6 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
         _totalHours = "";
       });
     }
-  }
-
-  DateTime _parseTime(String timeText, String period) {
-    final int hour = int.parse(timeText.substring(0, 2));
-    final int minute = int.parse(timeText.substring(2, 4));
-    return DateFormat('hh:mm a')
-        .parse('${hour % 12}:${minute.toString().padLeft(2, '0')} $period');
   }
 
   @override
@@ -126,6 +140,18 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                               fontFamily: 'Open Sans'),
                         ),
                       ),
+                      const SizedBox(height: 15),
+                      if (_errorMessage.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Text(
+                            _errorMessage,
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       const SizedBox(height: 15),
                       const Text(
                         "Once submitted, BuzzBuddy will share your proposed time with the Requester for their confirmation.",
@@ -169,7 +195,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                               controller.state.serviceList.isNotEmpty
                                   ? controller.state.serviceList.first
                                           .data()
-                                          .time ??
+                                          .starttime ??
                                       "time"
                                   : "time",
                               style: const TextStyle(
@@ -193,134 +219,93 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                color: Colors.grey[200],
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 1.0,
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: TextField(
-                                      controller: _startController,
-                                      decoration: const InputDecoration(
-                                        hintText: 'Start',
-                                        border: InputBorder.none,
-                                      ),
-                                      keyboardType: TextInputType.number,
-                                      style: const TextStyle(
-                                        fontSize: 16.0,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  DropdownButton<String>(
-                                    value: _startPeriod,
-                                    items: <String>['AM', 'PM']
-                                        .map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        _startPeriod = newValue!;
-                                        _calculateTotalHours();
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                color: Colors.grey[200],
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 1.0,
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: TextField(
-                                      controller: _endController,
-                                      decoration: const InputDecoration(
-                                        hintText: 'End',
-                                        border: InputBorder.none,
-                                      ),
-                                      keyboardType: TextInputType.number,
-                                      style: const TextStyle(
-                                        fontSize: 16.0,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  DropdownButton<String>(
-                                    value: _endPeriod,
-                                    items: <String>['AM', 'PM']
-                                        .map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        _endPeriod = newValue!;
-                                        _calculateTotalHours();
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                color: Colors.grey[200],
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 1.0,
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  const Text(
-                                    'Total: ',
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
+                            child: GestureDetector(
+                              onTap: () => _selectTime(context, _startController),
+                              child: AbsorbPointer(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    color: Colors.grey[200],
+                                    border: Border.all(
                                       color: Colors.black,
+                                      width: 1.0,
                                     ),
                                   ),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextField(
+                                          controller: _startController,
+                                          decoration: const InputDecoration(
+                                            hintText: 'Start',
+                                            border: InputBorder.none,
+                                          ),
+                                          style: const TextStyle(
+                                            fontSize: 16.0,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => _selectTime(context, _endController),
+                              child: AbsorbPointer(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    color: Colors.grey[200],
+                                    border: Border.all(
+                                      color: Colors.black,
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextField(
+                                          controller: _endController,
+                                          decoration: const InputDecoration(
+                                            hintText: 'End',
+                                            border: InputBorder.none,
+                                          ),
+                                          style: const TextStyle(
+                                            fontSize: 16.0,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: Colors.grey[200],
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 1.0,
+                                ),
+                              ),
+                              child: Row(
+                                children: [
                                   Expanded(
                                     child: Text(
-                                      _totalHours.isEmpty
-                                          ? 'Total'
-                                          : _totalHours,
+                                      _totalHours.isEmpty ? 'Total Hours' : _totalHours,
                                       style: const TextStyle(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.bold,
@@ -342,10 +327,28 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                             Expanded(
                               flex: 6,
                               child: ApplyButton(
-                                  // button.dart
-                                  onPressed: () {},
-                                  buttonText: "Continue",
-                                  buttonWidth: 100),
+                                onPressed: () {
+                                  final String startTime = _startController.text;
+                                  final String endTime = _endController.text;
+                                  final String totalHours = _totalHours;
+
+                                  // Check if start time is equal to end time
+                                  if (startTime == endTime) {
+                                    setState(() {
+                                      _errorMessage = "Start time and end time cannot be equal";
+                                    });
+                                    return;
+                                  }
+
+                                  // Your logic to change the status to "pending" here
+
+                                  // Call controller method to create propose document
+                                  controller.createProposeDocument(startTime, endTime, totalHours);
+                                  Get.back();
+                                },
+                                buttonText: "Continue",
+                                buttonWidth: 100,
+                              ),
                             ),
                           ],
                         ),
@@ -361,3 +364,4 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
     );
   }
 }
+

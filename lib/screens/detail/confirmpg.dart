@@ -1,8 +1,6 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:isp_application/common/data/user.dart';
-// import '../../common/data/service.dart';
+import '../../common/storage/user.dart';
 import '../../common/widgets/widgets.dart';
 import 'detail_index.dart';
 
@@ -20,6 +18,46 @@ Future confirmpg(BuildContext context) {
 
 class ConfirmPage extends GetView<DetailController> {
   const ConfirmPage({Key? key}) : super(key: key);
+
+   void _showConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirmation"),
+          content: const Text("Are you sure you want to continue?"),
+          actions: [
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog
+              },
+            ),
+            TextButton(
+              child: const Text("Confirm"),
+              onPressed: () async {
+                // Update provUserid in ServiceData
+                final currentUserId =
+                    UserStore.to.token; // Assuming token is current user ID
+                final serviceId = controller.doc_id;
+                if (serviceId != null) {
+                  await controller.updateServiceProvUserid(
+                      serviceId, currentUserId);
+                  // Update status to "Pending"
+                  await controller.updateServiceStatus(serviceId, "Pending");
+                }
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pop(); // Dismiss the dialog
+                //   // Get.off(const HomePage());
+                //   // ignore: use_build_context_synchronously
+                //  Navigator.popUntil(context, ModalRoute.withName('/home'));
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +133,7 @@ class ConfirmPage extends GetView<DetailController> {
                               ),
                               Text(
                                 controller.state.serviceList.isNotEmpty
-                                    ? controller.state.serviceList.first.data().time ?? "time"
+                                    ? controller.state.serviceList.first.data().starttime ?? "time"
                                     : "time",
                                 style: const TextStyle(
                                   fontSize: 16,
@@ -331,7 +369,9 @@ class ConfirmPage extends GetView<DetailController> {
                               flex: 6,
                               child: ApplyButton(
                                 // button.dart
-                                onPressed: () {},
+                                onPressed: () {
+                                  _showConfirmationDialog(context);
+                                },
                                 buttonText: "Continue",
                                 buttonWidth: 100,
                               ),

@@ -36,14 +36,16 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
     _endController.addListener(_calculateTotalHours);
   }
 
-  Future<void> _selectTime(BuildContext context, TextEditingController controller) async {
+  Future<void> _selectTime(
+      BuildContext context, TextEditingController controller) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
     );
     if (picked != null) {
       final now = DateTime.now();
-      final selectedTime = DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
+      final selectedTime =
+          DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
       final formattedTime = DateFormat('HH:mm').format(selectedTime);
       setState(() {
         controller.text = formattedTime;
@@ -78,12 +80,14 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
           formattedHours = '${duration.inMinutes} mins';
         } else {
           double totalHoursDouble = duration.inMinutes / 60.0;
-          formattedHours = '${totalHoursDouble.toStringAsFixed(2).replaceAll('.', ':')} h';
+          formattedHours =
+              '${totalHoursDouble.toStringAsFixed(2).replaceAll('.', ':')} h';
         }
 
         setState(() {
           _totalHours = formattedHours;
-          _errorMessage = ""; // Clear error message if calculation is successful
+          _errorMessage =
+              ""; // Clear error message if calculation is successful
         });
       } on FormatException catch (e) {
         setState(() {
@@ -146,7 +150,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: Text(
                             _errorMessage,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.red,
                               fontWeight: FontWeight.bold,
                             ),
@@ -220,10 +224,12 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                         children: [
                           Expanded(
                             child: GestureDetector(
-                              onTap: () => _selectTime(context, _startController),
+                              onTap: () =>
+                                  _selectTime(context, _startController),
                               child: AbsorbPointer(
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
                                     color: Colors.grey[200],
@@ -259,7 +265,8 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                               onTap: () => _selectTime(context, _endController),
                               child: AbsorbPointer(
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
                                     color: Colors.grey[200],
@@ -292,7 +299,8 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.0),
                                 color: Colors.grey[200],
@@ -305,7 +313,9 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      _totalHours.isEmpty ? 'Total Hours' : _totalHours,
+                                      _totalHours.isEmpty
+                                          ? 'Total Hours'
+                                          : _totalHours,
                                       style: const TextStyle(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.bold,
@@ -328,14 +338,16 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                               flex: 6,
                               child: ApplyButton(
                                 onPressed: () {
-                                  final String startTime = _startController.text;
+                                  final String startTime =
+                                      _startController.text;
                                   final String endTime = _endController.text;
                                   final String totalHours = _totalHours;
 
                                   // Check if start time is equal to end time
                                   if (startTime == endTime) {
                                     setState(() {
-                                      _errorMessage = "Start time and end time cannot be equal";
+                                      _errorMessage =
+                                          "Start time and end time cannot be equal";
                                     });
                                     return;
                                   }
@@ -343,7 +355,8 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                                   // Your logic to change the status to "pending" here
 
                                   // Call controller method to create propose document
-                                  controller.createProposeDocument(startTime, endTime, totalHours);
+                                  controller.createProposeDocument(
+                                      startTime, endTime, totalHours);
                                   Get.back();
                                 },
                                 buttonText: "Continue",
@@ -364,4 +377,3 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
     );
   }
 }
-

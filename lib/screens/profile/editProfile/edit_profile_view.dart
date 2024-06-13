@@ -8,7 +8,7 @@ import 'edit_profile_controller.dart';
 class EditProfilePage extends GetView<EditProfileController> {
   final String initialProfileImageUrl;
 
-  EditProfilePage({super.key, required this.initialProfileImageUrl});
+  const EditProfilePage({super.key, required this.initialProfileImageUrl});
 
   @override
   Widget build(BuildContext context) {

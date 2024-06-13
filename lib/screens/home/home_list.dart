@@ -81,7 +81,7 @@ class HomeList extends GetView<HomeController> {
                 ),
                 // Date and time
                 subtitle: Text(
-                  "${serviceItem.data().date}, ${serviceItem.data().starttime}",
+                  "${serviceItem.data().date}, ${serviceItem.data().starttime} - ${serviceItem.data().endtime}",
                 ),
               ),
               Padding(

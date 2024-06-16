@@ -24,7 +24,7 @@ class MyTextField extends StatefulWidget {
     required this.obscuretext,
     this.readOnly,
     this.maxLines = 1,
-    this.onTap,
+    this.onTap
   }) : super(key: key);
 
   @override

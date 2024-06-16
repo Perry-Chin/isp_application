@@ -27,8 +27,7 @@ class RequestController extends GetxController {
         locationController.text.isNotEmpty &&
         dateController.text.isNotEmpty &&
         starttimeController.text.isNotEmpty &&
-        endtimeController.text.isNotEmpty;
-        // durationController.text.isNotEmpty;
+        durationController.text.isNotEmpty;
   }
 
   final state = RequestState();
@@ -44,7 +43,6 @@ class RequestController extends GetxController {
   final locationController = TextEditingController();
   final dateController = TextEditingController();
   final starttimeController = TextEditingController();
-  final endtimeController = TextEditingController();
   final durationController = TextEditingController();
   //Grab the last step, called in the view
   bool get isLastStep => state.currentStep.value == getSteps().length - 1;
@@ -81,7 +79,6 @@ class RequestController extends GetxController {
     locationController.clear();
     dateController.clear();
     starttimeController.clear();
-    endtimeController.clear();
     durationController.clear();
 
     // Reset the current step
@@ -190,23 +187,13 @@ class RequestController extends GetxController {
                   Get.find<RequestController>().selectTime(Get.context!),
             ),
             const SizedBox(height: 20),
-            MyTextField(
-              hinttext: 'Select end time',
-              labeltext: 'Time',
-              prefixicon: Icons.alarm,
-              obscuretext: false,
-              controller: endtimeController,
-              readOnly: true,
-              onTap: () =>
-                  Get.find<RequestController>().selectendTime(Get.context!),
-            ),
             // Rate/hour (int)
-            // MyTextField(
-            //     hinttext: 'Duration of service',
-            //     labeltext: 'Duration',
-            //     prefixicon: Icons.timelapse,
-            //     obscuretext: false,
-            //     controller: durationController),
+            MyTextField(
+                hinttext: 'Duration of service',
+                labeltext: 'Duration',
+                prefixicon: Icons.timelapse,
+                obscuretext: false,
+                controller: durationController),
           ])),
       Step(
           isActive: state.currentStep >= 2,
@@ -277,36 +264,6 @@ class RequestController extends GetxController {
     }
   }
 
-    // Function to select a time from the time picker
-  Future<void> selectendTime(BuildContext context) async {
-    TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-      // Customizing the appearance of the time picker
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            // Customize colors of date picker
-            colorScheme: const ColorScheme.light(
-              primary: AppColor.secondaryColor,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: AppColor.secondaryColor,
-              ),
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-
-    // If a time is selected, update the timeController text with the selected time
-    if (pickedTime != null) {
-      endtimeController.text = pickedTime.format(context);
-    }
-  }
-
   // Function to get the download URL of an image from Firebase Storage
   Future getImgUrl(String name) async {
     final spaceRef =
@@ -356,10 +313,10 @@ class RequestController extends GetxController {
         throw 'Rate must be a number.';
       }
 
-      // // Check if duration is a number
-      // if (int.tryParse(durationController.text) == null) {
-      //   throw 'Duration must be a number.';
-      // }
+      // Check if duration is a number
+      if (int.tryParse(durationController.text) == null) {
+        throw 'Duration must be a number.';
+      }
 
       // Create service document and add to Firestore
       await createServiceDocument();
@@ -412,8 +369,8 @@ class RequestController extends GetxController {
         location: locationController.text,
         date: dateController.text,
         starttime: starttimeController.text,
-        endtime: endtimeController.text,
-        // duration: int.tryParse(durationController.text),
+        // endtime: //end time calculate from starttime and duration
+        duration: int.tryParse(durationController.text),
         status: "Requested", //Default status
         statusid: 0,
         reqUserid: token,

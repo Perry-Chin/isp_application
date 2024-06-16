@@ -140,11 +140,11 @@ class DetailController extends GetxController {
   }
 
   Future<void> createProposeDocument(
-      String startTime, String endTime, String totalHours) async {
+      String startTime) async {
     final content = {
       'start_time': startTime,
-      'end_time': endTime,
-      'total_hours': totalHours,
+      // 'end_time': endTime,
+      // 'total_hours': totalHours,
       'timestamp': FieldValue.serverTimestamp(),
       'userid': token,
     };

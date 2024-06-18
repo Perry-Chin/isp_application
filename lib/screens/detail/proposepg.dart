@@ -26,7 +26,6 @@ class ProposeTimeSheet extends StatefulWidget {
 
 class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
   final TextEditingController _startController = TextEditingController();
-  String _errorMessage = "";
 
   @override
   void dispose() {
@@ -38,11 +37,17 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          child: child!,
+        );
+      },
     );
     if (picked != null) {
       final now = DateTime.now();
       final selectedTime = DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
-      final formattedTime = DateFormat('HH:mm').format(selectedTime);
+      final formattedTime = DateFormat('h:mm a').format(selectedTime); // Using 'h:mm a' for 12-hour format without leading zero
       setState(() {
         controller.text = formattedTime;
       });
@@ -59,15 +64,6 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, fontFamily: 'Open Sans'),
           ),
         ),
-        const SizedBox(height: 15),
-        if (_errorMessage.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text(
-              _errorMessage,
-              style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-            ),
-          ),
         const SizedBox(height: 15),
         const Text(
           "Once submitted, BuzzBuddy will share your proposed time with the Requester for their confirmation.",
@@ -146,6 +142,35 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
     );
   }
 
+  void _showConfirmationDialog(BuildContext context, DetailController controller, String startTime) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirmation"),
+          content: const Text("Do note that only the start time of service changes, duration of service will stay the same."),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                // Call controller method to create propose document
+                controller.createProposeDocument(startTime);
+                Get.back();
+                Navigator.of(context).pop(); // Close confirmation dialog
+              },
+              child: const Text("OK"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close confirmation dialog
+              },
+              child: const Text("Cancel"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildContinueButton(BuildContext context, DetailController controller) {
     return Container(
       padding: const EdgeInsets.all(8.0),
@@ -156,9 +181,15 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
             child: ApplyButton(
               onPressed: () {
                 final String startTime = _startController.text;
-                // Call controller method to create propose document
-                controller.createProposeDocument(startTime);
-                Get.back();
+                final String originalStartTime = controller.state.serviceList.isNotEmpty
+                    ? controller.state.serviceList.first.data().starttime ?? "time"
+                    : "time";
+
+                if (startTime == originalStartTime) {
+                  _showErrorDialog(context, "The proposed start time cannot be the same as the original start time.");
+                } else {
+                  _showConfirmationDialog(context, controller, startTime);
+                }
               },
               buttonText: "Continue",
               buttonWidth: 100,
@@ -166,6 +197,26 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Error"),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
     );
   }
 

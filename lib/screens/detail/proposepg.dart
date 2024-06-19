@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:isp_application/common/routes/routes.dart';
 import 'package:isp_application/common/widgets/button.dart';
 import 'detail_controller.dart';
+import '../home/home_controller.dart'; // Import the HomeController
 
 Future<void> proposeNewPage(BuildContext context) async {
   showModalBottomSheet(
@@ -12,7 +14,7 @@ Future<void> proposeNewPage(BuildContext context) async {
     ),
     isScrollControlled: true,
     builder: (BuildContext bc) {
-      return ProposeTimeSheet();
+      return const ProposeTimeSheet();
     },
   );
 }
@@ -66,7 +68,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
         ),
         const SizedBox(height: 15),
         const Text(
-          "Once submitted, BuzzBuddy will share your proposed time with the Requester for their confirmation.",
+          "Once submitted, FurFriends will share your proposed time with the Requester for their confirmation.",
           style: TextStyle(fontSize: 15, fontFamily: 'Open Sans', fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 15),
@@ -151,11 +153,13 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
           content: const Text("Do note that only the start time of service changes, duration of service will stay the same."),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 // Call controller method to create propose document
-                controller.createProposeDocument(startTime);
+                await controller.createProposeDocument(startTime);
                 Get.back();
                 Navigator.of(context).pop(); // Close confirmation dialog
+                Get.offAllNamed(AppRoutes.navbar); // Navigate to home page and remove all previous routes
+                Get.find<HomeController>().onRefresh(); // Call refreshData on HomeController
               },
               child: const Text("OK"),
             ),

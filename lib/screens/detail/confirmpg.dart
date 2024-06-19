@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../common/routes/names.dart';
 import '../../common/storage/user.dart';
 import '../../common/widgets/widgets.dart';
+import '../home/home_controller.dart';
 import 'detail_index.dart';
 
 Future confirmpg(BuildContext context) {
@@ -20,44 +22,43 @@ class ConfirmPage extends GetView<DetailController> {
   const ConfirmPage({Key? key}) : super(key: key);
 
    void _showConfirmationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Confirmation"),
-          content: const Text("Are you sure you want to continue?"),
-          actions: [
-            TextButton(
-              child: const Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop(); // Dismiss the dialog
-              },
-            ),
-            TextButton(
-              child: const Text("Confirm"),
-              onPressed: () async {
-                // Update provUserid in ServiceData
-                final currentUserId =
-                    UserStore.to.token; // Assuming token is current user ID
-                final serviceId = controller.doc_id;
-                if (serviceId != null) {
-                  await controller.updateServiceProvUserid(
-                      serviceId, currentUserId);
-                  // Update status to "Pending"
-                  await controller.updateServiceStatus(serviceId, "Pending");
-                }
-                // ignore: use_build_context_synchronously
-                Navigator.of(context).pop(); // Dismiss the dialog
-                //   // Get.off(const HomePage());
-                //   // ignore: use_build_context_synchronously
-                //  Navigator.popUntil(context, ModalRoute.withName('/home'));
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Confirmation"),
+        content: const Text("Are you confirmed?"),
+        actions: [
+          TextButton(
+            child: const Text("Cancel"),
+            onPressed: () {
+              Navigator.of(context).pop(); // Dismiss the dialog
+            },
+          ),
+          TextButton(
+            child: const Text("Confirm"),
+            onPressed: () async {
+              // Update provUserid in ServiceData
+              final currentUserId =
+                  UserStore.to.token; // Assuming token is current user ID
+              final serviceId = controller.doc_id;
+              if (serviceId != null) {
+                await controller.updateServiceProvUserid(
+                    serviceId, currentUserId);
+                // Update status to "Pending"
+                await controller.updateServiceStatus(serviceId, "Pending");
+              }
+              Navigator.of(context).pop(); // Dismiss the dialog
+              Get.offAllNamed(AppRoutes.navbar); // Navigate to home page and remove all previous routes
+              Get.find<HomeController>().onRefresh(); // Call refreshData on HomeController
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +88,7 @@ class ConfirmPage extends GetView<DetailController> {
                       ),
                       const SizedBox(height: 15),
                       const Text(
-                        "Once submitted, BuzzBuddy will send a confirmation to both parties for service to be carried out.",
+                        "Once submitted, FurFriends will send a confirmation to both parties for service to be carried out.",
                         style: TextStyle(
                           fontSize: 15,
                           fontFamily: 'Open Sans',

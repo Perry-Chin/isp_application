@@ -1,7 +1,3 @@
-// Detail Controller
-
-// ignore_for_file: prefer_typing_uninitialized_variables, non_constant_identifier_names
-
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -139,12 +135,9 @@ class DetailController extends GetxController {
     }
   }
 
-  Future<void> createProposeDocument(
-      String startTime) async {
+  Future<void> createProposeDocument(String startTime) async {
     final content = {
       'start_time': startTime,
-      // 'end_time': endTime,
-      // 'total_hours': totalHours,
       'timestamp': FieldValue.serverTimestamp(),
       'userid': token,
     };
@@ -155,15 +148,29 @@ class DetailController extends GetxController {
         .add(content)
         .then((DocumentReference doc) {
       print("Propose document added with id, ${doc.id}");
+      // Update service status to pending and provider_uid after proposing a new time
+      updateServiceStatusAndProvider(doc_id, 'pending', token);
     }).catchError((e) {
       print("Error creating propose document: $e");
     });
   }
 
+  Future<void> updateServiceStatusAndProvider(
+      String serviceId, String status, String providerUid) async {
+    try {
+      await db.collection('service').doc(serviceId).update({
+        'status': status,
+        'provider_uid': providerUid,
+      });
+    } catch (e) {
+      print('Error updating status and provider_uid: $e');
+    }
+  }
+
   void calculateCosts() {
     if (state.serviceList.isNotEmpty) {
       var service = state.serviceList.first.data();
-      if (service.rate != null && service.starttime != null && service.endtime != null) {
+      if (service.rate != null && service.duration != null) {
         double rate = service.rate!.toDouble();
         double duration = service.duration!.toDouble();
 

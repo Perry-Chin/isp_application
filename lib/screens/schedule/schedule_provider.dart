@@ -171,44 +171,46 @@ class ProviderCard extends GetView<ScheduleController> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Map<String, UserData?>>(
-        stream: controller.combinedProviderStream,
-        builder: (context, snapshot) {
-          final userDataMap = snapshot.data ?? {};
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            // return const ShimmerLoading();
-            return const Center(child: CircularProgressIndicator());
-          }
-          // Filter providerList based on selected rating
-          final filteredList = controller.state.providerList.where((item) {
-            final userData = userDataMap[item.data().reqUserid];
-            return userData != null && userData.rating! >= selectedRating;
-          }).toList();
-          return SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: true,
-            controller: controller.refreshControllerProv,
-            onLoading: controller.onLoadingProv,
-            onRefresh: controller.onRefreshProv,
-            header: const WaterDropHeader(),
-            child: CustomScrollView(
-              slivers: [
-                SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.w),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        var serviceItem = filteredList[index];
-                        var userData = userDataMap[serviceItem.data().reqUserid];
-                        return providerListItem(serviceItem, userData);
-                      },
-                      childCount: filteredList.length,
-                    ),
+      stream: controller.combinedProviderStream,
+      builder: (context, snapshot) {
+        final userDataMap = snapshot.data ?? {};
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // return const ShimmerLoading();
+          return const Center(child: CircularProgressIndicator());
+        }
+        // Filter providerList based on selected rating
+        final filteredList = controller.state.providerList.where((item) {
+          final userData = userDataMap[item.data().reqUserid];
+          return userData != null &&
+              userData.rating != null &&
+              userData.rating! >= selectedRating;
+        }).toList();
+        return SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: true,
+          controller: controller.refreshControllerProv,
+          onLoading: controller.onLoadingProv,
+          onRefresh: controller.onRefreshProv,
+          header: const WaterDropHeader(),
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.w),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      var serviceItem = filteredList[index];
+                      var userData = userDataMap[serviceItem.data().reqUserid];
+                      return providerListItem(serviceItem, userData);
+                    },
+                    childCount: filteredList.length,
                   ),
                 ),
-              ],
-            ),
-          );
-        },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

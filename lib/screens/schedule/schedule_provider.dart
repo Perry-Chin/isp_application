@@ -178,9 +178,7 @@ class ProviderCard extends GetView<ScheduleController> {
         // Filter providerList based on selected rating
         final filteredList = controller.state.providerList.where((item) {
           final userData = userDataMap[item.data().reqUserid];
-          return userData != null &&
-              userData.rating != null &&
-              userData.rating! >= selectedRating;
+          return userData != null;
         }).toList();
         return SmartRefresher(
           enablePullDown: true,

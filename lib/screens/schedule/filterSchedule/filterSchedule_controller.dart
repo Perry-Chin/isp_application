@@ -21,12 +21,13 @@ class FilterScheduleController extends GetxController {
   void onInit() {
     super.onInit();
     // Load saved selections from GetStorage
-    List<bool>? storedStatus = box.read('selectedStatus');
-    int? storedRating = box.read('selectedRating');
+    List<dynamic>? storedStatus = box.read<List<dynamic>>('selectedStatus');
+    int? storedRating = box.read<int>('selectedRating');
 
     if (storedStatus != null) {
-      selectedStatus.assignAll(storedStatus); // Assign stored status to observable list
-      originalSelectedStatus = List.from(storedStatus); // Keep a copy of the original selections
+      // Convert dynamic list to List<bool>
+      selectedStatus.assignAll(storedStatus.cast<bool>());
+      originalSelectedStatus = storedStatus.cast<bool>(); // Keep a copy of the original selections
     } else {
       // Initialize selectedStatus with false values if not stored
       selectedStatus.assignAll(List<bool>.filled(FilterStatus.filters.length, false));
@@ -65,7 +66,6 @@ class FilterScheduleController extends GetxController {
     selectedRating.value = originalSelectedRating;
     applyFilters();
   }
-
 
   void setSelectedRating(int rating) {
     selectedRating.value = rating;

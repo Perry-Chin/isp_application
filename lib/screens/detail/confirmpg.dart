@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,6 +18,7 @@ Future confirmpg(BuildContext context) {
     builder: (BuildContext bc) {
       return const ConfirmPage();
     },
+    backgroundColor: AppColor.backgroundColor
   );
 }
 
@@ -48,7 +50,7 @@ class ConfirmPage extends GetView<DetailController> {
                 await controller.updateServiceProvUserid(
                     serviceId, currentUserId);
                 // Update status to "Pending"
-                await controller.updateServiceStatus(serviceId, "Pending");
+                await controller.bookServiceStatus(serviceId, "Pending", 1);
               }
               Navigator.of(context).pop(); // Dismiss the dialog
               Get.offAllNamed(AppRoutes.navbar); // Navigate to home page and remove all previous routes
@@ -72,299 +74,72 @@ class ConfirmPage extends GetView<DetailController> {
           child: GetBuilder<DetailController>(
             builder: (controller) {
               return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
+                child: Container(
+                  color: AppColor.backgroundColor,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Center(
-                        child: Text(
-                          "Confirm your booking",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25,
-                            fontFamily: 'Open Sans',
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-                      const Text(
-                        "Once submitted, FurFriends will send a confirmation to both parties for service to be carried out.",
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontFamily: 'Open Sans',
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Date & Time",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 20,
-                              fontFamily: 'Open Sans',
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Container(
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.grey[200],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            children: [
-                              Text(
-                                controller.state.serviceList.isNotEmpty
-                                    ? controller.state.serviceList.first.data().date ?? "date"
-                                    : "date",
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 12,
-                              ),
-                              Text(
-                                controller.state.serviceList.isNotEmpty
-                                    ? controller.state.serviceList.first.data().starttime ?? "time"
-                                    : "time",
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        "Total fees",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20,
-                          fontFamily: 'Open Sans',
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Container(
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.grey[200],
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 1.0,
-                          ),
-                        ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 5,
-                                top: 5,
-                                bottom: 10,
-                              ),
-                              child: Obx(() {
-                                final totalCost = controller.totalCost.value;
-                                return Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text(
-                                      "Total Payout",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 17,
-                                      ),
-                                    ),
-                                    Text(
-                                      "\$$totalCost",
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 17,
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }),
-                            ),
-                            Visibility(
-                              visible: controller.showPaymentSection,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Obx(() {
-                                  final taxFee = controller.taxFee.value;
-                                  final subtotal = controller.subtotal.value;
-                                  final totalCost = controller.totalCost.value;
-                                  return Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text("Subtotal"),
-                                          Text("\$$subtotal"),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 15),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text("Tax Fee"),
-                                          Text("\$$taxFee"),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 15),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text("Total"),
-                                          Text(
-                                            "\$$totalCost",
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 10),
-                                      const Divider(
-                                        thickness: 2,
-                                        color: Colors.black12,
-                                        height: 15,
-                                      ),
-                                      const SizedBox(height: 10),
-                                      const Row(
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Payment Method",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                              SizedBox(height: 5),
-                                              Padding(
-                                                padding: EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  children: [
-                                                    Image(
-                                                      image: AssetImage("assets/images/paynow.png"),
-                                                      width: 24,
-                                                      height: 24,
-                                                    ),
-                                                    SizedBox(width: 10),
-                                                    Text(
-                                                      "PayNow",
-                                                      style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 14,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  );
-                                }),
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  'Fee Breakdown',
-                                  style: TextStyle(color: Colors.blue),
+                            const SizedBox(height: 16),
+                            const TopIndicator(),
+                            const SizedBox(height: 8),
+                            const Center(
+                              child: Text(
+                                "Confirm your booking",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
+                                  fontFamily: 'Open Sans',
                                 ),
-                                IconButton(
-                                  onPressed: () {
-                                    controller.togglePaymentSection();
-                                  },
-                                  icon: Icon(
-                                    controller.showPaymentSection
-                                        ? Icons.arrow_drop_up
-                                        : Icons.arrow_drop_down,
-                                  ),
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            const Text(
+                              "Once submitted, FurFriends will send a confirmation to both parties for service to be carried out.",
+                              style: TextStyle(
+                                fontSize: 16
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Date & Time",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  )
                                 ),
                               ],
                             ),
+                            const SizedBox(height: 10),
+                            DatetimeField(controller: controller),
+                            const SizedBox(height: 15),
+                            const Text(
+                              "Total fees",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            PaymentDetail(controller: controller),
+                            const SizedBox(height: 20),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Requester',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          Obx(() {
-                            final userData = controller.userData.value;
-                            if (userData != null) {
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const CircleAvatar(
-                                    backgroundColor: Colors.blueGrey,
-                                    child: Icon(
-                                      Icons.person,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            userData.username ?? 'Username',
-                                            style: const TextStyle(fontSize: 17),
-                                          ),
-                                          const SizedBox(width: 12),
-                                          const Rating(rating: 3.5),
-                                        ],
-                                      ),
-                                      Text(
-                                        userData.email ?? 'user@mail.com',
-                                        style: const TextStyle(fontSize: 17),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return const Text('Loading user data...');
-                            }
-                          }),
-                        ],
+                      RequesterInfo(
+                        controller: controller, 
+                        userData: controller.userData.value,
+                        hideButtons: true,
                       ),
-                      const SizedBox(height: 20),
-                      Container(
+                      Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
@@ -376,7 +151,8 @@ class ConfirmPage extends GetView<DetailController> {
                                   _showConfirmationDialog(context);
                                 },
                                 buttonText: "Continue",
-                                buttonWidth: 100,
+                                buttonWidth: double.infinity,
+                                textAlignment: Alignment.center,
                               ),
                             ),
                           ],

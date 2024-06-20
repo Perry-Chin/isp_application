@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
-import 'package:rxdart/rxdart.dart';
 
 import '../../common/data/data.dart';
 import '../../common/storage/storage.dart';
@@ -12,7 +11,7 @@ import 'schedule_index.dart';
 
 class ScheduleController extends GetxController with GetSingleTickerProviderStateMixin {
   ScheduleController();
-  
+
   late TabController tabController;
   final ScheduleState state = ScheduleState();
   final token = UserStore.to.token;
@@ -22,6 +21,9 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
   final RefreshController refreshControllerReq = RefreshController(initialRefresh: false);
   final RefreshController refreshControllerProv = RefreshController(initialRefresh: false);
   RxInt currentTabIndex = 0.obs;
+
+  final ScheduleRequesterController requesterController = Get.put(ScheduleRequesterController());
+  final ScheduleProviderController providerController = Get.put(ScheduleProviderController());
 
   @override
   void onInit() {
@@ -45,200 +47,88 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
     super.onClose();
   }
 
-  // The pull_to_refresh dependency requires these functions to work
-  void onRefreshProv() {
-    asyncLoadAllDataForProvider().then((_) {
-      refreshControllerProv.refreshCompleted(resetFooterState: true);
+  void onRefreshProv() => _refreshData(refreshControllerProv, asyncLoadAllDataForProvider);
+  void onLoadingProv() => _loadData(refreshControllerProv, asyncLoadAllDataForProvider);
+  void onRefreshReq() => _refreshData(refreshControllerReq, asyncLoadAllDataForRequester);
+  void onLoadingReq() => _loadData(refreshControllerReq, asyncLoadAllDataForRequester);
+
+  // Helper functions for refresh and load
+  void _refreshData(RefreshController controller, Future<void> Function() loadData) {
+    loadData().then((_) {
+      controller.refreshCompleted(resetFooterState: true);
+      update();
     }).catchError((_) {
-      refreshControllerProv.refreshFailed();
+      controller.refreshFailed();
     });
   }
 
-  void onLoadingProv() {
-    asyncLoadAllDataForProvider().then((_) {
-      refreshControllerProv.loadComplete();
+  void _loadData(RefreshController controller, Future<void> Function() loadData) {
+    loadData().then((_) {
+      controller.loadComplete();
+      update();
     }).catchError((_) {
-      refreshControllerProv.loadFailed();
+      controller.loadFailed();
     });
   }
 
-  void onRefreshReq() {
-    asyncLoadAllDataForRequester().then((_) {
-      refreshControllerReq.refreshCompleted(resetFooterState: true);
-    }).catchError((_) {
-      refreshControllerReq.refreshFailed();
-    });
-  }
-
-  void onLoadingReq() {
-    asyncLoadAllDataForRequester().then((_) {
-      refreshControllerReq.loadComplete();
-    }).catchError((_) {
-      refreshControllerReq.loadFailed();
-    });
-  }
-
-  // Stream to handle fetching service data
-  Stream<List<QueryDocumentSnapshot<ServiceData>>> getRequesterStream(String token) {
-    return FirebaseFirestore.instance
-      .collection('service')
-      .where('requester_uid', isEqualTo: token)
-      .withConverter<ServiceData>(
-        fromFirestore: ServiceData.fromFirestore,
-        toFirestore: (ServiceData serviceData, _) => serviceData.toFirestore(),
-      )
-      .snapshots()
-      .map((snapshot) => snapshot.docs);
-  }
-
-  // Stream to handle fetching user data
-  Stream<List<DocumentSnapshot<UserData>>> getUserStream(List<String> userIds) {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .where(FieldPath.documentId, whereIn: userIds)
-        .withConverter<UserData>(
-          fromFirestore: UserData.fromFirestore,
-          toFirestore: (UserData userData, _) => userData.toFirestore(),
-        )
-        .snapshots()
-        .map((snapshot) {
-          return snapshot.docs;
-        });
-  }
-
-  // Stream to handle data fetching
+  // Stream to handle combined requester data (service + user)
   Stream<Map<String, UserData?>> get combinedRequesterStream async* {
     await asyncLoadAllDataForRequester();
-    yield* getCombinedReqStream(UserStore.to.token);
+    yield* requesterController.getCombinedReqStream(UserStore.to.token);
   }
 
   // Load all data for requester
   Future<void> asyncLoadAllDataForRequester() async {
     try {
-      String token = UserStore.to.token;
-      
-      // Add a delay of 1 second
-      // await Future.delayed(const Duration(milliseconds: 200));
-
       Query<ServiceData> query = db
-        .collection("service")
-        .withConverter(
-          fromFirestore: ServiceData.fromFirestore,
-          toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore(),
-        )
-        .where("requester_uid", isEqualTo: token)
-        .where("statusid", isGreaterThanOrEqualTo: 0)
-        .orderBy("statusid", descending: false)
-        .orderBy("date", descending: false);
+          .collection("service")
+          .withConverter<ServiceData>(
+            fromFirestore: ServiceData.fromFirestore,
+            toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore(),
+          )
+          .where("requester_uid", isEqualTo: token)
+          .where("statusid", isGreaterThanOrEqualTo: 0)
+          .orderBy("statusid", descending: false)
+          .orderBy("date", descending: false);
 
       if (selectedStatus.isNotEmpty && !selectedStatus.contains('All')) {
         query = query.where("status", whereIn: selectedStatus);
       }
-      
+
       var provServices = await query.get();
-
-      List<QueryDocumentSnapshot<ServiceData>> documents = provServices.docs;
-
-      // Sort documents by user rating
-      documents.sort((a, b) {
-        final userDataA = state.userDataMap[a.data().reqUserid];
-        final userDataB = state.userDataMap[b.data().reqUserid];
-        final ratingA = userDataA?.rating ?? 0;
-        final ratingB = userDataB?.rating ?? 0;
-        return ratingA.compareTo(ratingB);
-      });
-
-      // Now use the sorted documents for display
-      state.requesterList.assignAll(documents);
-    } 
-    catch (e) {
+      state.requesterList.assignAll(provServices.docs);
+    } catch (e) {
       print("Error fetching: $e");
     }
   }
 
-    // Stream to handle fetching service data
-  Stream<List<QueryDocumentSnapshot<ServiceData>>> getProviderStream(String token) {
-    return FirebaseFirestore.instance
-        .collection('service')
-        .where('provider_uid', isEqualTo: token)
-        .withConverter<ServiceData>(
-          fromFirestore: ServiceData.fromFirestore,
-          toFirestore: (ServiceData serviceData, _) => serviceData.toFirestore(),
-        )
-        .snapshots()
-        .map((snapshot) => snapshot.docs);
-  }
-
-  // Combine the streams to get user data for each service item
-  Stream<Map<String, UserData?>> getCombinedReqStream(String token) {
-    return getRequesterStream(token).switchMap((serviceDocs) {
-      List<String> userIds = serviceDocs.map((doc) => doc.data().reqUserid!).toList();
-
-      if (userIds.isEmpty) {
-        return Stream.value({});
-      }
-
-      return getUserStream(userIds).map((userDocs) {
-        var userDataMap = Map.fromEntries(userDocs.map((doc) => MapEntry(doc.id, doc.data())));
-        state.userDataMap.assignAll(userDataMap); // Update userDataMap in state
-        return userDataMap;
-      });
-    });
-  }
-
-  // Combine the streams to get user data for each service item
-  Stream<Map<String, UserData?>> getCombinedProvStream(String token) {
-    return getProviderStream(token).switchMap((serviceDocs) {
-      List<String> userIds = serviceDocs.map((doc) => doc.data().reqUserid!).toList();
-
-      if (userIds.isEmpty) {
-        return Stream.value({});
-      }
-
-      return getUserStream(userIds).map((userDocs) {
-        var userDataMap = Map.fromEntries(userDocs.map((doc) => MapEntry(doc.id, doc.data())));
-        state.userDataMap.assignAll(userDataMap); // Update userDataMap in state
-        return userDataMap;
-      });
-    });
-  }
-
-  // Stream to handle data fetching
+  // Stream to handle combined provider data (service + user)
   Stream<Map<String, UserData?>> get combinedProviderStream async* {
     await asyncLoadAllDataForProvider();
-    yield* getCombinedProvStream(UserStore.to.token);
+    yield* providerController.getCombinedProvStream(UserStore.to.token);
   }
-  
+
   // Load all data for provider
   Future<void> asyncLoadAllDataForProvider() async {
     try {
-      String token = UserStore.to.token;
-      
-      // Add a delay of 1 second
-      // await Future.delayed(const Duration(milliseconds: 200));
-
       Query<ServiceData> query = db
-        .collection("service")
-        .withConverter(
-          fromFirestore: ServiceData.fromFirestore,
-          toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore(),
-        )
-        .where("provider_uid", isEqualTo: token)  // Apply all filters on the same field
-        .where("statusid", isGreaterThanOrEqualTo: 0)
-        .orderBy("statusid", descending: false)
-        .orderBy("date", descending: false);
-      
+          .collection("service")
+          .withConverter<ServiceData>(
+            fromFirestore: ServiceData.fromFirestore,
+            toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore(),
+          )
+          .where("provider_uid", isEqualTo: token)
+          .where("statusid", isGreaterThanOrEqualTo: 0)
+          .orderBy("statusid", descending: false)
+          .orderBy("date", descending: false);
+
       if (!selectedStatus.contains('All') && selectedStatus.isNotEmpty) {
         query = query.where("status", whereIn: selectedStatus);
       }
 
       var provServices = await query.get();
-
-      List<QueryDocumentSnapshot<ServiceData>> documents = provServices.docs;
-
-      state.providerList.assignAll(documents); // Update state with fetched data
-    } 
-    catch (e) {
+      state.providerList.assignAll(provServices.docs);
+    } catch (e) {
       print("Error fetching: $e");
     }
   }
@@ -260,7 +150,6 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
     int? storedRating = GetStorage().read('selectedRating');
 
     if (storedStatus != null) {
-      // Map boolean values to selected status strings
       List<String> selectedStatus = FilterStatus.filters
           .asMap()
           .entries
@@ -272,6 +161,28 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
         selectedStatus: selectedStatus,
         selectedRating: storedRating ?? 0,
       );
+    }
+  }
+
+  void redirectToServiceDetail(QueryDocumentSnapshot<ServiceData> item, String requested) {
+    ServiceData serviceData = item.data();
+    if(serviceData.status == "Pending" && requested == "true") {
+      Get.toNamed("/detail", parameters: {
+        "doc_id": item.id,
+        "req_uid": serviceData.reqUserid ?? "",
+        "hide_buttons": "false",
+        "requested": requested,
+        "status": serviceData.status ?? "",
+      });
+    }
+    else {
+      Get.toNamed("/detail", parameters: {
+        "doc_id": item.id,
+        "req_uid": serviceData.reqUserid ?? "",
+        "hide_buttons": "true",
+        "requested": requested,
+        "status": serviceData.status ?? "",
+      });
     }
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../common/data/data.dart';
@@ -7,14 +6,16 @@ import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'confirmpg.dart';
 import 'detail_index.dart';
-import 'proposepg.dart';
 
 class DetailPage extends GetView<DetailController> {
   const DetailPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+
     bool hideButtons = Get.parameters['hide_buttons'] == 'true';
+    // String requested = Get.parameters['requested']!;
+    // String status = Get.parameters['status']!;
 
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
@@ -46,13 +47,13 @@ class DetailPage extends GetView<DetailController> {
                     if (controller.state.serviceList.isNotEmpty) {
                       var serviceData =
                           controller.state.serviceList.first.data();
-                      return backgroundImage(serviceData);
+                      return BackgroundImage(controller: controller, serviceData: serviceData);
                     }
                     return const SizedBox.shrink();
                   }),
                 ),
               ),
-              buttonArrow(context),
+              BackArrow(context: context),
               Positioned(
                 left: 0,
                 right: 0,
@@ -88,12 +89,12 @@ class DetailPage extends GetView<DetailController> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              topIndicator(),
-              serviceName(serviceData.serviceName),
-              serviceDetailsCard(serviceData, hideButtons),
-              serviceDescription(serviceData.description),
-              requesterInfo(userData, hideButtons),
-              feeInfo(userData),
+              const TopIndicator(),
+              DetailTitle(name: serviceData.serviceName),
+              ServiceDetail(serviceData: serviceData, hideButtons: hideButtons),
+              ServiceDescription(description: serviceData.description),
+              RequesterInfo(controller: controller, userData: userData, hideButtons: hideButtons),
+              FeeInfo(controller: controller, userData: userData),
             ],
           );
         } else {
@@ -103,121 +104,38 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
-  Widget requesterInfo(UserData? userData, bool hideButtons) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 16, bottom: 5),
-          child: Text(
-            "Meet the Requester",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
+  Widget statusButton(BuildContext context, String? status, String? requested) {
+    if(status == "Pending" && requested == "true") {
+      return Container(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 6,
+              child: ApplyButton(
+                // button.dart
+                onPressed: () => controller.updateServiceStatus(controller.doc_id, "Booked", 3),
+                buttonText: "Accept Request",
+                buttonWidth: 150
+              ),
             ),
-          ),
+          ],
         ),
-        ListTile(
-          horizontalTitleGap: 12,
-          leading: CircleAvatar(
-            radius: 28.0,
-            backgroundColor: Colors.transparent,
-            child: ClipOval(
-              child: userData?.photourl != null && userData!.photourl!.isNotEmpty ?
-              FadeInImage.assetNetwork(
-                placeholder: AppImage.profile,
-                image: userData.photourl ?? "",
-                fadeInDuration: const Duration(milliseconds: 100),
-                fit: BoxFit.cover,
-                width: 54.w,
-                height: 54.w,
-              ) :
-              Image.asset(AppImage.profile),
-            ),
-          ),
-          title: Padding(
-            padding: const EdgeInsets.only(bottom: 3),
-            child: Row(
-              children: [
-                Text(
-                  userData?.username ?? "Username",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                const Rating(rating: 4.5)
-              ],
-            ),
-          ),
-          subtitle: Text(userData?.email ?? ""),
-        ),
-        if (!hideButtons) actionButtons(userData!),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Divider(
-            thickness: 2,
-            color: Colors.black12,
-            height: 35,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget actionButtons(UserData userData) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
+      );
+    }
+    return Container(
+      padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
           Expanded(
-            child: ElevatedButton(
+            flex: 6,
+            child: ApplyButton(
+              // button.dart
               onPressed: () {
-                // View reviews action
+                confirmpg(Get.context!);
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                elevation: 4, // Small shadow
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15), // Set padding
-                child: const Text(
-                  "View reviews",
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: ElevatedButton(
-              onPressed: () {
-                controller.goChat(userData);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                elevation: 4, // Small shadow
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15), // Set padding
-                child: const Text(
-                  "Chat",
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-              ),
+              buttonText: "Apply Now",
+              buttonWidth: 100
             ),
           ),
         ],
@@ -225,7 +143,128 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
-  Widget backgroundImage(ServiceData serviceData) {
+  Widget applyButton(BuildContext context) {
+    if(Get.parameters['status'] == "Pending" && Get.parameters['requested'] == "true") {
+      return Container(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 6,
+              child: ApplyButton(
+                // button.dart
+                onPressed: () => controller.updateServiceStatus(controller.doc_id, "Booked", 3),
+                buttonText: "Accept Request",
+                buttonWidth: 150
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 6,
+            child: ApplyButton(
+              // button.dart
+              onPressed: () {
+                confirmpg(Get.context!);
+              },
+              buttonText: "Apply Now",
+              buttonWidth: 100
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ServiceDescription extends StatelessWidget {
+  const ServiceDescription({
+    super.key,
+    required this.description,
+  });
+
+  final String? description;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, top: 10, right: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Description",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          const SizedBox(height: 15),
+          Text(
+            description ?? "Description",
+            style: const TextStyle(
+              fontSize: 16,
+            ),
+          ),
+          const Divider(
+            thickness: 2,
+            color: Colors.black12,
+            height: 35,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class BackArrow extends StatelessWidget {
+  const BackArrow({
+    super.key,
+    required this.context,
+  });
+
+  final BuildContext context;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 25,
+      left: 15,
+      child: Opacity(
+        opacity: 0.6,
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+          ),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_rounded),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class BackgroundImage extends StatelessWidget {
+  const BackgroundImage({
+    super.key,
+    required this.controller,
+    required this.serviceData,
+  });
+
+  final DetailController controller;
+  final ServiceData serviceData;
+
+  @override
+  Widget build(BuildContext context) {
     if (controller.state.serviceList.isNotEmpty) {
       String? imageUrl = serviceData.image;
       if (imageUrl != null && imageUrl.isNotEmpty) {
@@ -277,336 +316,4 @@ class DetailPage extends GetView<DetailController> {
       fit: BoxFit.cover,
     );
   }
-
-  Widget buttonArrow(BuildContext context) {
-    return Positioned(
-      top: 25,
-      left: 15,
-      child: Opacity(
-        opacity: 0.6,
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_rounded),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget topIndicator() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 35,
-            height: 5,
-            color: Colors.black12,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget serviceName(String? name) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, bottom: 5),
-      child: Text(
-        name ?? "Service Name",
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 27,
-        ),
-      ),
-    );
-  }
-
-  Widget serviceDetailsCard(ServiceData serviceData, bool hideButtons) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.black26),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Details",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            detail(serviceData, hideButtons)
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget detail(ServiceData serviceData, bool hideButtons) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                alignment: Alignment.topCenter,
-                height: hideButtons ? 40 : 120,
-                width: 40,
-                child: const Icon(Icons.date_range),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    serviceData.date ?? "Description",
-                    style: const TextStyle(fontSize: 15),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    serviceData.starttime ?? "Description",
-                    style: const TextStyle(fontSize: 15),
-                  ),
-                  if (!hideButtons) ...[
-                    const SizedBox(height: 10),
-                    const Text(
-                      "Unavailable at this time?",
-                      style: TextStyle(fontSize: 15, color: Color(0xFFCE761D)),
-                    ),
-                    const SizedBox(height: 8),
-                    proposeNewTimeButton(),
-                  ],
-                ],
-              ),
-            ],
-          ),
-          const Divider(
-            thickness: 2,
-            color: Colors.black12,
-            height: 35,
-          ),
-          Row(
-            children: [
-              Container(
-                alignment: Alignment.topCenter,
-                height: 25,
-                width: 40,
-                child: const Icon(Icons.location_on),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  serviceData.location ?? "Description",
-                  style: const TextStyle(fontSize: 15),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget serviceDescription(String? description) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, top: 10, right: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Description",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-          ),
-          const SizedBox(height: 15),
-          Text(
-            description ?? "Description",
-            style: const TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          const Divider(
-            thickness: 2,
-            color: Colors.black12,
-            height: 35,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget feeInfo(UserData? userData) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.black26),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 5, top: 5, bottom: 10),
-              child: Text(
-                "Total Fees",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Obx(() {
-                final taxFee = controller.taxFee.value;
-                final subtotal = controller.subtotal.value;
-                final totalCost = controller.totalCost.value;
-                return Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [const Text("Subtotal"), Text("\$$subtotal")],
-                    ),
-                    const SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [const Text("Tax Fee"), Text("\$$taxFee")],
-                    ),
-                    const SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text("Total"),
-                        Text(
-                          "\$$totalCost",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    const Divider(
-                      thickness: 2,
-                      color: Colors.black12,
-                      height: 15,
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Payment Method",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                            const SizedBox(height: 5),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Image(
-                                    image: const AssetImage(
-                                        "assets/images/paynow.png"),
-                                    width: 24.w,
-                                    height: 24.w,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  const Text(
-                                    "PayNow",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
-                );
-              }),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget proposeNewTimeButton() {
-    return ElevatedButton(
-      onPressed: () {
-        proposeNewPage(Get.context!); // Make sure to pass the context
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        elevation: 4, // Small shadow
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        side: const BorderSide(color: Colors.black, width: 0.5),
-      ),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10), // Set padding
-        child: const Row(
-          children: [
-            Icon(Icons.alarm, color: Colors.black),
-            SizedBox(width: 8),
-            Text(
-              "Propose a new time",
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget applyButton(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 6,
-            child: ApplyButton(
-              // button.dart
-              onPressed: () {
-                confirmpg(Get.context!);
-              },
-              buttonText: "Apply Now",
-              buttonWidth: 100
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
-

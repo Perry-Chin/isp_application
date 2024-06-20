@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 
 import '../../common/data/data.dart';
 import '../../common/values/values.dart';
-import '../../common/widgets/widgets.dart';
 import 'schedule_index.dart';
 
 class RequesterCard extends GetView<ScheduleController> {
@@ -31,14 +30,7 @@ class RequesterCard extends GetView<ScheduleController> {
     elevation: 8,
     margin: const EdgeInsets.all(16),
     child: InkWell(
-      onTap: () {
-        var reqUserid = item.data().reqUserid ?? "";
-        Get.toNamed("/detail", parameters: {
-          "doc_id": item.id,
-          "req_uid": reqUserid,
-          "hide_buttons": "true"
-        });
-      },
+      onTap: () => controller.redirectToServiceDetail(item, "true"),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -83,7 +75,7 @@ class RequesterCard extends GetView<ScheduleController> {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      Rating(rating: userData?.rating ?? 0),
+                      // Rating(rating: userData?.rating ?? 0),
                     ],
                   ),
                 ),
@@ -130,7 +122,7 @@ class RequesterCard extends GetView<ScheduleController> {
                       ),
                     ),
                     Container(
-                      width: item.data().status!.length * 11,
+                      width: item.data().status!.length * 12,
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: statusColor,
@@ -163,6 +155,10 @@ Color getStatusColor(String? status) {
       return Colors.blue;
     case 'cancelled':
       return Colors.red;
+    case 'pending':
+      return Colors.orangeAccent;
+    case 'booked':
+      return Colors.cyan;
     default:
       return Colors.green;
   }
@@ -181,7 +177,8 @@ Color getStatusColor(String? status) {
         // Filter requesterList based on selected rating
         final filteredList = controller.state.requesterList.where((item) {
           final userData = userDataMap[item.data().reqUserid];
-          return userData != null && userData.rating! >= selectedRating;
+          return userData != null;
+          // return userData != null && userData.rating! >= selectedRating;
         }).toList();
         return SmartRefresher(
           enablePullDown: true,

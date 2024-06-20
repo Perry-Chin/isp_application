@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -6,7 +7,7 @@ import 'package:intl/intl.dart';
 import '../../common/routes/routes.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
-import 'detail_controller.dart';
+import 'detail_index.dart';
 import '../home/home_controller.dart'; // Import the HomeController
 
 Future<void> proposeNewPage(BuildContext context) async {
@@ -19,6 +20,7 @@ Future<void> proposeNewPage(BuildContext context) async {
     builder: (BuildContext bc) {
       return const ProposeTimeSheet();
     },
+    backgroundColor: AppColor.backgroundColor
   );
 }
 
@@ -60,90 +62,94 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
   }
 
   Widget _buildOriginalDateTimeSection(DetailController controller) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Center(
-          child: Text(
-            "Propose Time",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, fontFamily: 'Open Sans'),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Center(
+            child: Text(
+              "Propose Time",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, fontFamily: 'Open Sans'),
+            ),
           ),
-        ),
-        const SizedBox(height: 15),
-        const Text(
-          "Once submitted, FurFriends will share your proposed time with the Requester for their confirmation.",
-          style: TextStyle(fontSize: 15, fontFamily: 'Open Sans', fontWeight: FontWeight.w300),
-        ),
-        const SizedBox(height: 15),
-        const Text(
-          'Your Original Date & Time',
-          style: TextStyle(fontSize: 20, fontFamily: 'Open Sans', fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 10),
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            color: Colors.grey[200],
+          const SizedBox(height: 15),
+          const Text(
+            "Once submitted, FurFriends will share your proposed time with the Requester for their confirmation.",
+            style: const TextStyle(
+              fontSize: 16,
+            ),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                controller.state.serviceList.isNotEmpty ? controller.state.serviceList.first.data().date ?? "date" : "date",
-                style: const TextStyle(fontSize: 16.0, color: Colors.black),
+          const SizedBox(height: 15),
+          const Text(
+            'Original Time',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            )
+          ),
+          const SizedBox(height: 15),
+          FadeInUp(
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.only(top: 18.0, bottom: 18, left: 13),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                border: Border.all(
+                  color: AppColor.secondaryColor,
+                  width: 1.5
+                ),
+                color: Colors.white,
               ),
-              const SizedBox(width: 10),
-              Text(
-                controller.state.serviceList.isNotEmpty ? controller.state.serviceList.first.data().starttime ?? "time" : "time",
-                style: const TextStyle(fontSize: 16.0, color: Colors.black),
+              child: Row(
+                children: [
+                  const Icon(Icons.access_time_outlined, size: 20, color: Colors.black),
+                  const SizedBox(width: 15),
+                  Text(
+                    controller.state.serviceList.isNotEmpty ? controller.state.serviceList.first.data().starttime ?? "time" : "time",
+                    style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w400),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          )
+        ],
+      ),
     );
   }
 
   Widget _buildProposeTimeSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 20),
-        const Text(
-          "Propose Time",
-          style: TextStyle(fontSize: 20, fontFamily: 'Open Sans', fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 10),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () => _selectTime(context, _startController),
-                child: AbsorbPointer(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      color: Colors.grey[200],
-                      border: Border.all(color: Colors.black, width: 1.0),
-                    ),
-                    child: TextField(
-                      controller: _startController,
-                      decoration: const InputDecoration(
-                        hintText: 'Start',
-                        border: InputBorder.none,
-                      ),
-                      style: const TextStyle(fontSize: 16.0, color: Colors.black),
-                    ),
-                  ),
-                ),
-              ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Propose Time",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
             ),
-          ],
-        ),
-      ],
+          ),
+          const SizedBox(height: 15),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: MyTextField(
+                  hinttext: 'New Time', 
+                  labeltext: 'New Time', 
+                  prefixicon: Icons.access_time_outlined, 
+                  controller: _startController, 
+                  obscuretext: false,
+                  readOnly: true,
+                  onTap: () => _selectTime(context, _startController),
+                ),
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -180,7 +186,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
 
   Widget _buildContinueButton(BuildContext context, DetailController controller) {
     return Container(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(top: 5),
       child: Row(
         children: [
           Expanded(
@@ -199,7 +205,8 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                 }
               },
               buttonText: "Continue",
-              buttonWidth: 100,
+              buttonWidth: double.infinity,
+              textAlignment: Alignment.center,
             ),
           ),
         ],
@@ -232,15 +239,16 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.only(
-          left: 20,
-          right: 20,
+          left: 8,
+          right: 8,
           top: 20,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 20, // Adjust bottom padding as needed
+          bottom: MediaQuery.of(context).viewInsets.bottom + 10, // Adjust bottom padding as needed
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const TopIndicator(),
             _buildOriginalDateTimeSection(Get.find<DetailController>()),
             _buildProposeTimeSection(context),
             _buildContinueButton(context, Get.find<DetailController>()),

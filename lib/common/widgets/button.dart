@@ -35,7 +35,7 @@ class ApplyButton extends StatelessWidget {
       child: Container(
         alignment: textAlignment,
         width: buttonWidth, // Set button width
-        padding: const EdgeInsets.symmetric(vertical: 15), // Set padding
+        padding: const EdgeInsets.symmetric(vertical: 18), // Set padding
         child: Text(
           buttonText, // Display text on the button
           style: const TextStyle(

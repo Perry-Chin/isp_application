@@ -7,7 +7,6 @@ import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import '../../common/data/data.dart';
 import '../../common/storage/storage.dart';
 import '../../common/values/values.dart';
-import '../../common/widgets/widgets.dart';
 import 'schedule_index.dart';
 
 class ProviderCard extends GetView<ScheduleController> {
@@ -31,13 +30,7 @@ class ProviderCard extends GetView<ScheduleController> {
       elevation: 8,
       margin: const EdgeInsets.all(16),
       child: InkWell(
-        onTap: () {
-          var reqUserid = item.data().reqUserid ?? "";
-          Get.toNamed("/detail", parameters: {
-            "doc_id": item.id,
-            "req_uid": reqUserid,
-          });
-        },
+        onTap: () => controller.redirectToServiceDetail(item, "false"),
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -83,7 +76,7 @@ class ProviderCard extends GetView<ScheduleController> {
                           ),
                         ),
                         const SizedBox(width: 6),
-                        Rating(rating: userData?.rating ?? 0),
+                        // Rating(rating: userData?.rating ?? 0),
                       ],
                     ),
                   ),
@@ -130,7 +123,7 @@ class ProviderCard extends GetView<ScheduleController> {
                         ),
                       ),
                       Container(
-                        width: item.data().status!.length * 11,
+                        width: item.data().status!.length * 12,
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: statusColor,
@@ -163,6 +156,10 @@ class ProviderCard extends GetView<ScheduleController> {
         return Colors.blue;
       case 'cancelled':
         return Colors.red;
+      case 'pending':
+        return Colors.orangeAccent;
+      case 'booked':
+        return Colors.cyan;
       default:
         return Colors.green;
     }

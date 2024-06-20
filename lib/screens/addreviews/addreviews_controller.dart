@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../common/values/values.dart';
+
 class AddReviewController extends GetxController {
   final selectedUserId = ''.obs;
   final role = 'all'.obs; // Default to 'all'
@@ -98,14 +100,14 @@ class AddReviewController extends GetxController {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        title: const Text('Error'),
+        title: const Text(AppText.error),
         content: Text(message),
         actions: <Widget>[
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text('OK'),
+            child: const Text(AppText.confirmation),
           ),
         ],
       ),

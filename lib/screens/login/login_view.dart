@@ -43,12 +43,12 @@ class LoginPage extends GetView<LoginController> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Log in with your", 
+                          AppText.loginSubtitle1, 
                           style: loginText
                         ),
                         const SizedBox(width: 5),
                         Text(
-                          "FurFriends",
+                          AppText.loginSubtitle2,
                           style: TextStyle(
                             color: AppColor.secondaryColor,
                             fontSize: 16.sp,
@@ -57,14 +57,14 @@ class LoginPage extends GetView<LoginController> {
                         ),
                         const SizedBox(width: 5),
                         Text(
-                          "ID to finish",
+                          AppText.loginSubtitle3,
                           style: loginText
                         ),
                       ],
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      "where you've left off with!",
+                      AppText.loginSubtitle4,
                       style: loginText
                     ),
                   ]

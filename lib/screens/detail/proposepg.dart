@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:isp_application/common/routes/routes.dart';
-import 'package:isp_application/common/widgets/button.dart';
+
+
+import '../../common/routes/routes.dart';
+import '../../common/values/values.dart';
+import '../../common/widgets/widgets.dart';
 import 'detail_controller.dart';
 import '../home/home_controller.dart'; // Import the HomeController
 
@@ -161,7 +164,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                 Get.offAllNamed(AppRoutes.navbar); // Navigate to home page and remove all previous routes
                 Get.find<HomeController>().onRefresh(); // Call refreshData on HomeController
               },
-              child: const Text("OK"),
+              child: const Text(AppText.confirmation),
             ),
             TextButton(
               onPressed: () {
@@ -209,14 +212,14 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Error"),
+          title: const Text(AppText.error),
           content: Text(message),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text("OK"),
+              child: const Text(AppText.confirmation),
             ),
           ],
         );

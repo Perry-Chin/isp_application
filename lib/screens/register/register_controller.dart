@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../common/values/values.dart';
+import '../../common/widgets/widgets.dart';
 import '../login/login_index.dart';
 
 class RegisterController extends GetxController {
@@ -16,12 +18,7 @@ class RegisterController extends GetxController {
 
   Future<void> handleRegister(BuildContext context) async {
     // Show loading dialog
-    showDialog(
-      context: context,
-      builder: (context) => const Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+    appLoading(context);
 
     try {
       // Check if email and password fields are not empty
@@ -68,14 +65,14 @@ class RegisterController extends GetxController {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Error'),
+          title: const Text(AppText.error),
           content: Text(error.toString()),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('OK'),
+              child: const Text(AppText.confirmation),
             ),
           ],
         ),

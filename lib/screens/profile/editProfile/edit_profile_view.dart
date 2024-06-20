@@ -42,7 +42,7 @@ class EditProfilePage extends GetView<EditProfileController> {
                     final profileImage =
                         controller.profileImageUrl.value.isNotEmpty
                             ? NetworkImage(controller.profileImageUrl.value)
-                            : const AssetImage('assets/images/profile.png');
+                            : const AssetImage(AppImage.profile);
 
                     return Stack(
                       alignment: Alignment.center,

@@ -295,12 +295,7 @@ class RequestController extends GetxController {
 
   Future<void> confirmRequest(BuildContext context) async {
     // Show loading dialog
-    showDialog(
-      context: context,
-      builder: (context) => const Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+   appLoading(context);
 
     try {
       //Check if all fields are filled
@@ -330,14 +325,14 @@ class RequestController extends GetxController {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Error'),
+          title: const Text(AppText.error),
           content: Text(error.toString()),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('OK'),
+              child: const Text(AppText.confirmation),
             ),
           ],
         ),

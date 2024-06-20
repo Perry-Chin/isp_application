@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../common/values/values.dart';
 import 'welcome_index.dart';
 
 class WelcomePage extends GetView<WelcomeController> {
@@ -40,9 +41,7 @@ class WelcomePage extends GetView<WelcomeController> {
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.fill,
-                        image: AssetImage(
-                          "assets/images/WelcomePage1.png"
-                        )
+                        image: AssetImage(AppImage.welcomePage1)
                       )
                     ),
                   ),
@@ -52,9 +51,7 @@ class WelcomePage extends GetView<WelcomeController> {
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.fill,
-                        image: AssetImage(
-                          "assets/images/WelcomePage2.png"
-                        )
+                        image: AssetImage(AppImage.welcomePage2)
                       )
                     ),
                   ),
@@ -64,9 +61,7 @@ class WelcomePage extends GetView<WelcomeController> {
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.fill,
-                        image: AssetImage(
-                          "assets/images/WelcomePage3.png"
-                        )
+                        image: AssetImage(AppImage.welcomePage3)
                       )
                     ),
                     child: Stack(

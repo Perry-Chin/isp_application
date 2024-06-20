@@ -61,14 +61,14 @@ class ProviderCard extends GetView<ScheduleController> {
                       child: userData?.photourl != null &&
                               userData!.photourl!.isNotEmpty
                           ? FadeInImage.assetNetwork(
-                              placeholder: "assets/images/profile.png",
+                              placeholder: AppImage.profile,
                               image: userData.photourl ?? "",
                               fadeInDuration: const Duration(milliseconds: 100),
                               fit: BoxFit.cover,
                               width: 58.w,
                               height: 58.w,
                             )
-                          : Image.asset("assets/images/profile.png"),
+                          : Image.asset(AppImage.profile),
                     ),
                   ),
                   title: Padding(

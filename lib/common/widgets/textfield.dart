@@ -2,7 +2,8 @@
 
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:isp_application/common/values/color.dart';
+
+import '../values/values.dart';
 
 class MyTextField extends StatefulWidget {
   final String hinttext; // Hint text for textfield

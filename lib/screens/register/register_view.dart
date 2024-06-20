@@ -22,7 +22,7 @@ class RegisterPage extends GetView<RegisterController> {
                 children: [
                   const SizedBox(height: 30),
                   const Image(
-                    image: AssetImage('assets/images/profile.png'),
+                    image: AssetImage(AppImage.profile),
                     height: 180,
                     width: 180,
                     fit: BoxFit.fitWidth,

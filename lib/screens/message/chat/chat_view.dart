@@ -27,7 +27,7 @@ class ChatPage extends GetView<ChatController> {
                 child: ClipOval(
                   child: controller.state.toAvatar.value.isNotEmpty
                   ? FadeInImage.assetNetwork(
-                      placeholder: "assets/images/profile.png",
+                      placeholder: AppImage.profile,
                       image: controller.state.toAvatar.value,
                       fadeInDuration: const Duration(milliseconds: 100),
                       fit: BoxFit.cover,
@@ -35,10 +35,10 @@ class ChatPage extends GetView<ChatController> {
                       height: 50.w,
                       imageErrorBuilder: (context, error, stackTrace) {
                         print("Error loading image: $error");
-                        return Image.asset("assets/images/profile.png");
+                        return Image.asset(AppImage.profile);
                       },
                     )
-                  : Image.asset("assets/images/profile.png"),
+                  : Image.asset(AppImage.profile),
                 )
               ),
             )

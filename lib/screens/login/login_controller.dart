@@ -2,24 +2,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:isp_application/common/routes/names.dart';
+
 import '../../common/data/data.dart';
 import '../../common/routes/routes.dart';
 import '../../common/storage/storage.dart';
+import '../../common/values/values.dart';
+import '../../common/widgets/widgets.dart';
 import 'login_index.dart';
 class LoginController extends GetxController {
+
+  // Variables
   final state = LoginState();
   final emailController = TextEditingController();
   final pwdController = TextEditingController();
   final db = FirebaseFirestore.instance;
 
   Future<void> handleSignIn(BuildContext context) async {
-    showDialog(
-      context: context,
-      builder: (context) => const Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+    appLoading(context);
 
     try {
       if (emailController.text.isEmpty || pwdController.text.isEmpty) {
@@ -48,14 +47,14 @@ class LoginController extends GetxController {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Error'),
+          title: const Text(AppText.error),
           content: Text(error.toString()),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('OK'),
+              child: const Text(AppText.confirmation),
             ),
           ],
         ),

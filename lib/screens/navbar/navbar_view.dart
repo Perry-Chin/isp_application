@@ -1,8 +1,8 @@
 //Navbar View
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:isp_application/common/values/color.dart';
 
+import '../../common/values/values.dart';
 import '../home/home_index.dart';
 import '../message/message_index.dart';
 import '../profile/profile_index.dart';

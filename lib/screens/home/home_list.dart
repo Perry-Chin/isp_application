@@ -51,14 +51,14 @@ class HomeList extends GetView<HomeController> {
                   child: ClipOval(
                     child: userData?.photourl != null && userData!.photourl!.isNotEmpty ?
                     FadeInImage.assetNetwork(
-                      placeholder: "assets/images/profile.png",
+                      placeholder: AppImage.profile,
                       image: userData.photourl ?? "",
                       fadeInDuration: const Duration(milliseconds: 100),
                       fit: BoxFit.cover,
                       width: 54.w,
                       height: 54.w,
                     ) :
-                    Image.asset("assets/images/profile.png"),
+                    Image.asset(AppImage.profile),
                   ),
                 ),
                 title: Padding(

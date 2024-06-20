@@ -56,7 +56,7 @@ class ProfilePage extends GetView<ProfileController> {
                             child: ClipOval(
                               child: photoUrl != null && photoUrl.isNotEmpty
                                   ? FadeInImage.assetNetwork(
-                                      placeholder: "assets/images/profile.png",
+                                      placeholder: AppImage.profile,
                                       image: photoUrl,
                                       fadeInDuration:
                                           const Duration(milliseconds: 100),
@@ -66,7 +66,7 @@ class ProfilePage extends GetView<ProfileController> {
                                       imageErrorBuilder:
                                           (context, error, stackTrace) {
                                         return Image.asset(
-                                          "assets/images/profile.png",
+                                          AppImage.profile,
                                           fit: BoxFit.cover,
                                           width: 90.w,
                                           height: 90.w,
@@ -74,7 +74,7 @@ class ProfilePage extends GetView<ProfileController> {
                                       },
                                     )
                                   : Image.asset(
-                                      "assets/images/profile.png",
+                                      AppImage.profile,
                                       fit: BoxFit.cover,
                                       width: 90.w,
                                       height: 90.w,

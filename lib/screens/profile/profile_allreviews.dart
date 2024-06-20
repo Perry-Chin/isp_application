@@ -156,15 +156,14 @@ class _ReviewsListState extends State<ReviewsList> {
                             ),
                             child: ClipOval(
                               child: FadeInImage.assetNetwork(
-                                placeholder: "assets/images/profile.png",
-                                image: review.fromPhotoUrl ??
-                                    "assets/images/profile.png",
+                                placeholder: AppImage.profile,
+                                image: review.fromPhotoUrl ?? AppImage.profile,
                                 fadeInDuration:
                                     const Duration(milliseconds: 500),
                                 fit: BoxFit.cover,
                                 imageErrorBuilder: (context, error,
                                         stackTrace) =>
-                                    Image.asset("assets/images/profile.png"),
+                                    Image.asset(AppImage.profile),
                               ),
                             ),
                           ),

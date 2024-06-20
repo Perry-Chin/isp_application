@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../common/values/values.dart';
 import '../../common/routes/names.dart';
 import '../../common/storage/user.dart';
 import '../../common/widgets/widgets.dart';
@@ -26,8 +28,8 @@ class ConfirmPage extends GetView<DetailController> {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text("Confirmation"),
-        content: const Text("Are you confirmed?"),
+        title: const Text(AppText.confirmationTitle),
+        content: const Text(AppText.confirmationSubtitle),
         actions: [
           TextButton(
             child: const Text("Cancel"),

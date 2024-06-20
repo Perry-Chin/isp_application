@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../../../common/values/values.dart';
 import '../profile_index.dart';
 
 class EditProfileController extends GetxController {
@@ -228,15 +229,14 @@ class EditProfileController extends GetxController {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        title: const Text('Verify Your Email'),
-        content: const Text(
-            'A verification email has been sent to your new email address. Confirmation would be needed to change your email.'),
+        title: const Text(AppText.verifyEmailTitle),
+        content: const Text(AppText.verifyEmailSubtitle),
         actions: <Widget>[
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text('OK'),
+            child: const Text(AppText.confirmation),
           ),
         ],
       ),
@@ -250,14 +250,14 @@ class EditProfileController extends GetxController {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        title: const Text('Error'),
+        title: const Text(AppText.error),
         content: Text(message),
         actions: <Widget>[
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text('OK'),
+            child: const Text(AppText.confirmation),
           ),
         ],
       ),

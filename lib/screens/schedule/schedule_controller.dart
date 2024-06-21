@@ -39,6 +39,14 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
         }
       }
     });
+    // Listen to token changes and refresh data accordingly
+    ever(UserStore.to.obs, (_) {
+      if (tabController.index == 0) {
+        asyncLoadAllDataForProvider();
+      } else {
+        asyncLoadAllDataForRequester();
+      }
+    });
   }
 
   @override
@@ -65,7 +73,6 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
   void _loadData(RefreshController controller, Future<void> Function() loadData) {
     loadData().then((_) {
       controller.loadComplete();
-      update();
     }).catchError((_) {
       controller.loadFailed();
     });
@@ -80,6 +87,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
   // Load all data for requester
   Future<void> asyncLoadAllDataForRequester() async {
     try {
+      print("Reload Req");
       Query<ServiceData> query = db
           .collection("service")
           .withConverter<ServiceData>(
@@ -179,6 +187,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
       Get.toNamed("/detail", parameters: {
         "doc_id": item.id,
         "req_uid": serviceData.reqUserid ?? "",
+        "prov_uid": serviceData.provUserid ?? "",
         "hide_buttons": "true",
         "requested": requested,
         "status": serviceData.status ?? "",

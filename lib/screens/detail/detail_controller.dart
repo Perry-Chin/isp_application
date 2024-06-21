@@ -63,9 +63,15 @@ class DetailController extends GetxController {
 
   Stream<Map<String, UserData?>> getCombinedStream(String token) {
     return getServiceStream(token).switchMap((serviceDocs) {
-      List<String> userIds =
-          serviceDocs.map((doc) => doc.data().reqUserid!).toList()
-            ..addAll(serviceDocs.map((doc) => doc.data().provUserid!));
+      
+      // Filter out documents where reqUserid or provUserid is null or empty
+      List<String> userIds = serviceDocs
+        .where((doc) => doc.data().reqUserid != null && doc.data().reqUserid!.isNotEmpty)
+        .map((doc) => doc.data().reqUserid!)
+        .toList()
+      ..addAll(serviceDocs
+          .where((doc) => doc.data().provUserid != null && doc.data().provUserid!.isNotEmpty)
+          .map((doc) => doc.data().provUserid!));
 
       if (userIds.isEmpty) {
         return Stream.value({});
@@ -87,6 +93,7 @@ class DetailController extends GetxController {
     super.onInit();
     var data = Get.parameters;
     doc_id = data['doc_id'];
+    print(doc_id);
 
     // Listen to the combined stream and assign the first user's data to userData
     combinedStream.listen((userDataMap) {

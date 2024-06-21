@@ -88,7 +88,6 @@ class DetailPage extends GetView<DetailController> {
           var provUserId = serviceData.provUserid;
           var reqUserData = snapshot.data![reqUserId];
           var provUserData = snapshot.data![provUserId];
-          print(provUserData);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -98,7 +97,7 @@ class DetailPage extends GetView<DetailController> {
               ServiceDescription(description: serviceData.description),
               if (Get.parameters['requested'] != "true")
                 RequesterInfo(controller: controller, userData: reqUserData, hideButtons: hideButtons),
-              if (Get.parameters['requested'] == "true")
+              if (Get.parameters['requested'] == "true" && provUserData != null)
                 ProviderInfo(controller: controller, userData: provUserData, hideButtons: hideButtons),
               FeeInfo(controller: controller, userData: reqUserData), 
             ],

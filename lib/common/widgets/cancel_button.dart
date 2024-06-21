@@ -2,8 +2,6 @@
 
 import 'package:flutter/material.dart';
 
-import '../values/values.dart';
-
 class CancelButton extends StatelessWidget {
   // Define properties for the button
   final VoidCallback onPressed;

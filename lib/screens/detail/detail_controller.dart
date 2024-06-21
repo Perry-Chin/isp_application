@@ -64,7 +64,8 @@ class DetailController extends GetxController {
   Stream<Map<String, UserData?>> getCombinedStream(String token) {
     return getServiceStream(token).switchMap((serviceDocs) {
       List<String> userIds =
-          serviceDocs.map((doc) => doc.data().reqUserid!).toList();
+          serviceDocs.map((doc) => doc.data().reqUserid!).toList()
+            ..addAll(serviceDocs.map((doc) => doc.data().provUserid!));
 
       if (userIds.isEmpty) {
         return Stream.value({});

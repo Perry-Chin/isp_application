@@ -6,13 +6,13 @@ import '../../../common/values/values.dart';
 import '../../../common/widgets/widgets.dart';
 import '../detail_index.dart';
 
-class RequesterInfo extends StatelessWidget {
+class ProviderInfo extends StatelessWidget {
 
   final DetailController controller;
   final UserData? userData;
   final bool hideButtons;
   
-  const RequesterInfo({
+  const ProviderInfo({
     required this.controller,
     required this.userData,
     required this.hideButtons,
@@ -27,7 +27,7 @@ class RequesterInfo extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.only(left: 16, bottom: 5),
           child: Text(
-            "Meet the Requester",
+            "Meet the Provider",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,

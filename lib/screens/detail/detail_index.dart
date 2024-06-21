@@ -11,5 +11,6 @@ export 'widgets/detail_title.dart';
 export 'widgets/service_detail.dart';
 export 'widgets/datetime_field.dart';
 export 'widgets/payment_detail.dart';
+export 'widgets/provider_info.dart';
 export 'widgets/requester_info.dart';
 export 'widgets/top_indicator.dart';

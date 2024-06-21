@@ -85,7 +85,10 @@ class DetailPage extends GetView<DetailController> {
         if (snapshot.hasData) {
           var serviceData = controller.state.serviceList.first.data();
           var reqUserId = serviceData.reqUserid;
-          var userData = snapshot.data![reqUserId];
+          var provUserId = serviceData.provUserid;
+          var reqUserData = snapshot.data![reqUserId];
+          var provUserData = snapshot.data![provUserId];
+          print(provUserData);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -93,8 +96,11 @@ class DetailPage extends GetView<DetailController> {
               DetailTitle(name: serviceData.serviceName),
               ServiceDetail(serviceData: serviceData, hideButtons: hideButtons),
               ServiceDescription(description: serviceData.description),
-              RequesterInfo(controller: controller, userData: userData, hideButtons: hideButtons),
-              FeeInfo(controller: controller, userData: userData),
+              if (Get.parameters['requested'] != "true")
+                RequesterInfo(controller: controller, userData: reqUserData, hideButtons: hideButtons),
+              if (Get.parameters['requested'] == "true")
+                ProviderInfo(controller: controller, userData: provUserData, hideButtons: hideButtons),
+              FeeInfo(controller: controller, userData: reqUserData), 
             ],
           );
         } else {
@@ -155,7 +161,17 @@ class DetailPage extends GetView<DetailController> {
                 // button.dart
                 onPressed: () => controller.updateServiceStatus(controller.doc_id, "Booked", 3),
                 buttonText: "Accept Request",
-                buttonWidth: 150
+                buttonWidth: 145
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              flex: 6,
+              child: CancelButton(
+                // button.dart
+                onPressed: () => controller.updateServiceStatus(controller.doc_id, "Requested", 4),
+                buttonText: "Deny Request",
+                buttonWidth: 130
               ),
             ),
           ],

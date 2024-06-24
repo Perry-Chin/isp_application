@@ -28,7 +28,8 @@ class ProviderCard extends GetView<ScheduleController> {
 
     return Card(
       elevation: 8,
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(14),
+      color: Colors.transparent,
       child: InkWell(
         onTap: () => controller.redirectToServiceDetail(item, "false"),
         child: Container(

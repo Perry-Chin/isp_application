@@ -109,92 +109,74 @@ class DetailPage extends GetView<DetailController> {
     );
   }
 
-  Widget statusButton(BuildContext context, String? status, String? requested) {
-    if(status == "Pending" && requested == "true") {
-      return Container(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 6,
-              child: ApplyButton(
-                // button.dart
-                onPressed: () => controller.updateServiceStatus(controller.doc_id, "Booked", 3),
-                buttonText: "Accept Request",
-                buttonWidth: 150
-              ),
-            ),
-          ],
-        ),
-      );
-    }
+  Widget applyButton(BuildContext context) {
+    String? status = Get.parameters['status'];
+    String? requested = Get.parameters['requested'];
     return Container(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
           Expanded(
             flex: 6,
-            child: ApplyButton(
-              // button.dart
-              onPressed: () {
-                confirmpg(Get.context!);
-              },
-              buttonText: "Apply Now",
-              buttonWidth: 100
-            ),
+            child: getButtonBasedOnStatus(status: status, requested: requested),
           ),
+          if ((status == "Pending" || status == "Booked") && requested == "true") ...[
+            const SizedBox(width: 10),
+            if (status == "Booked") ...[
+              Expanded(
+                flex: 6,
+                child: CancelButton(
+                  onPressed: () => controller.updateServiceStatus(controller.doc_id, "Cancelled", 5),
+                  buttonText: "Cancel Service",
+                  buttonWidth: 135
+                )
+              ),
+            ],
+            if (status == "Pending") ...[
+              Expanded(
+                flex: 6,
+                child: CancelButton(
+                  onPressed: () => controller.updateServiceStatus(controller.doc_id, "Requested", 4),
+                  buttonText: "Deny Request",
+                  buttonWidth: 130
+                )
+              ),
+            ],  
+          ] 
         ],
       ),
     );
   }
 
-  Widget applyButton(BuildContext context) {
-    if(Get.parameters['status'] == "Pending" && Get.parameters['requested'] == "true") {
-      return Container(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 6,
-              child: ApplyButton(
-                // button.dart
-                onPressed: () => controller.updateServiceStatus(controller.doc_id, "Booked", 3),
-                buttonText: "Accept Request",
-                buttonWidth: 145
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              flex: 6,
-              child: CancelButton(
-                // button.dart
-                onPressed: () => controller.updateServiceStatus(controller.doc_id, "Requested", 4),
-                buttonText: "Deny Request",
-                buttonWidth: 130
-              ),
-            ),
-          ],
-        ),
+  Widget getButtonBasedOnStatus({
+    required String? status,
+    required String? requested
+  }) {
+    if (status == "Pending" && requested == "true") {
+      return ApplyButton(
+        onPressed: () => controller.updateServiceStatus(controller.doc_id, "Booked", 3),
+        buttonText: "Accept Request",
+        buttonWidth: 145,
+      );
+    } else if (status == "Booked" && requested == "true") {
+      return ApplyButton(
+        onPressed: () => controller.updateServiceStatus(controller.doc_id, "Started", 1),
+        buttonText: "Start Service",
+        buttonWidth: 120,
+      );
+    } else if (status == "Started" && requested == "true") {
+      return ApplyButton(
+        onPressed: () => controller.updateServiceStatus(controller.doc_id, "Completed", 5),
+        buttonText: "Complete Service",
+        buttonWidth: 160,
+      );
+    } else {
+      return ApplyButton(
+        onPressed: () => confirmpg(Get.context!),
+        buttonText: "Apply Now",
+        buttonWidth: 100,
       );
     }
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 6,
-            child: ApplyButton(
-              // button.dart
-              onPressed: () {
-                confirmpg(Get.context!);
-              },
-              buttonText: "Apply Now",
-              buttonWidth: 100
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 

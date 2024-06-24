@@ -18,7 +18,7 @@ class HomeList extends GetView<HomeController> {
     return Card(
       color: Colors.transparent,
       elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+      margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       child: InkWell(
         onTap: () {
           // Handle on tap

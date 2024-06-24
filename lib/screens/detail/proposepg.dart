@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-
 import '../../common/routes/routes.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
@@ -20,7 +19,7 @@ Future<void> proposeNewPage(BuildContext context) async {
     builder: (BuildContext bc) {
       return const ProposeTimeSheet();
     },
-    backgroundColor: AppColor.backgroundColor
+    backgroundColor: AppColor.backgroundColor,
   );
 }
 
@@ -76,7 +75,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
           const SizedBox(height: 15),
           const Text(
             "Once submitted, FurFriends will share your proposed time with the Requester for their confirmation.",
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
             ),
           ),
@@ -86,7 +85,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
-            )
+            ),
           ),
           const SizedBox(height: 15),
           FadeInUp(
@@ -97,7 +96,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                 borderRadius: BorderRadius.circular(10.0),
                 border: Border.all(
                   color: AppColor.secondaryColor,
-                  width: 1.5
+                  width: 1.5,
                 ),
                 color: Colors.white,
               ),
@@ -137,10 +136,10 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
             children: [
               Expanded(
                 child: MyTextField(
-                  hinttext: 'New Time', 
-                  labeltext: 'New Time', 
-                  prefixicon: Icons.access_time_outlined, 
-                  controller: _startController, 
+                  hinttext: 'New Time',
+                  labeltext: 'New Time',
+                  prefixicon: Icons.access_time_outlined,
+                  controller: _startController,
                   obscuretext: false,
                   readOnly: true,
                   onTap: () => _selectTime(context, _startController),
@@ -198,7 +197,9 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                     ? controller.state.serviceList.first.data().starttime ?? "time"
                     : "time";
 
-                if (startTime == originalStartTime) {
+                if (startTime.isEmpty) {
+                  _showErrorDialog(context, "The proposed start time cannot be empty.");
+                } else if (startTime == originalStartTime) {
                   _showErrorDialog(context, "The proposed start time cannot be the same as the original start time.");
                 } else {
                   _showConfirmationDialog(context, controller, startTime);

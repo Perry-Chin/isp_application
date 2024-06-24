@@ -10,13 +10,14 @@ class ServiceData {
   final String? image;
   final String? location;
   final String? date;
-  final String? starttime;
+  late final String? starttime;
   final String? endtime;
   final int? duration;
   final String? status;
   final int? statusid;
   final String? reqUserid;
   final String? provUserid;
+  late final String? proposedTime;
   UserData? userData;
 
   ServiceData({
@@ -34,6 +35,7 @@ class ServiceData {
     this.statusid,
     this.reqUserid,
     this.provUserid,
+    this.proposedTime,
     this.userData,
   });
 
@@ -57,6 +59,7 @@ class ServiceData {
       statusid: data?['statusid'],
       reqUserid: data?['requester_uid'],
       provUserid: data?['provider_uid'],
+      proposedTime: data?['proposedTime'],
       userData: data?['userData'] != null ? UserData.fromFirestore(snapshot, options) : null,
     );
   }
@@ -77,6 +80,7 @@ class ServiceData {
       if (statusid != null) "statusid": statusid,
       if (reqUserid != null) "requester_uid": reqUserid,
       if (provUserid != null) "provider_uid": provUserid,
+      if (proposedTime != null) "proposedTime": proposedTime,
       'userData': userData?.toFirestore(),
     };
   }

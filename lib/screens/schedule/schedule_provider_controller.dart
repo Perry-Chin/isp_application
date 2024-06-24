@@ -13,13 +13,15 @@ class ScheduleProviderController extends GetxController {
   final RxMap<String, UserData?> userDataMap = RxMap<String, UserData?>();
 
   // Stream to handle fetching service data for provider
-  Stream<List<QueryDocumentSnapshot<ServiceData>>> getProviderStream(String token) {
+  Stream<List<QueryDocumentSnapshot<ServiceData>>> getProviderStream(
+      String token) {
     return db
         .collection('service')
         .where('provider_uid', isEqualTo: token)
         .withConverter<ServiceData>(
           fromFirestore: ServiceData.fromFirestore,
-          toFirestore: (ServiceData serviceData, _) => serviceData.toFirestore(),
+          toFirestore: (ServiceData serviceData, _) =>
+              serviceData.toFirestore(),
         )
         .snapshots()
         .map((snapshot) => snapshot.docs);
@@ -41,12 +43,14 @@ class ScheduleProviderController extends GetxController {
   // Combine the streams to get user data for each service item (provider)
   Stream<Map<String, UserData?>> getCombinedProvStream(String token) {
     return getProviderStream(token).switchMap((serviceDocs) {
-      List<String> userIds = serviceDocs.map((doc) => doc.data().reqUserid!).toList();
+      List<String> userIds =
+          serviceDocs.map((doc) => doc.data().reqUserid!).toList();
       if (userIds.isEmpty) {
         return Stream.value({});
       }
       return getUserStream(userIds).map((userDocs) {
-        var userDataMap = Map.fromEntries(userDocs.map((doc) => MapEntry(doc.id, doc.data())));
+        var userDataMap = Map.fromEntries(
+            userDocs.map((doc) => MapEntry(doc.id, doc.data())));
         this.userDataMap.assignAll(userDataMap);
         return userDataMap;
       });
@@ -66,7 +70,8 @@ class ScheduleProviderController extends GetxController {
           .collection("service")
           .withConverter<ServiceData>(
             fromFirestore: ServiceData.fromFirestore,
-            toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore(),
+            toFirestore: (ServiceData serviceData, options) =>
+                serviceData.toFirestore(),
           )
           .where("provider_uid", isEqualTo: token)
           .where("statusid", isGreaterThanOrEqualTo: 0)
@@ -79,4 +84,7 @@ class ScheduleProviderController extends GetxController {
       print("Error fetching: $e");
     }
   }
+
+
+
 }

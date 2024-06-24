@@ -11,6 +11,7 @@ import '../home/home_controller.dart'; // Import the HomeController
 
 Future<void> proposeNewPage(BuildContext context) async {
   showModalBottomSheet(
+<<<<<<< HEAD
     context: context,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -21,6 +22,17 @@ Future<void> proposeNewPage(BuildContext context) async {
     },
     backgroundColor: AppColor.backgroundColor,
   );
+=======
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      isScrollControlled: true,
+      builder: (BuildContext bc) {
+        return const ProposeTimeSheet();
+      },
+      backgroundColor: AppColor.backgroundColor);
+>>>>>>> 4762e71f599ece9bb08fadabf707d6789ca8089b
 }
 
 class ProposeTimeSheet extends StatefulWidget {
@@ -39,7 +51,8 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
     super.dispose();
   }
 
-  Future<void> _selectTime(BuildContext context, TextEditingController controller) async {
+  Future<void> _selectTime(
+      BuildContext context, TextEditingController controller) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -52,8 +65,10 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
     );
     if (picked != null) {
       final now = DateTime.now();
-      final selectedTime = DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
-      final formattedTime = DateFormat('h:mm a').format(selectedTime); // Using 'h:mm a' for 12-hour format without leading zero
+      final selectedTime =
+          DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
+      final formattedTime = DateFormat('h:mm a').format(
+          selectedTime); // Using 'h:mm a' for 12-hour format without leading zero
       setState(() {
         controller.text = formattedTime;
       });
@@ -69,7 +84,10 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
           const Center(
             child: Text(
               "Propose Time",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, fontFamily: 'Open Sans'),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
+                  fontFamily: 'Open Sans'),
             ),
           ),
           const SizedBox(height: 15),
@@ -80,6 +98,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
             ),
           ),
           const SizedBox(height: 15),
+<<<<<<< HEAD
           const Text(
             'Original Time',
             style: TextStyle(
@@ -87,6 +106,13 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
               fontSize: 20,
             ),
           ),
+=======
+          const Text('Original Time',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              )),
+>>>>>>> 4762e71f599ece9bb08fadabf707d6789ca8089b
           const SizedBox(height: 15),
           FadeInUp(
             child: Container(
@@ -94,19 +120,30 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
               padding: const EdgeInsets.only(top: 18.0, bottom: 18, left: 13),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
+<<<<<<< HEAD
                 border: Border.all(
                   color: AppColor.secondaryColor,
                   width: 1.5,
                 ),
+=======
+                border: Border.all(color: AppColor.secondaryColor, width: 1.5),
+>>>>>>> 4762e71f599ece9bb08fadabf707d6789ca8089b
                 color: Colors.white,
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.access_time_outlined, size: 20, color: Colors.black),
+                  const Icon(Icons.access_time_outlined,
+                      size: 20, color: Colors.black),
                   const SizedBox(width: 15),
                   Text(
-                    controller.state.serviceList.isNotEmpty ? controller.state.serviceList.first.data().starttime ?? "time" : "time",
-                    style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w400),
+                    controller.state.serviceList.isNotEmpty
+                        ? controller.state.serviceList.first.data().starttime ??
+                            "time"
+                        : "time",
+                    style: const TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400),
                   ),
                 ],
               ),
@@ -152,13 +189,15 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
     );
   }
 
-  void _showConfirmationDialog(BuildContext context, DetailController controller, String startTime) {
+  void _showConfirmationDialog(
+      BuildContext context, DetailController controller, String startTime) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Confirmation"),
-          content: const Text("Do note that only the start time of service changes, duration of service will stay the same."),
+          content: const Text(
+              "Do note that only the start time of service changes, duration of service will stay the same."),
           actions: <Widget>[
             TextButton(
               onPressed: () async {
@@ -166,8 +205,10 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                 await controller.createProposeDocument(startTime);
                 Get.back();
                 Navigator.of(context).pop(); // Close confirmation dialog
-                Get.offAllNamed(AppRoutes.navbar); // Navigate to home page and remove all previous routes
-                Get.find<HomeController>().onRefresh(); // Call refreshData on HomeController
+                Get.offAllNamed(AppRoutes
+                    .navbar); // Navigate to home page and remove all previous routes
+                Get.find<HomeController>()
+                    .onRefresh(); // Call refreshData on HomeController
               },
               child: const Text(AppText.confirmation),
             ),
@@ -183,7 +224,8 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
     );
   }
 
-  Widget _buildContinueButton(BuildContext context, DetailController controller) {
+  Widget _buildContinueButton(
+      BuildContext context, DetailController controller) {
     return Container(
       padding: const EdgeInsets.only(top: 5),
       child: Row(
@@ -193,14 +235,22 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
             child: ApplyButton(
               onPressed: () {
                 final String startTime = _startController.text;
-                final String originalStartTime = controller.state.serviceList.isNotEmpty
-                    ? controller.state.serviceList.first.data().starttime ?? "time"
-                    : "time";
+                final String originalStartTime =
+                    controller.state.serviceList.isNotEmpty
+                        ? controller.state.serviceList.first.data().starttime ??
+                            "time"
+                        : "time";
 
+<<<<<<< HEAD
                 if (startTime.isEmpty) {
                   _showErrorDialog(context, "The proposed start time cannot be empty.");
                 } else if (startTime == originalStartTime) {
                   _showErrorDialog(context, "The proposed start time cannot be the same as the original start time.");
+=======
+                if (startTime == originalStartTime) {
+                  _showErrorDialog(context,
+                      "The proposed start time cannot be the same as the original start time.");
+>>>>>>> 4762e71f599ece9bb08fadabf707d6789ca8089b
                 } else {
                   _showConfirmationDialog(context, controller, startTime);
                 }
@@ -243,7 +293,8 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
           left: 8,
           right: 8,
           top: 20,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 10, // Adjust bottom padding as needed
+          bottom: MediaQuery.of(context).viewInsets.bottom +
+              10, // Adjust bottom padding as needed
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -20,7 +20,7 @@ class NavbarPage extends GetView<NavbarController> {
         physics: const NeverScrollableScrollPhysics(),
         controller: controller.pageController,
         onPageChanged: controller.handlePageChanged,
-        children:  [
+        children: const [
           HomePage(),
           SchedulePage(),
           MessagePage(),
@@ -29,7 +29,7 @@ class NavbarPage extends GetView<NavbarController> {
       );
     }
 
-    Widget buildBottomNavigationBar() { 
+    Widget buildBottomNavigationBar() {
       return BottomAppBar(
         shape: const CircularNotchedRectangle(),
         color: Colors.white,
@@ -40,39 +40,46 @@ class NavbarPage extends GetView<NavbarController> {
           children: [
             IconButton(
               icon: Obx(() => Icon(
-                Icons.home,
-                color: controller.state.page == 0 ? AppColor.secondaryColor : Colors.black45,
-              )),
+                    Icons.home,
+                    color: controller.state.page == 0
+                        ? AppColor.secondaryColor
+                        : Colors.black45,
+                  )),
               onPressed: () => controller.handleNavBarTap(0),
             ),
             IconButton(
               icon: Obx(() => Icon(
-                Icons.calendar_month,
-                color: controller.state.page == 1 ? AppColor.secondaryColor : Colors.black45,
-              )),
+                    Icons.calendar_month,
+                    color: controller.state.page == 1
+                        ? AppColor.secondaryColor
+                        : Colors.black45,
+                  )),
               onPressed: () => controller.handleNavBarTap(1),
             ),
             const SizedBox(width: 48.0), // Space for FAB
             IconButton(
               icon: Obx(() => Icon(
-                Icons.message,
-                color: controller.state.page == 2 ? AppColor.secondaryColor : Colors.black45,
-              )),
+                    Icons.message,
+                    color: controller.state.page == 2
+                        ? AppColor.secondaryColor
+                        : Colors.black45,
+                  )),
               onPressed: () => controller.handleNavBarTap(2),
             ),
             IconButton(
               icon: Obx(() => Icon(
-                Icons.person,
-                color: controller.state.page == 3 ? AppColor.secondaryColor : Colors.black45,
-              )),
+                    Icons.person,
+                    color: controller.state.page == 3
+                        ? AppColor.secondaryColor
+                        : Colors.black45,
+                  )),
               onPressed: () => controller.handleNavBarTap(3),
             ),
           ],
         ),
       );
-    } 
+    }
 
-    
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: buildPageView(),
@@ -82,10 +89,10 @@ class NavbarPage extends GetView<NavbarController> {
         onPressed: () {
           // Navigate to the login screen
           Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const RequestPage(),
-          ));
+              context,
+              MaterialPageRoute(
+                builder: (context) => const RequestPage(),
+              ));
         },
         child: const Icon(
           Icons.add,

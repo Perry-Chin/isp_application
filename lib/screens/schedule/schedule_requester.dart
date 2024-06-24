@@ -28,7 +28,8 @@ class RequesterCard extends GetView<ScheduleController> {
   // Widget content remains unchanged
   return Card(
     elevation: 8,
-    margin: const EdgeInsets.all(16),
+    margin: const EdgeInsets.all(14),
+    color: Colors.transparent,
     child: InkWell(
       onTap: () => controller.redirectToServiceDetail(item, "true"),
       child: Container(

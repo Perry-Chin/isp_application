@@ -177,7 +177,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
 
   void redirectToServiceDetail(QueryDocumentSnapshot<ServiceData> item, String requested) {
     ServiceData serviceData = item.data();
-    if(serviceData.status == "Pending" && requested == "true") {
+    if(requested == "true" && (serviceData.status == "Pending" || serviceData.status == "Booked" || serviceData.status == "Started")) {
       Get.toNamed("/detail", parameters: {
         "doc_id": item.id,
         "req_uid": serviceData.reqUserid ?? "",

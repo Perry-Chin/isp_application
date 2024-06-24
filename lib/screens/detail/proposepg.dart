@@ -11,6 +11,7 @@ import '../home/home_controller.dart'; // Import the HomeController
 
 Future<void> proposeNewPage(BuildContext context) async {
   showModalBottomSheet(
+<<<<<<< HEAD
     context: context,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -21,6 +22,17 @@ Future<void> proposeNewPage(BuildContext context) async {
     },
     backgroundColor: AppColor.backgroundColor,
   );
+=======
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      isScrollControlled: true,
+      builder: (BuildContext bc) {
+        return const ProposeTimeSheet();
+      },
+      backgroundColor: AppColor.backgroundColor);
+>>>>>>> 61c6f57da07f4d0094860cd73f001dfa714d8dca
 }
 
 class ProposeTimeSheet extends StatefulWidget {
@@ -212,10 +224,14 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                             "time"
                         : "time";
 
+<<<<<<< HEAD
                 if (startTime.isEmpty) {
                   _showErrorDialog(
                       context, "The proposed start time cannot be empty.");
                 } else if (startTime == originalStartTime) {
+=======
+                if (startTime == originalStartTime) {
+>>>>>>> 61c6f57da07f4d0094860cd73f001dfa714d8dca
                   _showErrorDialog(context,
                       "The proposed start time cannot be the same as the original start time.");
                 } else {

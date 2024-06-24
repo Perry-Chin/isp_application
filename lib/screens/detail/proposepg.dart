@@ -11,7 +11,6 @@ import '../home/home_controller.dart'; // Import the HomeController
 
 Future<void> proposeNewPage(BuildContext context) async {
   showModalBottomSheet(
-<<<<<<< HEAD
     context: context,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -22,17 +21,6 @@ Future<void> proposeNewPage(BuildContext context) async {
     },
     backgroundColor: AppColor.backgroundColor,
   );
-=======
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      isScrollControlled: true,
-      builder: (BuildContext bc) {
-        return const ProposeTimeSheet();
-      },
-      backgroundColor: AppColor.backgroundColor);
->>>>>>> 4762e71f599ece9bb08fadabf707d6789ca8089b
 }
 
 class ProposeTimeSheet extends StatefulWidget {
@@ -98,21 +86,11 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
             ),
           ),
           const SizedBox(height: 15),
-<<<<<<< HEAD
-          const Text(
-            'Original Time',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-          ),
-=======
           const Text('Original Time',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               )),
->>>>>>> 4762e71f599ece9bb08fadabf707d6789ca8089b
           const SizedBox(height: 15),
           FadeInUp(
             child: Container(
@@ -120,14 +98,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
               padding: const EdgeInsets.only(top: 18.0, bottom: 18, left: 13),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
-<<<<<<< HEAD
-                border: Border.all(
-                  color: AppColor.secondaryColor,
-                  width: 1.5,
-                ),
-=======
                 border: Border.all(color: AppColor.secondaryColor, width: 1.5),
->>>>>>> 4762e71f599ece9bb08fadabf707d6789ca8089b
                 color: Colors.white,
               ),
               child: Row(
@@ -241,16 +212,12 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                             "time"
                         : "time";
 
-<<<<<<< HEAD
                 if (startTime.isEmpty) {
-                  _showErrorDialog(context, "The proposed start time cannot be empty.");
+                  _showErrorDialog(
+                      context, "The proposed start time cannot be empty.");
                 } else if (startTime == originalStartTime) {
-                  _showErrorDialog(context, "The proposed start time cannot be the same as the original start time.");
-=======
-                if (startTime == originalStartTime) {
                   _showErrorDialog(context,
                       "The proposed start time cannot be the same as the original start time.");
->>>>>>> 4762e71f599ece9bb08fadabf707d6789ca8089b
                 } else {
                   _showConfirmationDialog(context, controller, startTime);
                 }

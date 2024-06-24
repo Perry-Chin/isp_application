@@ -86,7 +86,7 @@ class ProfilePage extends GetView<ProfileController> {
                         IconButton(
                           icon: const Icon(Icons.settings),
                           onPressed: () {
-                            Get.to(() => SettingsxPage(),
+                            Get.to(() => const SettingsxPage(),
                                 binding: SettingsxBinding());
                           },
                         ),

@@ -21,7 +21,7 @@ class ContactPage extends StatelessWidget {
       'furfriends23@gmail.com'; // Replace with the actual email address
   String selectedFeedbackOption = "General Feedback";
 
-  ContactPage({Key? key});
+  ContactPage({super.key});
 
   void _launchEmail(String emailAddress) async {
     final emailLaunchUri = Uri(
@@ -61,10 +61,10 @@ class ContactPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -88,7 +88,7 @@ class ContactPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10),
                   RotatingImage(), // Rotating image widget
                 ],
               ),
@@ -156,8 +156,10 @@ class ContactPage extends StatelessWidget {
 }
 
 class RotatingImage extends StatefulWidget {
+  const RotatingImage({super.key});
+
   @override
-  _RotatingImageState createState() => _RotatingImageState();
+  State<RotatingImage> createState() => _RotatingImageState();
 }
 
 class _RotatingImageState extends State<RotatingImage>

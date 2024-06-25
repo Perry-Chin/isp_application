@@ -434,7 +434,7 @@ class RequestController extends GetxController {
         // endtime: //end time calculate from starttime and duration
         duration: int.tryParse(durationController.text),
         status: "Requested", //Default status
-        statusid: 4,
+        statusid: 3,
         reqUserid: token,
         provUserid: "");
 

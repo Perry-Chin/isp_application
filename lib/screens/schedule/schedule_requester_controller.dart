@@ -55,7 +55,7 @@ class ScheduleRequesterController extends GetxController {
           )
           .where("requester_uid", isEqualTo: token)
           .where("statusid", isGreaterThanOrEqualTo: 0)
-          .orderBy("statusid", descending: false)
+          .orderBy("statusid", descending: true)
           .orderBy("date", descending: false);
       
       if (state.selectedStatus.isNotEmpty && !state.selectedStatus.contains('All')) {

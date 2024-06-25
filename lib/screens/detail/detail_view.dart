@@ -136,7 +136,7 @@ class DetailPage extends GetView<DetailController> {
               Expanded(
                 flex: 6,
                 child: CancelButton(
-                  onPressed: () => controller.updateServiceStatus(controller.doc_id, "Requested", 4),
+                  onPressed: () => controller.updateServiceStatus(controller.doc_id, "Requested", 3),
                   buttonText: "Deny Request",
                   buttonWidth: 130
                 )
@@ -154,19 +154,19 @@ class DetailPage extends GetView<DetailController> {
   }) {
     if (status == "Pending" && requested == "true") {
       return ApplyButton(
-        onPressed: () => controller.updateServiceStatus(controller.doc_id, "Booked", 3),
+        onPressed: () => controller.updateServiceStatus(controller.doc_id, "Booked", 2),
         buttonText: "Accept Request",
         buttonWidth: 145,
       );
     } else if (status == "Booked" && requested == "true") {
       return ApplyButton(
-        onPressed: () => controller.updateServiceStatus(controller.doc_id, "Started", 1),
+        onPressed: () => controller.updateServiceStatus(controller.doc_id, "Started", 0),
         buttonText: "Start Service",
         buttonWidth: 120,
       );
     } else if (status == "Started" && requested == "true") {
       return ApplyButton(
-        onPressed: () => controller.updateServiceStatus(controller.doc_id, "Completed", 5),
+        onPressed: () => controller.updateServiceStatus(controller.doc_id, "Completed", 4),
         buttonText: "Complete Service",
         buttonWidth: 160,
       );

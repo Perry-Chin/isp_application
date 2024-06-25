@@ -160,6 +160,8 @@ Color getStatusColor(String? status) {
       return Colors.orangeAccent;
     case 'booked':
       return Colors.cyan;
+    case 'started':
+      return Colors.redAccent;
     default:
       return Colors.green;
   }

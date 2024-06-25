@@ -1,10 +1,11 @@
+// Confirmation of Booking Page
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/values/values.dart';
-import '../../common/routes/names.dart';
-import '../../common/storage/user.dart';
+import '../../common/routes/routes.dart';
+import '../../common/storage/storage.dart';
 import '../../common/widgets/widgets.dart';
 import '../home/home_controller.dart';
 import 'detail_index.dart';

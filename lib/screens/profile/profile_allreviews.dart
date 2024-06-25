@@ -148,23 +148,22 @@ class _ReviewsListState extends State<ReviewsList> {
                       ),
                       child: Row(
                         children: [
-                          Container(
-                            width: 50,
-                            height: 50,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
+                          CircleAvatar(
+                            radius: 28.0,
+                            backgroundColor: Colors.transparent,
                             child: ClipOval(
-                              child: FadeInImage.assetNetwork(
-                                placeholder: AppImage.profile,
-                                image: review.fromPhotoUrl ?? AppImage.profile,
-                                fadeInDuration:
-                                    const Duration(milliseconds: 500),
-                                fit: BoxFit.cover,
-                                imageErrorBuilder: (context, error,
-                                        stackTrace) =>
-                                    Image.asset(AppImage.profile),
-                              ),
+                              child: review.fromPhotoUrl != null &&
+                                      review.fromPhotoUrl!.isNotEmpty
+                                  ? FadeInImage.assetNetwork(
+                                      placeholder: AppImage.profile,
+                                      image: review.fromPhotoUrl ?? "",
+                                      fadeInDuration:
+                                          const Duration(milliseconds: 100),
+                                      fit: BoxFit.cover,
+                                      width: 54.0,
+                                      height: 54.0,
+                                    )
+                                  : Image.asset(AppImage.profile),
                             ),
                           ),
                           const SizedBox(width: 16),

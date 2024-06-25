@@ -211,7 +211,10 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                             "time"
                         : "time";
 
-                if (startTime == originalStartTime) {
+                if (startTime.isEmpty) {
+                  _showErrorDialog(
+                      context, "The proposed start time cannot be empty.");
+                } else if (startTime == originalStartTime) {
                   _showErrorDialog(context,
                       "The proposed start time cannot be the same as the original start time.");
                 } else {

@@ -201,7 +201,7 @@ class DetailController extends GetxController {
         .then((DocumentReference doc) {
       print("Propose document added with id, ${doc.id}");
       // Update service status to pending and provider_uid after proposing a new time
-      updateServiceStatusAndProvider(doc_id, 'pending', token);
+      updateServiceStatusAndProvider(doc_id, 'Pending', token);
     }).catchError((e) {
       print("Error creating propose document: $e");
     });

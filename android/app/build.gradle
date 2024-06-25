@@ -67,7 +67,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
     }
     // // Adjust logging level for Google Play services
     // gradle.projectsEvaluated {

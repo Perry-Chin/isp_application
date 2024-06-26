@@ -68,7 +68,7 @@ class DiagonalLinePainter extends CustomPainter {
 }
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -248,30 +248,29 @@ class _HomePageState extends State<HomePage> {
                           },
                         ),
                       ),
-                    if (selectedService.isNotEmpty)
-                      const SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            selectedService,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontFamily: "Safety",
-                              fontSize: 22,
-                            ),
+                    if (selectedService.isNotEmpty) const SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          selectedService,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontFamily: "Safety",
+                            fontSize: 22,
                           ),
-                          SizedBox(width: 20),
-                          Text(
-                            "/ˈɡruːmɪŋ/",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontFamily: "Doulos SIL",
-                              fontSize: 18,
-                            ),
+                        ),
+                        const SizedBox(width: 20),
+                        const Text(
+                          "/ˈɡruːmɪŋ/",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: "Doulos SIL",
+                            fontSize: 18,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ],

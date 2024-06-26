@@ -164,6 +164,14 @@ flutter:
       fonts:
         - asset : fonts/opensans/OpenSans-Regular.ttf
         - asset : fonts/opensans/OpenSans-Bold.ttf
+
+    - family: Silence Rocken
+      fonts:
+        - asset: fonts/silencerocken/Silence-Rocken.ttf
+
+    - family: Safety
+      fonts: 
+        - asset: fonts/safety/SafetyMedium.otf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

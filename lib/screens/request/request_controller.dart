@@ -267,8 +267,8 @@ class RequestController extends GetxController {
 
     // Set data in Firestore document
     await FirebaseFirestore.instance.collection('service').doc(doc_id).set(
-          serviceData.toFirestore(),
-        );
+      serviceData.toFirestore(),
+    );
 
     requestCompleted.value = true;
   }

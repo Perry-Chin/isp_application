@@ -22,18 +22,41 @@ class AddReviewController extends GetxController {
 
   void loadUserAccounts() async {
     String currentUserId = FirebaseAuth.instance.currentUser!.uid;
-    QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection('users').limit(5).get();
 
-    userAccounts.value = snapshot.docs
-        .map((doc) {
-          return {
-            'id': doc.id,
-            'name': doc['username'],
-          };
-        })
-        .where((user) => user['id'] != currentUserId)
-        .toList();
+    // Fetch services with "Completed" status
+    QuerySnapshot completedServicesSnapshot = await FirebaseFirestore.instance
+        .collection('services')
+        .where('status', isEqualTo: 'Completed')
+        .get();
+
+    // Extract unique user IDs from these services
+    Set<String> userIds = Set<String>();
+    for (var doc in completedServicesSnapshot.docs) {
+      if (doc['provider_uid'] != currentUserId) {
+        userIds.add(doc['provider_uid']);
+      }
+      if (doc['requester_uid'] != currentUserId) {
+        userIds.add(doc['requester_uid']);
+      }
+    }
+
+    if (userIds.isEmpty) {
+      userAccounts.clear();
+      return;
+    }
+
+    // Fetch user accounts based on these user IDs
+    QuerySnapshot usersSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where(FieldPath.documentId, whereIn: userIds.toList())
+        .get();
+
+    userAccounts.value = usersSnapshot.docs.map((doc) {
+      return {
+        'id': doc.id,
+        'name': doc['username'],
+      };
+    }).toList();
 
     if (userAccounts.isNotEmpty) {
       selectedUserId.value = userAccounts[0]['id'];
@@ -47,17 +70,23 @@ class AddReviewController extends GetxController {
       return;
     }
 
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
+    QuerySnapshot requesterServicesSnapshot = await FirebaseFirestore.instance
         .collection('services')
-        .where(
-            (role.value == 'all' || role.value == 'provider')
-                ? 'provider_uid'
-                : 'requester_uid',
-            isEqualTo: selectedUserId.value)
         .where('status', isEqualTo: 'Completed')
+        .where('requester_uid', isEqualTo: selectedUserId.value)
         .get();
 
-    services.value = snapshot.docs.map((doc) {
+    QuerySnapshot providerServicesSnapshot = await FirebaseFirestore.instance
+        .collection('services')
+        .where('status', isEqualTo: 'Completed')
+        .where('provider_uid', isEqualTo: selectedUserId.value)
+        .get();
+
+    List<QueryDocumentSnapshot> allDocs = [];
+    allDocs.addAll(requesterServicesSnapshot.docs);
+    allDocs.addAll(providerServicesSnapshot.docs);
+
+    services.value = allDocs.map((doc) {
       return {
         'id': doc.id,
         'name': doc['service_name'],

@@ -68,7 +68,7 @@ class ServiceDetail extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    serviceData.starttime ?? "Description",
+                    "${serviceData.starttime} - ${serviceData.endtime}",
                     style: const TextStyle(fontSize: 15),
                   ),
                   if (!hideButtons) ...[

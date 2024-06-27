@@ -5,13 +5,11 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../common/data/data.dart';
+import '../../common/middlewares/middlewares.dart';
 import '../../common/storage/storage.dart';
-import '../../common/utils/utils.dart';
-import '../schedule/schedule_index.dart';
 import 'detail_index.dart';
 
 class DetailController extends GetxController {
@@ -122,38 +120,7 @@ class DetailController extends GetxController {
    Future<void> updateServiceStatus(String serviceId, String status, int statusid) async {
     try {
       await db.collection('service').doc(serviceId).update({'status': status, 'statusid': statusid});
-
-      // Read selected status from GetStorage
-      List<bool>? storedStatus = GetStorage().read('selectedStatus');
-      int? storedRating = GetStorage().read<int>('selectedRating');
-      var selectedStatus = List<bool>.empty(growable: true).obs;
-      int selectedRating = storedRating ?? 0;
-
-      // Handle conversion and default values
-      if (storedStatus != null) {
-        selectedStatus.assignAll(storedStatus);
-      } else {
-        selectedStatus.assignAll(List<bool>.filled(FilterStatus.filters.length, false));
-      }
-      
-      final selectedStatusValue = FilterStatus.filters
-        .asMap()
-        .entries
-        .where((entry) => selectedStatus.length > entry.key && selectedStatus[entry.key])
-        .map((entry) => entry.value.status)
-        .toList();
-
-      // Store selected filters in GetStorage
-      GetStorage().write('selectedStatus', selectedStatus.toList());
-      GetStorage().write('selectedRating', selectedRating);
-
-      // Pass selected status and rating to ScheduleController
-      Get.find<ScheduleController>().filterServices(
-        selectedStatus: selectedStatusValue,
-        selectedRating: selectedRating,
-      );
-
-      Get.back(); // Navigate back after updating
+      updateFiltersAndNavigateBack();
     } catch (e) {
       print('Error updating status: $e');
     }
@@ -226,9 +193,9 @@ class DetailController extends GetxController {
       var service = state.serviceList.first.data();
       if (service.rate != null && service.duration != null) {
         double rate = service.rate!.toDouble();
-        double duration = service.duration!.toDouble();
+        double? duration = service.duration;
 
-        subtotal.value = rate * duration;
+        subtotal.value = rate * duration!;
         taxFee.value = subtotal.value * 0.1;
         totalCost.value = subtotal.value - taxFee.value;
       }

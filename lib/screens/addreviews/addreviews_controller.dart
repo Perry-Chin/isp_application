@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../common/data/data.dart';
+// import '../../common/data/data.dart';
 import '../../common/values/values.dart';
 
 class AddReviewController extends GetxController {

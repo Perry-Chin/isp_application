@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../common/data/data.dart';
 import '../../common/values/values.dart';
 
 class AddReviewController extends GetxController {
@@ -14,6 +15,9 @@ class AddReviewController extends GetxController {
   final services = <Map<String, dynamic>>[].obs;
   final selectedServiceId = ''.obs;
 
+  final db = FirebaseFirestore.instance;
+  final currentUser = FirebaseAuth.instance.currentUser;
+
   @override
   void onInit() {
     super.onInit();
@@ -21,16 +25,16 @@ class AddReviewController extends GetxController {
   }
 
   void loadUserAccounts() async {
-    String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+    String currentUserId = currentUser!.uid;
 
     // Fetch services with "Completed" status
-    QuerySnapshot completedServicesSnapshot = await FirebaseFirestore.instance
+    QuerySnapshot completedServicesSnapshot = await db
         .collection('services')
         .where('status', isEqualTo: 'Completed')
         .get();
 
     // Extract unique user IDs from these services
-    Set<String> userIds = Set<String>();
+    Set<String> userIds = {};
     for (var doc in completedServicesSnapshot.docs) {
       if (doc['provider_uid'] != currentUserId) {
         userIds.add(doc['provider_uid']);
@@ -46,7 +50,7 @@ class AddReviewController extends GetxController {
     }
 
     // Fetch user accounts based on these user IDs
-    QuerySnapshot usersSnapshot = await FirebaseFirestore.instance
+    QuerySnapshot usersSnapshot = await db
         .collection('users')
         .where(FieldPath.documentId, whereIn: userIds.toList())
         .get();
@@ -70,23 +74,25 @@ class AddReviewController extends GetxController {
       return;
     }
 
-    QuerySnapshot requesterServicesSnapshot = await FirebaseFirestore.instance
-        .collection('services')
-        .where('status', isEqualTo: 'Completed')
-        .where('requester_uid', isEqualTo: selectedUserId.value)
-        .get();
+    Query completedServicesQuery =
+        db.collection('services').where('status', isEqualTo: 'Completed');
 
-    QuerySnapshot providerServicesSnapshot = await FirebaseFirestore.instance
-        .collection('services')
-        .where('status', isEqualTo: 'Completed')
-        .where('provider_uid', isEqualTo: selectedUserId.value)
-        .get();
+    if (role.value != 'all') {
+      if (role.value == 'requester') {
+        completedServicesQuery = completedServicesQuery.where('requester_uid',
+            isEqualTo: selectedUserId.value);
+      } else if (role.value == 'provider') {
+        completedServicesQuery = completedServicesQuery.where('provider_uid',
+            isEqualTo: selectedUserId.value);
+      }
+    } else {
+      completedServicesQuery = completedServicesQuery.where('requester_uid',
+          isEqualTo:
+              selectedUserId.value); // Default role to requester for 'all'
+    }
 
-    List<QueryDocumentSnapshot> allDocs = [];
-    allDocs.addAll(requesterServicesSnapshot.docs);
-    allDocs.addAll(providerServicesSnapshot.docs);
-
-    services.value = allDocs.map((doc) {
+    QuerySnapshot servicesSnapshot = await completedServicesQuery.get();
+    services.value = servicesSnapshot.docs.map((doc) {
       return {
         'id': doc.id,
         'name': doc['service_name'],
@@ -108,9 +114,8 @@ class AddReviewController extends GetxController {
       return;
     }
 
-    await FirebaseFirestore.instance.collection('reviews').add({
-      'from_uid':
-          FirebaseAuth.instance.currentUser!.uid, // Use logged in user ID
+    await db.collection('reviews').add({
+      'from_uid': currentUser!.uid, // Use logged in user ID
       'to_uid': selectedUserId.value,
       'service_id': selectedServiceId.value,
       'service_type': role.value,

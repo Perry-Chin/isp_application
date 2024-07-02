@@ -59,8 +59,7 @@ List<Step> getSteps(int currentStep) {
             labeltext: 'Image',
             prefixicon: Icons.image,
             textController: controller.imageController,
-            onTap: () => showImagePicker(Get.context!, (selectedImage) {}),
-            validator: (value) => RouteValidateServiceMiddleware.validateImage(value)
+            onTap: () => showImagePicker(Get.context!, (selectedImage) {})
           ),
         ],
       )

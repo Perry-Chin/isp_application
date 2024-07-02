@@ -12,7 +12,6 @@ class DetailPage extends GetView<DetailController> {
 
   @override
   Widget build(BuildContext context) {
-
     bool hideButtons = Get.parameters['hide_buttons'] == 'true';
     // String requested = Get.parameters['requested']!;
     // String status = Get.parameters['status']!;
@@ -47,7 +46,8 @@ class DetailPage extends GetView<DetailController> {
                     if (controller.state.serviceList.isNotEmpty) {
                       var serviceData =
                           controller.state.serviceList.first.data();
-                      return BackgroundImage(controller: controller, serviceData: serviceData);
+                      return BackgroundImage(
+                          controller: controller, serviceData: serviceData);
                     }
                     return const SizedBox.shrink();
                   }),
@@ -96,10 +96,16 @@ class DetailPage extends GetView<DetailController> {
               ServiceDetail(serviceData: serviceData, hideButtons: hideButtons),
               ServiceDescription(description: serviceData.description),
               if (Get.parameters['requested'] != "true")
-                RequesterInfo(controller: controller, userData: reqUserData, hideButtons: hideButtons),
+                RequesterInfo(
+                    controller: controller,
+                    userData: reqUserData,
+                    hideButtons: hideButtons),
               if (Get.parameters['requested'] == "true" && provUserData != null)
-                ProviderInfo(controller: controller, userData: provUserData, hideButtons: hideButtons),
-              FeeInfo(controller: controller, userData: reqUserData), 
+                ProviderInfo(
+                    controller: controller,
+                    userData: provUserData,
+                    hideButtons: hideButtons),
+              FeeInfo(controller: controller, userData: reqUserData),
             ],
           );
         } else {
@@ -120,53 +126,53 @@ class DetailPage extends GetView<DetailController> {
             flex: 6,
             child: getButtonBasedOnStatus(status: status, requested: requested),
           ),
-          if ((status == "Pending" || status == "Booked") && requested == "true") ...[
+          if ((status == "Pending" || status == "Booked") &&
+              requested == "true") ...[
             const SizedBox(width: 10),
             if (status == "Booked") ...[
               Expanded(
-                flex: 6,
-                child: CancelButton(
-                  onPressed: () => controller.updateServiceStatus(controller.doc_id, "Cancelled", 5),
-                  buttonText: "Cancel Service",
-                  buttonWidth: 135
-                )
-              ),
+                  flex: 6,
+                  child: CancelButton(
+                      onPressed: () => controller.updateServiceStatus(
+                          controller.doc_id, "Cancelled", 5),
+                      buttonText: "Cancel Service",
+                      buttonWidth: 135)),
             ],
             if (status == "Pending") ...[
               Expanded(
-                flex: 6,
-                child: CancelButton(
-                  onPressed: () => controller.updateServiceStatus(controller.doc_id, "Requested", 3),
-                  buttonText: "Deny Request",
-                  buttonWidth: 130
-                )
-              ),
-            ],  
-          ] 
+                  flex: 6,
+                  child: CancelButton(
+                      onPressed: () => controller.updateServiceStatus(
+                          controller.doc_id, "Requested", 3),
+                      buttonText: "Deny Request",
+                      buttonWidth: 130)),
+            ],
+          ]
         ],
       ),
     );
   }
 
-  Widget getButtonBasedOnStatus({
-    required String? status,
-    required String? requested
-  }) {
+  Widget getButtonBasedOnStatus(
+      {required String? status, required String? requested}) {
     if (status == "Pending" && requested == "true") {
       return ApplyButton(
-        onPressed: () => controller.updateServiceStatus(controller.doc_id, "Booked", 2),
+        onPressed: () =>
+            controller.updateServiceStatus(controller.doc_id, "Booked", 2),
         buttonText: "Accept Request",
         buttonWidth: 145,
       );
     } else if (status == "Booked" && requested == "true") {
       return ApplyButton(
-        onPressed: () => controller.updateServiceStatus(controller.doc_id, "Started", 0),
+        onPressed: () =>
+            controller.updateServiceStatus(controller.doc_id, "Started", 0),
         buttonText: "Start Service",
         buttonWidth: 120,
       );
     } else if (status == "Started" && requested == "true") {
       return ApplyButton(
-        onPressed: () => controller.updateServiceStatus(controller.doc_id, "Completed", 4),
+        onPressed: () =>
+            controller.updateServiceStatus(controller.doc_id, "Completed", 4),
         buttonText: "Complete Service",
         buttonWidth: 160,
       );

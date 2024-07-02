@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 // Local Dependencies
-import '../../common/widgets/widgets.dart';
-import 'request_index.dart';
+import '../../../common/middlewares/middlewares.dart';
+import '../../../common/widgets/widgets.dart';
+import '../request_index.dart';
 
 List<Step> getSteps(int currentStep) {
   final controller = Get.put(RequestController());
@@ -27,17 +28,17 @@ List<Step> getSteps(int currentStep) {
               "Grooming"
             ], 
             focusNode: FocusNode(), 
-            controller: controller.serviceController
+            controller: controller.serviceController,
           ),
           const SizedBox(height: 20),
           // Description
           MyTextField(
+            maxLines: 8,
             hinttext: 'Your Service',
             labeltext: 'Description',
             prefixicon: Icons.edit_document,
-            obscuretext: false,
-            controller: controller.descriptionController,
-            maxLines: 8,
+            textController: controller.descriptionController,
+            validator: (value) => RouteValidateServiceMiddleware.validateDescription(value)
           ),
           const SizedBox(height: 20),
           // Rate/hour (int)
@@ -45,21 +46,21 @@ List<Step> getSteps(int currentStep) {
             hinttext: 'Your rate',
             labeltext: 'Rate',
             prefixicon: Icons.price_change,
-            obscuretext: false,
-            controller: controller.rateController
+            keyboardType: TextInputType.number,
+            textController: controller.rateController,
+            validator: (value) => RouteValidateServiceMiddleware.validateRate(value)
           ),
           const SizedBox(height: 20),
           // Image (img)
           MyTextField(
+            readOnly: true,
+            obscuretext: false,
             hinttext: 'Select image',
             labeltext: 'Image',
             prefixicon: Icons.image,
-            obscuretext: false,
-            controller: controller.imageController,
-            readOnly: true,
-            onTap: () => showImagePicker(Get.context!, (selectedImage) {
-              
-            })
+            textController: controller.imageController,
+            onTap: () => showImagePicker(Get.context!, (selectedImage) {}),
+            validator: (value) => RouteValidateServiceMiddleware.validateImage(value)
           ),
         ],
       )
@@ -76,19 +77,19 @@ List<Step> getSteps(int currentStep) {
             hinttext: 'Your location',
             labeltext: 'Location',
             prefixicon: Icons.add_location_alt_outlined,
-            obscuretext: false,
-            controller: controller.locationController
+            textController: controller.locationController,
+            validator: (value) => RouteValidateServiceMiddleware.validateLocation(value)
           ),
           const SizedBox(height: 20),
           //Date (YYYY-MM-DD)
-          MyTextField(
+          MyTextField( 
+            readOnly: true,
             hinttext: 'Select date',
             labeltext: 'Date',
             prefixicon: Icons.calendar_month,
-            controller: controller.dateController,
-            obscuretext: false,
-            readOnly: true,
-            onTap: () => controller.selectDate(Get.context!),
+            textController: controller.dateController,
+            onTap: () => selectDate(Get.context!, controller.dateController),
+            validator: (value) => RouteValidateServiceMiddleware.validateDate(value)
           ),
           //Time (AM/PM)
           const SizedBox(height: 20),
@@ -96,10 +97,11 @@ List<Step> getSteps(int currentStep) {
             hinttext: 'Select start time',
             labeltext: 'Start Time',
             prefixicon: Icons.timelapse,
-            controller: controller.starttimeController,
+            textController: controller.starttimeController,
             obscuretext: false,
             readOnly: true,
-            onTap: () => controller.selectTime(Get.context!, true),
+            onTap: () => selectTime(Get.context!, controller.starttimeController),
+            validator: (value) => RouteValidateServiceMiddleware.validateStartTime(value)
           ),
           const SizedBox(height: 20),
           // End Time
@@ -107,10 +109,11 @@ List<Step> getSteps(int currentStep) {
             hinttext: 'Select end time',
             labeltext: 'End Time',
             prefixicon: Icons.timelapse,
-            controller: controller.endtimeController,
+            textController: controller.endtimeController,
             obscuretext: false,
             readOnly: true,
-            onTap: () => controller.selectTime(Get.context!, false),
+            onTap: () => selectTime(Get.context!, controller.endtimeController),
+            validator: (value) => RouteValidateServiceMiddleware.validateEndTime(value)
           ),
         ]
       ) 

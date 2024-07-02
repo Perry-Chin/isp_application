@@ -91,7 +91,7 @@ class NavbarPage extends GetView<NavbarController> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const RequestPage(),
+                builder: (context) => RequestPage(),
               ));
         },
         child: const Icon(

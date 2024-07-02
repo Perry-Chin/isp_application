@@ -8,43 +8,45 @@ import 'home_list.dart';
 class CurvedBackgroundPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint();
+    final Paint paint = Paint();
 
     // Blue background paint
-    Path bluePath = Path();
+    final Path bluePath = Path();
     bluePath.moveTo(0, 0);
-    bluePath.lineTo(0, size.height * 0.5);
+    bluePath.lineTo(0, size.height * 0.35);
     bluePath.quadraticBezierTo(
       size.width / 2,
-      size.height * 3,
+      size.height * 0.25,
       size.width,
-      size.height * 0.5,
+      size.height * 0.35,
     );
     bluePath.lineTo(size.width, 0);
     bluePath.close();
     paint.color = AppColor.secondaryColor;
     canvas.drawPath(bluePath, paint);
 
-    // Beige curved background paint
-    Path beigePath = Path();
-    beigePath.moveTo(0, size.height * 0.5);
+    // Beige background paint
+    paint.color = const Color(0xFFF3E9E9);
+    canvas.drawRect(
+        Rect.fromLTRB(0, size.height * 0.35, size.width, size.height), paint);
+
+    // Filling the gap
+    final Path beigePath = Path();
+    beigePath.moveTo(0, size.height * 0.35);
     beigePath.quadraticBezierTo(
       size.width / 2,
-      size.height * 0.3,
+      size.height * 0.25,
       size.width,
-      size.height * 0.5,
+      size.height * 0.35,
     );
     beigePath.lineTo(size.width, size.height);
     beigePath.lineTo(0, size.height);
     beigePath.close();
-    paint.color = const Color(0xFFF3E9E9);
     canvas.drawPath(beigePath, paint);
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
 class HomePage extends StatefulWidget {
@@ -61,24 +63,30 @@ class _HomePageState extends State<HomePage> {
   String definition = '';
   final TextEditingController _searchController = TextEditingController();
 
-  // Example list of images (you can replace this with your actual data structure)
-  List<String> serviceImages = [
+  static const List<String> serviceImages = [
     'assets/images/groomingdog.png',
     'assets/images/walking.png',
     'assets/images/sitting.png',
     'assets/images/training.png',
     'assets/images/add.png',
-    // Add more images as needed
   ];
 
-  void _onSearchPressed() {
-    // Handle search button press here
-    print('Search button pressed');
-    // You can navigate to a search screen or show a search dialog here
-  }
+  static const List<Map<String, dynamic>> serviceCards = [
+    {
+      'name': 'Username',
+      'date': 'January 2024 • 5:00 pm',
+      'location': 'Illinois',
+      'price': '\$100',
+    },
+    {
+      'name': 'Username',
+      'date': 'January 2024 • 5:00 pm',
+      'location': 'Illinois',
+      'price': '\$100',
+    },
+  ];
 
   void _onServiceImagePressed(int index) {
-    // Handle image button press based on the index
     setState(() {
       switch (index) {
         case 0:
@@ -108,7 +116,7 @@ class _HomePageState extends State<HomePage> {
               'the fine art of turning chaos into harmony, one pawshake at a time.';
           break;
         case 4:
-          selectedService = 'add'; // Change this to handle the last image
+          selectedService = 'add';
           break;
         default:
           selectedService = '';
@@ -119,15 +127,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          // Custom painted background
-          Positioned.fill(
-            child: CustomPaint(
-              painter: CurvedBackgroundPainter(),
-            ),
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height,
           ),
+<<<<<<< HEAD
           Positioned.fill(
             child: Container(
               margin: const EdgeInsets.fromLTRB(20, 40, 20, 0),
@@ -275,13 +280,202 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ],
                       ),
+=======
+          child: CustomPaint(
+            painter: CurvedBackgroundPainter(),
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+                    const Text(
+                      "FurFriends",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 33,
+                        fontFamily: 'Silence Rocken',
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search for a service',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        prefixIcon: const Icon(Icons.search),
+                      ),
+                    ),
+                    const SizedBox(height: 100),
+                    const Text(
+                      "Choose",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: "Quicksand",
+                        fontSize: 30,
+                      ),
+                    ),
+                    const Text(
+                      "your service!",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: "Quicksand",
+                        fontSize: 30,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(
+                        serviceImages.length,
+                        (index) => GestureDetector(
+                          onTap: () => _onServiceImagePressed(index),
+                          child: Image.asset(
+                            serviceImages[index],
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    if (selectedService.isNotEmpty) ...[
+                      Row(
+                        children: [
+                          Text(
+                            selectedService,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontFamily: "Safety",
+                              fontSize: 22,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            selectedServicePronun,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontFamily: "Doulos SIL",
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        desc,
+                        style: const TextStyle(
+                          fontFamily: 'Times New Roman',
+                          fontStyle: FontStyle.italic,
+                          color: Colors.black,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        definition,
+                        style: const TextStyle(
+                          fontFamily: 'Times New Roman',
+                          color: Colors.black,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        height: 470,
+                        child: HomeList(
+                          selectedService: selectedService,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 20),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.75,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemCount: serviceCards.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(15)),
+                                  child: Image.asset(
+                                    'assets/images/groomingdog.png',
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      serviceCards[index]['name'],
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      serviceCards[index]['date'],
+                                      style: const TextStyle(
+                                          color: Colors.grey, fontSize: 12),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.location_on,
+                                            color: Colors.grey, size: 16),
+                                        const SizedBox(width: 2),
+                                        Text(serviceCards[index]['location'],
+                                            style:
+                                                const TextStyle(fontSize: 12)),
+                                        const Spacer(),
+                                        Text(
+                                          serviceCards[index]['price'],
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+>>>>>>> cfa87a38bda090b83efaeb7b340d92b830743705
                     ),
                   ),
                 ],
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

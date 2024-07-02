@@ -34,7 +34,7 @@ class RegisterPage extends GetView<RegisterController> {
                       labeltext: 'Name',
                       prefixicon: Icons.person,
                       obscuretext: false,
-                      controller: controller.usernameController),
+                      textController: controller.usernameController),
                   const SizedBox(height: 10),
                   // Text field for email input
                   MyTextField(
@@ -42,7 +42,7 @@ class RegisterPage extends GetView<RegisterController> {
                       labeltext: 'Email',
                       prefixicon: Icons.email,
                       obscuretext: false,
-                      controller: controller.emailController),
+                      textController: controller.emailController),
                   const SizedBox(height: 10),
                   // Text field for email input
                   MyTextField(
@@ -50,7 +50,7 @@ class RegisterPage extends GetView<RegisterController> {
                       labeltext: 'Phone Number',
                       prefixicon: Icons.phone,
                       obscuretext: false,
-                      controller: controller.phoneNoController),
+                      textController: controller.phoneNoController),
                   const SizedBox(height: 10),
                   // Text field for password input
                   MyTextField(
@@ -58,7 +58,7 @@ class RegisterPage extends GetView<RegisterController> {
                       labeltext: 'Password',
                       prefixicon: Icons.key,
                       obscuretext: true,
-                      controller: controller.pwdController),
+                      textController: controller.pwdController),
                   const SizedBox(height: 10),
                   // Text field for confirming password input
                   MyTextField(
@@ -66,7 +66,7 @@ class RegisterPage extends GetView<RegisterController> {
                       labeltext: 'Confirm Password',
                       prefixicon: Icons.key,
                       obscuretext: true,
-                      controller: controller.confirmpwdController),
+                      textController: controller.confirmpwdController),
                   const SizedBox(
                     height: 30,
                   ),

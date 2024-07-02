@@ -75,7 +75,7 @@ class LoginPage extends GetView<LoginController> {
                   labeltext: 'Email', 
                   prefixicon: Icons.mail,
                   obscuretext: false, 
-                  controller: controller.emailController
+                  textController: controller.emailController
                 ),
                 const SizedBox(height: 30),
                 MyTextField(
@@ -83,7 +83,7 @@ class LoginPage extends GetView<LoginController> {
                   labeltext: 'Password', 
                   prefixicon: Icons.key,
                   obscuretext: true, 
-                  controller: controller.pwdController
+                  textController: controller.pwdController
                 ),
                 const SizedBox(height: 40),
                 ApplyButton( 

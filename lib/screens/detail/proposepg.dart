@@ -146,7 +146,7 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                   hinttext: 'New Time',
                   labeltext: 'New Time',
                   prefixicon: Icons.access_time_outlined,
-                  controller: _startController,
+                  textController: _startController,
                   obscuretext: false,
                   readOnly: true,
                   onTap: () => _selectTime(context, _startController),

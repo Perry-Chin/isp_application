@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../common/values/values.dart';
 import '../../../common/widgets/widgets.dart';
-import 'addreviews_controller.dart'; // Corrected the import statement
+import 'addreviews_controller.dart';
 
 class AddReviewPage extends GetView<AddReviewController> {
   const AddReviewPage({super.key});
@@ -18,119 +18,68 @@ class AddReviewPage extends GetView<AddReviewController> {
         title: const Text("Add Review"),
         backgroundColor: AppColor.secondaryColor,
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 30),
-                Obx(() {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: DropdownButtonFormField<String>(
-                      value: controller.selectedUserId.value.isNotEmpty
-                          ? controller.selectedUserId.value
-                          : null,
-                      items: controller.userAccounts
-                          .map((user) => DropdownMenuItem<String>(
-                                value: user['id'],
-                                child: Text(user['name']),
-                              ))
-                          .toList(),
-                      onChanged: (value) {
-                        controller.selectedUserId.value = value!;
-                        controller
-                            .loadServices(); // Load services when user changes
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Select User',
-                        border: OutlineInputBorder(
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 30),
+                  Obx(() => Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        contentPadding: const EdgeInsets.all(10),
-                      ),
-                    ),
-                  );
-                }),
-                const SizedBox(height: 10),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: DropdownButtonFormField<String>(
-                    value: controller.role.value,
-                    items: const [
-                      DropdownMenuItem<String>(
-                        value: 'all',
-                        child: Text('All'),
-                      ),
-                      DropdownMenuItem<String>(
-                        value: 'requester',
-                        child: Text('Requester'),
-                      ),
-                      DropdownMenuItem<String>(
-                        value: 'provider',
-                        child: Text('Provider'),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      controller.role.value = value!;
-                      controller
-                          .loadServices(); // Load services when role changes
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Role',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      contentPadding: const EdgeInsets.all(10),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Obx(() {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: DropdownButtonFormField<String>(
-                      value: controller.selectedServiceId.value.isNotEmpty
-                          ? controller.selectedServiceId.value
-                          : null,
-                      items: controller.services.isNotEmpty
-                          ? controller.services
+                        child: DropdownButtonFormField<String>(
+                          value: controller.selectedServiceId.value.isNotEmpty
+                              ? controller.selectedServiceId.value
+                              : null,
+                          items: controller.completedServices
                               .map((service) => DropdownMenuItem<String>(
                                     value: service['id'],
-                                    child: Text(service['name']),
+                                    child: Text(
+                                        "${service['serviceName']} (${service['role']})"),
                                   ))
-                              .toList()
-                          : [],
-                      onChanged: controller.services.isNotEmpty
-                          ? (value) {
-                              controller.selectedServiceId.value = value!;
+                              .toList(),
+                          onChanged: (value) {
+                            if (value != null) {
+                              controller.updateSelectedService(value);
                             }
-                          : null,
-                      decoration: InputDecoration(
-                        labelText: 'Select Service',
-                        border: OutlineInputBorder(
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Select Completed Service',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            contentPadding: const EdgeInsets.all(10),
+                          ),
+                        ),
+                      )),
+                  const SizedBox(height: 10),
+                  Obx(() => Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        contentPadding: const EdgeInsets.all(10),
-                      ),
-                      disabledHint: const Text('No services available'),
-                    ),
-                  );
-                }),
-                const SizedBox(height: 10),
-                Obx(() {
-                  return controller.selectedServiceId.value.isNotEmpty
+                        child: TextField(
+                          readOnly: true,
+                          controller: TextEditingController(
+                              text: controller.role.value),
+                          decoration: InputDecoration(
+                            labelText: 'Role',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            contentPadding: const EdgeInsets.all(10),
+                          ),
+                        ),
+                      )),
+                  const SizedBox(height: 10),
+                  Obx(() => controller.selectedServiceId.value.isNotEmpty
                       ? Column(
                           children: [
                             Row(
@@ -160,6 +109,7 @@ class AddReviewPage extends GetView<AddReviewController> {
                                     controller.reviewDescriptionController,
                                 obscureText: false,
                                 maxLines: null,
+                                keyboardType: TextInputType.multiline,
                                 decoration: InputDecoration(
                                   hintText: 'Write your review here...',
                                   labelText: 'Review Description',
@@ -175,18 +125,16 @@ class AddReviewPage extends GetView<AddReviewController> {
                             ),
                           ],
                         )
-                      : Container();
-                }),
-                const SizedBox(height: 30),
-                ApplyButton(
-                  onPressed: () {
-                    controller.addReview(context);
-                  },
-                  buttonText: "Submit Review",
-                  buttonWidth: double.infinity,
-                  textAlignment: Alignment.center,
-                ),
-              ],
+                      : Container()),
+                  const SizedBox(height: 30),
+                  ApplyButton(
+                    onPressed: () => controller.addReview(context),
+                    buttonText: "Submit Review",
+                    buttonWidth: double.infinity,
+                    textAlignment: Alignment.center,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

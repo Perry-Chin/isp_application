@@ -72,18 +72,22 @@ class _HomePageState extends State<HomePage> {
 
   static const List<Map<String, dynamic>> serviceCards = [
     {
-      'name': 'Username',
+      'name': 'Grooming Service',
       'date': 'January 2024 • 5:00 pm',
       'location': 'Illinois',
       'price': '\$100',
+      'service_name': 'Grooming',
     },
     {
-      'name': 'Username',
+      'name': 'Walking Service',
       'date': 'January 2024 • 5:00 pm',
       'location': 'Illinois',
       'price': '\$100',
+      'service_name': 'Walking',
     },
   ];
+
+  List<Map<String, dynamic>> filteredServiceCards = [];
 
   void _onServiceImagePressed(int index) {
     setState(() {
@@ -120,6 +124,10 @@ class _HomePageState extends State<HomePage> {
         default:
           selectedService = '';
       }
+
+      filteredServiceCards = serviceCards
+          .where((card) => card['service_name'] == selectedService)
+          .toList();
     });
   }
 
@@ -151,6 +159,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const SizedBox(height: 20),
                     TextField(
+                      controller: _searchController,
                       decoration: InputDecoration(
                         hintText: 'Search for a service',
                         filled: true,
@@ -161,6 +170,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         prefixIcon: const Icon(Icons.search),
                       ),
+                      onChanged: (value) => _filterServiceList(value),
                     ),
                     const SizedBox(height: 100),
                     const Text(
@@ -239,99 +249,104 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      SizedBox(
-                        height: 470,
-                        child: HomeList(
-                          selectedService: selectedService,
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 20),
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.75,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemCount: serviceCards.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                      top: Radius.circular(15)),
-                                  child: Image.asset(
-                                    'assets/images/groomingdog.png',
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                  ),
+                      if (filteredServiceCards.isNotEmpty)
+                        Container(
+                          height: 300, // Set a specific height
+                          child: GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.75,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                            ),
+                            itemCount: filteredServiceCards.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      serviceCards[index]['name'],
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      serviceCards[index]['date'],
-                                      style: const TextStyle(
-                                          color: Colors.grey, fontSize: 12),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Row(
-                                      children: [
-                                        const Icon(Icons.location_on,
-                                            color: Colors.grey, size: 16),
-                                        const SizedBox(width: 2),
-                                        Text(serviceCards[index]['location'],
-                                            style:
-                                                const TextStyle(fontSize: 12)),
-                                        const Spacer(),
-                                        Text(
-                                          serviceCards[index]['price'],
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
+                                    Expanded(
+                                      child: ClipRRect(
+                                        borderRadius: const BorderRadius.vertical(
+                                            top: Radius.circular(15)),
+                                        child: Image.asset(
+                                          'assets/images/groomingdog.png',
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
                                         ),
-                                      ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            filteredServiceCards[index]['name'],
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            filteredServiceCards[index]['date'],
+                                            style: const TextStyle(
+                                                color: Colors.grey, fontSize: 12),
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Row(
+                                            children: [
+                                              const Icon(Icons.location_on,
+                                                  color: Colors.grey, size: 16),
+                                              const SizedBox(width: 2),
+                                              Text(
+                                                  filteredServiceCards[index]
+                                                      ['location'],
+                                                  style: const TextStyle(
+                                                      fontSize: 12)),
+                                              const Spacer(),
+                                              Text(
+                                                filteredServiceCards[index]['price'],
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                    ],
                   ],
+                ),
               ),
             ),
           ),
         ),
       ),
-    ));
+    );
   }
 
   void _filterServiceList(String value) {
-    // Implement your logic here to filter the service list
-    print('Filtering service list with value: $value');
-    // You can update state variables or call methods to update the UI based on the search value
+    setState(() {
+      filteredServiceCards = serviceCards
+          .where((card) =>
+              card['service_name'] == selectedService &&
+              card['name'].toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
   }
 }
 

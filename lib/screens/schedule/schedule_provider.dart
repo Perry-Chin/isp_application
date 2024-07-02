@@ -82,7 +82,7 @@ class ProviderCard extends GetView<ScheduleController> {
                     ),
                   ),
                   subtitle: Text(
-                    "${item.data().date}, ${item.data().starttime}",
+                    "${item.data().date}, ${item.data().starttime} - ${item.data().endtime}",
                   ),
                 ),
                 Padding(

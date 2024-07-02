@@ -28,7 +28,7 @@ Widget requestSuccess(RequestController controller, BuildContext context) {
               const SizedBox(height: 20),
               ApplyButton(
                 onPressed: () {
-                  controller.resetForm();
+                  controller.clearForm();
                 },
                 buttonText: "Reset",
                 buttonWidth: double.infinity,

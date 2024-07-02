@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../common/values/values.dart';
 import '../request_index.dart';
@@ -27,12 +28,12 @@ Widget requestForm(RequestController controller, BuildContext context) {
             child: Row(
               children: [
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: controls.onStepContinue,
-                    child: Text(controller.isLastStep
-                        ? 'CONFIRM'
-                        : 'NEXT')
-                  )
+                  child: Obx(
+                    () => ElevatedButton(
+                      onPressed: controller.isProcessing.value ? null : controls.onStepContinue,
+                      child: Text(controller.isLastStep ? 'CONFIRM' : 'NEXT'),
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 12),
                 if (controller.currentStep.value != 0)

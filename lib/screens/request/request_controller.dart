@@ -29,6 +29,7 @@ class RequestController extends GetxController {
   var doc_id = null;
   final currentStep = 0.obs;
   final token = UserStore.to.token;
+  var isProcessing = false.obs;
   var requestCompleted = false.obs;
   Map<String, dynamic>? paymentIntent;
   final serviceController = TextEditingController();
@@ -65,7 +66,7 @@ class RequestController extends GetxController {
     update();
   }
 
-  void resetForm() {
+  void clearForm() {
     print(requestCompleted.value);
     // Clear text in text controllers
     serviceController.clear();
@@ -82,7 +83,10 @@ class RequestController extends GetxController {
 
     // Set requestCompleted to true
     requestCompleted.value = false;
+  }
 
+  void resetForm() {
+    clearForm();
     updateFiltersAndNavigateBack();
   }
 
@@ -118,14 +122,17 @@ class RequestController extends GetxController {
   Future<void> confirmRequest(BuildContext context) async {
     // Show loading dialog
    appLoading(context);
-
     try {
+      isProcessing.value = true;
       // Form validation
-      // if (!requestFormKey.currentState!.validate()) {
-      //   // Dismiss loading dialog
-      //   Navigator.pop(context);
-      //   return;
-      // }
+      if (!requestFormKey.currentState!.validate()) {
+        // Dismiss loading dialog
+        Navigator.pop(context);
+        isProcessing.value = false;
+        return;
+      }
+
+      print(isProcessing.value);
 
       final duration = calculateDuration(starttimeController.text, endtimeController.text);
 
@@ -139,6 +146,8 @@ class RequestController extends GetxController {
     } catch (error) {
       // Dismiss loading dialog
       Navigator.pop(context);
+
+      isProcessing.value = false;
 
       // Show error message for failed sign-in attempts
       showDialog(
@@ -180,13 +189,24 @@ class RequestController extends GetxController {
           paymentIntentClientSecret: paymentIntent!['client_secret'],
           merchantDisplayName: 'Flutter Stripe Store Demo',
           style: ThemeMode.dark,
-          googlePay: gpay
+          googlePay: gpay,
+          billingDetails: const BillingDetails(
+            address: Address(
+              city: '',
+              country: 'SG',
+              state: '',
+              line1: '',
+              line2: '',
+              postalCode: '',
+            )
+          )
       ));
 
       displayPaymentSheet();
         
       print("objectsdfsd");
     } catch (e) {
+      isProcessing.value = false;
       print('Exception: $e');
     }
   }
@@ -217,6 +237,7 @@ class RequestController extends GetxController {
       // Create service document and add to Firestore
       await createServiceDocument();
     } catch (e) {
+      isProcessing.value = false;
       print('Exception: $e');
     }
   }
@@ -253,6 +274,7 @@ class RequestController extends GetxController {
       serviceData.toFirestore(),
     );
 
+    isProcessing.value = false;
     requestCompleted.value = true;
   }
 

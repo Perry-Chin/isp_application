@@ -81,7 +81,8 @@ class RequestController extends GetxController {
     // Reset the current step
     currentStep.value = 0;
 
-    // Set requestCompleted to true
+    // Set requestCompleted to false
+    isProcessing.value = false;
     requestCompleted.value = false;
   }
 
@@ -125,12 +126,12 @@ class RequestController extends GetxController {
     try {
       isProcessing.value = true;
       // Form validation
-      if (!requestFormKey.currentState!.validate()) {
-        // Dismiss loading dialog
-        Navigator.pop(context);
-        isProcessing.value = false;
-        return;
-      }
+      // if (!requestFormKey.currentState!.validate()) {
+      //   // Dismiss loading dialog
+      //   Navigator.pop(context);
+      //   isProcessing.value = false;
+      //   return;
+      // }
 
       print(isProcessing.value);
 
@@ -139,10 +140,7 @@ class RequestController extends GetxController {
       // Assuming rateController.text contains a valid number and duration is defined
       String amount = (double.parse(rateController.text) * duration * 100).toInt().toString();
 
-      // Dismiss loading dialog
-      Navigator.pop(context);
-
-      makePayment(amount);
+      makePayment(context, amount);
     } catch (error) {
       // Dismiss loading dialog
       Navigator.pop(context);
@@ -175,7 +173,7 @@ class RequestController extends GetxController {
     doc_id = data['doc_id'];
   }
 
-  void makePayment(String amount) async {
+  void makePayment(BuildContext context, String amount) async {
     try {
       paymentIntent = await createPaymentIntent(amount);
 
@@ -198,10 +196,10 @@ class RequestController extends GetxController {
           )
       ));
 
-      displayPaymentSheet();
-        
-      print("objectsdfsd");
+      displayPaymentSheet(context);
     } catch (e) {
+      // Dismiss loading dialog
+      Navigator.pop(context);
       isProcessing.value = false;
       print('Exception: $e');
     }
@@ -227,12 +225,14 @@ class RequestController extends GetxController {
     }
   }
 
-  void displayPaymentSheet() async {
+  void displayPaymentSheet(BuildContext context) async {
     try {
       await Stripe.instance.presentPaymentSheet();
       // Create service document and add to Firestore
       await createServiceDocument();
     } catch (e) {
+      // Dismiss loading dialog
+      Navigator.pop(context);
       isProcessing.value = false;
       print('Exception: $e');
     }

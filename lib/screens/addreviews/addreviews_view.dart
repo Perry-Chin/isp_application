@@ -104,23 +104,37 @@ class AddReviewPage extends GetView<AddReviewController> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: TextField(
-                                controller:
-                                    controller.reviewDescriptionController,
-                                obscureText: false,
-                                maxLines: null,
-                                keyboardType: TextInputType.multiline,
-                                decoration: InputDecoration(
-                                  hintText: 'Write your review here...',
-                                  labelText: 'Review Description',
-                                  prefixIcon: const Icon(Icons.description),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  contentPadding: const EdgeInsets.all(10),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                ),
+                              child: Focus(
+                                onFocusChange: (hasFocus) {
+                                  controller.updateReviewTextBoxColor(hasFocus);
+                                },
+                                child: Obx(() => TextField(
+                                      controller: controller
+                                          .reviewDescriptionController,
+                                      obscureText: false,
+                                      maxLines: null,
+                                      keyboardType: TextInputType.multiline,
+                                      decoration: InputDecoration(
+                                        hintText: 'Write your review here...',
+                                        labelText: 'Review Description',
+                                        prefixIcon:
+                                            const Icon(Icons.description),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        contentPadding:
+                                            const EdgeInsets.all(10),
+                                        filled: true,
+                                        fillColor: controller
+                                                .isReviewTextBoxFocused.value
+                                            ? AppColor.secondaryColor
+                                                .withOpacity(0.1)
+                                            : Colors.white,
+                                      ),
+                                      onChanged: (_) =>
+                                          controller.formatReviewText(),
+                                    )),
                               ),
                             ),
                           ],

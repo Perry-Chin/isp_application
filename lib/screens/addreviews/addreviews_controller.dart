@@ -12,6 +12,7 @@ class AddReviewController extends GetxController {
   final rating = 0.obs;
   final reviewDescriptionController = TextEditingController();
   final completedServices = <Map<String, dynamic>>[].obs;
+  final isReviewTextBoxFocused = false.obs;
 
   final token = UserStore.to.token;
   final db = FirebaseFirestore.instance;
@@ -97,13 +98,30 @@ class AddReviewController extends GetxController {
     role.value = selectedService['role'];
   }
 
+  void updateReviewTextBoxColor(bool isFocused) {
+    isReviewTextBoxFocused.value = isFocused;
+  }
+
+  void formatReviewText() {
+    String text = reviewDescriptionController.text;
+    text = text.trim();
+    text = text.replaceAll(RegExp(r'\s+'), ' ');
+    text = text.replaceAll(RegExp(r'\n{3,}'), '\n\n');
+    reviewDescriptionController.value = TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
+  }
+
   void addReview(BuildContext context) async {
-    if (reviewDescriptionController.text.isEmpty ||
+    if (reviewDescriptionController.text.trim().isEmpty ||
         rating.value == 0 ||
         selectedServiceId.value.isEmpty) {
       showRoundedErrorDialog(context, 'Please complete all fields.');
       return;
     }
+
+    formatReviewText();
 
     Map<String, dynamic> selectedService = completedServices.firstWhere(
       (service) => service['id'] == selectedServiceId.value,
@@ -126,8 +144,7 @@ class AddReviewController extends GetxController {
 
       await reviewRef.update({'review_id': reviewRef.id});
 
-      Get.back();
-      Get.snackbar('Success', 'Review added successfully');
+      Get.back(); // This will navigate back to the previous screen
     } catch (e) {
       showRoundedErrorDialog(context, 'Error adding review: $e');
     }

@@ -155,5 +155,7 @@ class MessageController extends GetxController {
     
     state.msgList.assignAll(allMessages);
     state.filteredMsgList.assignAll(allMessages);
+
+        print("MessageController onInit");
     }
 }

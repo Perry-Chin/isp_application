@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 // Local Dependencies
-import '../../common/widgets/widgets.dart';
-import 'request_index.dart';
+import '../../../common/widgets/widgets.dart';
+import '../request_index.dart';
 
 List<Step> getSteps(int currentStep) {
   final controller = Get.put(RequestController());
@@ -27,7 +27,7 @@ List<Step> getSteps(int currentStep) {
               "Grooming"
             ], 
             focusNode: FocusNode(), 
-            controller: controller.serviceController
+            controller: controller.serviceController,
           ),
           const SizedBox(height: 20),
           // Description
@@ -36,7 +36,7 @@ List<Step> getSteps(int currentStep) {
             labeltext: 'Description',
             prefixicon: Icons.edit_document,
             obscuretext: false,
-            controller: controller.descriptionController,
+            textController: controller.descriptionController,
             maxLines: 8,
           ),
           const SizedBox(height: 20),
@@ -46,7 +46,7 @@ List<Step> getSteps(int currentStep) {
             labeltext: 'Rate',
             prefixicon: Icons.price_change,
             obscuretext: false,
-            controller: controller.rateController
+            textController: controller.rateController
           ),
           const SizedBox(height: 20),
           // Image (img)
@@ -55,7 +55,7 @@ List<Step> getSteps(int currentStep) {
             labeltext: 'Image',
             prefixicon: Icons.image,
             obscuretext: false,
-            controller: controller.imageController,
+            textController: controller.imageController,
             readOnly: true,
             onTap: () => showImagePicker(Get.context!, (selectedImage) {
               
@@ -77,7 +77,7 @@ List<Step> getSteps(int currentStep) {
             labeltext: 'Location',
             prefixicon: Icons.add_location_alt_outlined,
             obscuretext: false,
-            controller: controller.locationController
+            textController: controller.locationController
           ),
           const SizedBox(height: 20),
           //Date (YYYY-MM-DD)
@@ -85,7 +85,7 @@ List<Step> getSteps(int currentStep) {
             hinttext: 'Select date',
             labeltext: 'Date',
             prefixicon: Icons.calendar_month,
-            controller: controller.dateController,
+            textController: controller.dateController,
             obscuretext: false,
             readOnly: true,
             onTap: () => controller.selectDate(Get.context!),
@@ -96,7 +96,7 @@ List<Step> getSteps(int currentStep) {
             hinttext: 'Select start time',
             labeltext: 'Start Time',
             prefixicon: Icons.timelapse,
-            controller: controller.starttimeController,
+            textController: controller.starttimeController,
             obscuretext: false,
             readOnly: true,
             onTap: () => controller.selectTime(Get.context!, true),
@@ -107,7 +107,7 @@ List<Step> getSteps(int currentStep) {
             hinttext: 'Select end time',
             labeltext: 'End Time',
             prefixicon: Icons.timelapse,
-            controller: controller.endtimeController,
+            textController: controller.endtimeController,
             obscuretext: false,
             readOnly: true,
             onTap: () => controller.selectTime(Get.context!, false),

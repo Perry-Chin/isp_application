@@ -72,7 +72,7 @@ class EditProfilePage extends GetView<EditProfileController> {
                   labeltext: 'Name',
                   prefixicon: Icons.person,
                   obscuretext: false,
-                  controller: controller.usernameController,
+                  textController: controller.usernameController,
                 ),
                 const SizedBox(height: 10),
                 MyTextField(
@@ -80,7 +80,7 @@ class EditProfilePage extends GetView<EditProfileController> {
                   labeltext: 'Email',
                   prefixicon: Icons.email,
                   obscuretext: false,
-                  controller: controller.emailController,
+                  textController: controller.emailController,
                 ),
                 const SizedBox(height: 10),
                 MyTextField(
@@ -88,7 +88,7 @@ class EditProfilePage extends GetView<EditProfileController> {
                   labeltext: 'Phone Number',
                   prefixicon: Icons.phone,
                   obscuretext: false,
-                  controller: controller.phoneNoController,
+                  textController: controller.phoneNoController,
                 ),
                 const SizedBox(height: 10),
                 Obx(() {
@@ -100,7 +100,7 @@ class EditProfilePage extends GetView<EditProfileController> {
                               labeltext: 'Password',
                               prefixicon: Icons.key,
                               obscuretext: true,
-                              controller: controller.pwdController,
+                              textController: controller.pwdController,
                             ),
                             const SizedBox(height: 10),
                             MyTextField(
@@ -108,7 +108,7 @@ class EditProfilePage extends GetView<EditProfileController> {
                               labeltext: 'Confirm Password',
                               prefixicon: Icons.key,
                               obscuretext: true,
-                              controller: controller.confirmpwdController,
+                              textController: controller.confirmpwdController,
                             ),
                           ],
                         )
@@ -117,7 +117,7 @@ class EditProfilePage extends GetView<EditProfileController> {
                           labeltext: 'Current Password',
                           prefixicon: Icons.lock,
                           obscuretext: true,
-                          controller: controller.currentPwdController,
+                          textController: controller.currentPwdController,
                         );
                 }),
                 const SizedBox(height: 30),

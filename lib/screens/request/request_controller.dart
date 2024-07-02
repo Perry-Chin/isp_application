@@ -5,6 +5,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -47,6 +48,7 @@ class RequestController extends GetxController {
   final dateController = TextEditingController();
   final starttimeController = TextEditingController();
   final endtimeController = TextEditingController();
+  GlobalKey<FormState> requestFormKey = GlobalKey<FormState>();
   //Grab the last step, called in the view
   bool get isLastStep => currentStep.value == getSteps(currentStep.value).length - 1;
 
@@ -288,5 +290,12 @@ class RequestController extends GetxController {
     final minutes = duration.inMinutes % 60;
 
     return hours + minutes / 60.0;
+  }
+
+  Future<String> getClientSecret(int amount) async {
+    final res = await FirebaseFunctions.instance
+        .httpsCallable('createPaymentIntent')
+        .call({'amount': '$amount', 'currency': 'sgd'});
+    return res.data['clientSecret'];
   }
 }

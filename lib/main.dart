@@ -1,4 +1,5 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,6 +24,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform
   );
+
+  // Initialize Stripe
+  Stripe.publishableKey = 'pk_test_51PW9k609OEdaNyd6cGvFdgCq7GX3ecDeHCWNHVHIZrpYpXQIWugLnetf8yhndG46JGhzCpIZp6DgeyiFxebz1g0400cB03RQdT';
   
   runApp(const MyApp());
 }

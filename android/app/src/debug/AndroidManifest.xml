@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <application>
+    <application android:usesCleartextTraffic="true">
         <meta-data android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyBHOdzAoNsKoEBe1-ccAzy-1b3b9iBQNzQ"/>
     </application>

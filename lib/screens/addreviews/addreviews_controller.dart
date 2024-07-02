@@ -3,17 +3,30 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-// import '../../common/data/data.dart';
 import '../../common/values/values.dart';
 
+class CompletedService {
+  final String id;
+  final String serviceName;
+  final String providerUid;
+  final String requesterUid;
+  final String role;
+
+  CompletedService({
+    required this.id,
+    required this.serviceName,
+    required this.providerUid,
+    required this.requesterUid,
+    required this.role,
+  });
+}
+
 class AddReviewController extends GetxController {
-  final selectedUserId = ''.obs;
-  final role = 'all'.obs; // Default to 'all'
+  final selectedServiceId = ''.obs;
+  final role = ''.obs;
   final rating = 0.obs;
   final reviewDescriptionController = TextEditingController();
-  final userAccounts = <Map<String, dynamic>>[].obs;
-  final services = <Map<String, dynamic>>[].obs;
-  final selectedServiceId = ''.obs;
+  final completedServices = <CompletedService>[].obs;
 
   final db = FirebaseFirestore.instance;
   final currentUser = FirebaseAuth.instance.currentUser;
@@ -21,92 +34,108 @@ class AddReviewController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadUserAccounts();
+    print("AddReviewController initialized"); // Debug print
+    print(
+        "Current user: ${FirebaseAuth.instance.currentUser?.uid}"); // Debug print
+    loadCompletedServices();
   }
 
-  void loadUserAccounts() async {
-    String currentUserId = currentUser!.uid;
+  void loadCompletedServices() async {
+    print("Loading completed services"); // Debug print
+    print(
+        "Current user: ${FirebaseAuth.instance.currentUser?.uid}"); // Debug print
+    try {
+      // Fetch all services
+      QuerySnapshot allServicesSnapshot = await db.collection('services').get();
 
-    // Fetch services with "Completed" status
-    QuerySnapshot completedServicesSnapshot = await db
-        .collection('services')
-        .where('status', isEqualTo: 'Completed')
-        .get();
+      print("All services: ${allServicesSnapshot.docs.length}"); // Debug print
 
-    // Extract unique user IDs from these services
-    Set<String> userIds = {};
-    for (var doc in completedServicesSnapshot.docs) {
-      if (doc['provider_uid'] != currentUserId) {
-        userIds.add(doc['provider_uid']);
+      // Print details of all services
+      for (var doc in allServicesSnapshot.docs) {
+        print("Service ID: ${doc.id}");
+        print("Service Name: ${doc['service_name']}");
+        print("Status: ${doc['status']}");
+        print("Requester UID: ${doc['requester_uid']}");
+        print("Provider UID: ${doc['provider_uid']}");
+        print("------------------------");
       }
-      if (doc['requester_uid'] != currentUserId) {
-        userIds.add(doc['requester_uid']);
+
+      print("Querying with status: Completed");
+      print("Querying with requester_uid: ${currentUser!.uid}");
+
+      // More general query for requester services
+      QuerySnapshot requesterServicesSnapshot = await db
+          .collection('services')
+          .where('requester_uid', isEqualTo: currentUser!.uid)
+          .where('status', isEqualTo: 'Completed')
+          .get();
+
+      print(
+          "Requester services (completed): ${requesterServicesSnapshot.docs.length}"); // Debug print
+
+      // More general query for provider services
+      QuerySnapshot providerServicesSnapshot = await db
+          .collection('services')
+          .where('provider_uid', isEqualTo: currentUser!.uid)
+          .where('status', isEqualTo: 'Completed')
+          .get();
+
+      print(
+          "Provider services (completed): ${providerServicesSnapshot.docs.length}"); // Debug print
+
+      List<CompletedService> services = [];
+
+      for (var doc in requesterServicesSnapshot.docs) {
+        services.add(CompletedService(
+          id: doc.id,
+          serviceName: doc['service_name'],
+          providerUid: doc['provider_uid'],
+          requesterUid: doc['requester_uid'],
+          role: 'requester',
+        ));
       }
-    }
 
-    if (userIds.isEmpty) {
-      userAccounts.clear();
-      return;
-    }
+      for (var doc in providerServicesSnapshot.docs) {
+        services.add(CompletedService(
+          id: doc.id,
+          serviceName: doc['service_name'],
+          providerUid: doc['provider_uid'],
+          requesterUid: doc['requester_uid'],
+          role: 'provider',
+        ));
+      }
 
-    // Fetch user accounts based on these user IDs
-    QuerySnapshot usersSnapshot = await db
-        .collection('users')
-        .where(FieldPath.documentId, whereIn: userIds.toList())
-        .get();
+      completedServices.assignAll(services);
 
-    userAccounts.value = usersSnapshot.docs.map((doc) {
-      return {
-        'id': doc.id,
-        'name': doc['username'],
-      };
-    }).toList();
+      if (completedServices.isNotEmpty) {
+        selectedServiceId.value = completedServices[0].id;
+        role.value = completedServices[0].role;
+      }
 
-    if (userAccounts.isNotEmpty) {
-      selectedUserId.value = userAccounts[0]['id'];
-      loadServices(); // Load services for the first user by default
+      print(
+          "Completed services loaded: ${completedServices.length}"); // Debug print
+    } catch (e, stackTrace) {
+      print("Error loading completed services: $e"); // Debug print
+      print("Stack trace: $stackTrace"); // Debug print
     }
   }
 
-  void loadServices() async {
-    if (selectedUserId.value.isEmpty) {
-      services.clear();
-      return;
-    }
-
-    Query completedServicesQuery =
-        db.collection('services').where('status', isEqualTo: 'Completed');
-
-    if (role.value != 'all') {
-      if (role.value == 'requester') {
-        completedServicesQuery = completedServicesQuery.where('requester_uid',
-            isEqualTo: selectedUserId.value);
-      } else if (role.value == 'provider') {
-        completedServicesQuery = completedServicesQuery.where('provider_uid',
-            isEqualTo: selectedUserId.value);
-      }
-    } else {
-      completedServicesQuery = completedServicesQuery.where('requester_uid',
-          isEqualTo:
-              selectedUserId.value); // Default role to requester for 'all'
-    }
-
-    QuerySnapshot servicesSnapshot = await completedServicesQuery.get();
-    services.value = servicesSnapshot.docs.map((doc) {
-      return {
-        'id': doc.id,
-        'name': doc['service_name'],
-      };
-    }).toList();
-
-    if (services.isNotEmpty) {
-      selectedServiceId.value = services[0]['id'];
-    } else {
-      selectedServiceId.value = '';
-    }
+  void updateSelectedService(String serviceId) {
+    print("Updating selected service to: $serviceId"); // Debug print
+    selectedServiceId.value = serviceId;
+    CompletedService selectedService = completedServices.firstWhere(
+      (service) => service.id == serviceId,
+    );
+    role.value = selectedService.role;
+    print("Updated role: ${role.value}"); // Debug print
   }
 
   void addReview(BuildContext context) async {
+    print("Adding review"); // Debug print
+    print("Selected service ID: ${selectedServiceId.value}"); // Debug print
+    print("Rating: ${rating.value}"); // Debug print
+    print("Review text: ${reviewDescriptionController.text}"); // Debug print
+
     if (reviewDescriptionController.text.isEmpty ||
         rating.value == 0 ||
         selectedServiceId.value.isEmpty) {
@@ -114,20 +143,36 @@ class AddReviewController extends GetxController {
       return;
     }
 
-    await db.collection('reviews').add({
-      'from_uid': currentUser!.uid, // Use logged in user ID
-      'to_uid': selectedUserId.value,
-      'service_id': selectedServiceId.value,
-      'service_type': role.value,
-      'review_text': reviewDescriptionController.text,
-      'rating': rating.value,
-      'timestamp': Timestamp.now(),
-    });
+    CompletedService selectedService = completedServices.firstWhere(
+      (service) => service.id == selectedServiceId.value,
+    );
 
-    Get.back();
+    String toUid = selectedService.role == 'requester'
+        ? selectedService.providerUid
+        : selectedService.requesterUid;
+
+    try {
+      await db.collection('reviews').add({
+        'from_uid': currentUser!.uid,
+        'to_uid': toUid,
+        'service_id': selectedServiceId.value,
+        'service_type': role.value,
+        'review_text': reviewDescriptionController.text,
+        'rating': rating.value,
+        'timestamp': Timestamp.now(),
+      });
+
+      print("Review added successfully"); // Debug print
+      Get.back();
+      Get.snackbar('Success', 'Review added successfully');
+    } catch (e) {
+      print("Error adding review: $e"); // Debug print
+      showRoundedErrorDialog(context, 'Error adding review: $e');
+    }
   }
 
   void showRoundedErrorDialog(BuildContext context, String message) {
+    print("Showing error dialog: $message"); // Debug print
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

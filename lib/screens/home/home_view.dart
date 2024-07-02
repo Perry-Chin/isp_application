@@ -7,43 +7,45 @@ import 'home_list.dart';
 class CurvedBackgroundPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint();
+    final Paint paint = Paint();
 
     // Blue background paint
-    Path bluePath = Path();
+    final Path bluePath = Path();
     bluePath.moveTo(0, 0);
-    bluePath.lineTo(0, size.height * 0.5);
+    bluePath.lineTo(0, size.height * 0.35);
     bluePath.quadraticBezierTo(
       size.width / 2,
-      size.height * 3,
+      size.height * 0.25,
       size.width,
-      size.height * 0.5,
+      size.height * 0.35,
     );
     bluePath.lineTo(size.width, 0);
     bluePath.close();
     paint.color = AppColor.secondaryColor;
     canvas.drawPath(bluePath, paint);
 
-    // Beige curved background paint
-    Path beigePath = Path();
-    beigePath.moveTo(0, size.height * 0.5);
+    // Beige background paint
+    paint.color = const Color(0xFFF3E9E9);
+    canvas.drawRect(
+        Rect.fromLTRB(0, size.height * 0.35, size.width, size.height), paint);
+
+    // Filling the gap
+    final Path beigePath = Path();
+    beigePath.moveTo(0, size.height * 0.35);
     beigePath.quadraticBezierTo(
       size.width / 2,
-      size.height * 0.3,
+      size.height * 0.25,
       size.width,
-      size.height * 0.5,
+      size.height * 0.35,
     );
     beigePath.lineTo(size.width, size.height);
     beigePath.lineTo(0, size.height);
     beigePath.close();
-    paint.color = const Color(0xFFF3E9E9);
     canvas.drawPath(beigePath, paint);
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
 class HomePage extends StatefulWidget {
@@ -59,24 +61,30 @@ class _HomePageState extends State<HomePage> {
   String desc = '';
   String definition = '';
 
-  // Example list of images (you can replace this with your actual data structure)
-  List<String> serviceImages = [
+  static const List<String> serviceImages = [
     'assets/images/groomingdog.png',
     'assets/images/walking.png',
     'assets/images/sitting.png',
     'assets/images/training.png',
     'assets/images/add.png',
-    // Add more images as needed
   ];
 
-  void _onSearchPressed() {
-    // Handle search button press here
-    print('Search button pressed');
-    // You can navigate to a search screen or show a search dialog here
-  }
+  static const List<Map<String, dynamic>> serviceCards = [
+    {
+      'name': 'Username',
+      'date': 'January 2024 • 5:00 pm',
+      'location': 'Illinois',
+      'price': '\$100',
+    },
+    {
+      'name': 'Username',
+      'date': 'January 2024 • 5:00 pm',
+      'location': 'Illinois',
+      'price': '\$100',
+    },
+  ];
 
   void _onServiceImagePressed(int index) {
-    // Handle image button press based on the index
     setState(() {
       switch (index) {
         case 0:
@@ -106,7 +114,7 @@ class _HomePageState extends State<HomePage> {
               'the fine art of turning chaos into harmony, one pawshake at a time.';
           break;
         case 4:
-          selectedService = 'add'; // Change this to handle the last image
+          selectedService = 'add';
           break;
         default:
           selectedService = '';
@@ -117,22 +125,20 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          // Custom painted background
-          Positioned.fill(
-            child: CustomPaint(
-              painter: CurvedBackgroundPainter(),
-            ),
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height,
           ),
-          Positioned.fill(
-            child: SingleChildScrollView(
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(20, 40, 20, 0),
+          child: CustomPaint(
+            painter: CurvedBackgroundPainter(),
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 20),
                     const Text(
                       "FurFriends",
                       style: TextStyle(
@@ -142,154 +148,182 @@ class _HomePageState extends State<HomePage> {
                         fontFamily: 'Silence Rocken',
                       ),
                     ),
-                    const SizedBox(height: 30),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25.0),
-                        border: Border.all(color: Colors.white),
+                    const SizedBox(height: 20),
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search for a service',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        prefixIcon: const Icon(Icons.search),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Row(
+                    ),
+                    const SizedBox(height: 100),
+                    const Text(
+                      "Choose",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: "Quicksand",
+                        fontSize: 30,
+                      ),
+                    ),
+                    const Text(
+                      "your service!",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: "Quicksand",
+                        fontSize: 30,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(
+                        serviceImages.length,
+                        (index) => GestureDetector(
+                          onTap: () => _onServiceImagePressed(index),
+                          child: Image.asset(
+                            serviceImages[index],
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    if (selectedService.isNotEmpty) ...[
+                      Row(
                         children: [
-                          const Expanded(
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText: 'Search...',
-                                border: InputBorder.none,
-                              ),
+                          Text(
+                            selectedService,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontFamily: "Safety",
+                              fontSize: 22,
                             ),
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.search),
-                            onPressed: _onSearchPressed,
+                          const SizedBox(width: 10),
+                          Text(
+                            selectedServicePronun,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontFamily: "Doulos SIL",
+                              fontSize: 18,
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    const SizedBox(height: 180),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Choose",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: "Quicksand",
-                            fontSize: 30,
-                          ),
+                      const SizedBox(height: 5),
+                      Text(
+                        desc,
+                        style: const TextStyle(
+                          fontFamily: 'Times New Roman',
+                          fontStyle: FontStyle.italic,
+                          color: Colors.black,
+                          fontSize: 18,
                         ),
-                        const Text(
-                          "your service",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: "Quicksand",
-                            fontSize: 30,
-                            fontWeight: FontWeight.w500,
-                          ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        definition,
+                        style: const TextStyle(
+                          fontFamily: 'Times New Roman',
+                          color: Colors.black,
+                          fontSize: 18,
                         ),
-                        const SizedBox(height: 30),
-                        // ListView.builder for dynamic list of images
-                        if (serviceImages.length <= 5)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: List.generate(
-                              serviceImages.length,
-                              (index) => GestureDetector(
-                                onTap: () => _onServiceImagePressed(index),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 14.0),
-                                  child: Image.asset(
-                                    serviceImages[index],
-                                    width: 60,
-                                    height: 60,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            ),
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        height: 470,
+                        child: HomeList(
+                          selectedService: selectedService,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 20),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.75,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemCount: serviceCards.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                        if (serviceImages.length > 5)
-                          SizedBox(
-                            height: 150, // Adjust height as needed
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: serviceImages.length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () => _onServiceImagePressed(index),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 10.0),
-                                    child: Image.asset(
-                                      serviceImages[index],
-                                      width: 100,
-                                      height: 100,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        if (selectedService.isNotEmpty) ...[
-                          const SizedBox(height: 30),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                selectedService,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: "Safety",
-                                  fontSize: 22,
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(15)),
+                                  child: Image.asset(
+                                    'assets/images/groomingdog.png',
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  ),
                                 ),
                               ),
-                              const SizedBox(width: 20),
-                              Text(
-                                selectedServicePronun,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: "Doulos SIL",
-                                  fontSize: 18,
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      serviceCards[index]['name'],
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      serviceCards[index]['date'],
+                                      style: const TextStyle(
+                                          color: Colors.grey, fontSize: 12),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.location_on,
+                                            color: Colors.grey, size: 16),
+                                        const SizedBox(width: 2),
+                                        Text(serviceCards[index]['location'],
+                                            style:
+                                                const TextStyle(fontSize: 12)),
+                                        const Spacer(),
+                                        Text(
+                                          serviceCards[index]['price'],
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            desc,
-                            style: const TextStyle(
-                              fontFamily: 'Times New Roman',
-                              fontStyle: FontStyle.italic,
-                              color: Colors.black,
-                              fontSize: 18,
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            definition,
-                            style: const TextStyle(
-                              fontFamily: 'Times New Roman',
-                              color: Colors.black,
-                              fontSize: 18,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          SizedBox(
-                            height: 470,
-                            child: HomeList(
-                              selectedService: selectedService,
-                            ),
-                          ),
-                        ],
-                      ],
+                        );
+                      },
                     ),
                   ],
                 ),
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

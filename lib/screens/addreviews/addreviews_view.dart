@@ -3,13 +3,14 @@ import 'package:get/get.dart';
 
 import '../../../common/values/values.dart';
 import '../../../common/widgets/widgets.dart';
-import 'addreviews_controller.dart'; // Corrected the import statement
+import 'addreviews_controller.dart';
 
 class AddReviewPage extends GetView<AddReviewController> {
   const AddReviewPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    print("Building AddReviewPage"); // Debug print
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
       appBar: AppBar(
@@ -27,74 +28,10 @@ class AddReviewPage extends GetView<AddReviewController> {
               children: [
                 const SizedBox(height: 30),
                 Obx(() {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: DropdownButtonFormField<String>(
-                      value: controller.selectedUserId.value.isNotEmpty
-                          ? controller.selectedUserId.value
-                          : null,
-                      items: controller.userAccounts
-                          .map((user) => DropdownMenuItem<String>(
-                                value: user['id'],
-                                child: Text(user['name']),
-                              ))
-                          .toList(),
-                      onChanged: (value) {
-                        controller.selectedUserId.value = value!;
-                        controller
-                            .loadServices(); // Load services when user changes
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Select User',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        contentPadding: const EdgeInsets.all(10),
-                      ),
-                    ),
-                  );
-                }),
-                const SizedBox(height: 10),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: DropdownButtonFormField<String>(
-                    value: controller.role.value,
-                    items: const [
-                      DropdownMenuItem<String>(
-                        value: 'all',
-                        child: Text('All'),
-                      ),
-                      DropdownMenuItem<String>(
-                        value: 'requester',
-                        child: Text('Requester'),
-                      ),
-                      DropdownMenuItem<String>(
-                        value: 'provider',
-                        child: Text('Provider'),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      controller.role.value = value!;
-                      controller
-                          .loadServices(); // Load services when role changes
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Role',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      contentPadding: const EdgeInsets.all(10),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Obx(() {
+                  print(
+                      "Rebuilding dropdown. Selected service: ${controller.selectedServiceId.value}"); // Debug print
+                  print(
+                      "Number of completed services: ${controller.completedServices.length}"); // Debug print
                   return Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -104,32 +41,56 @@ class AddReviewPage extends GetView<AddReviewController> {
                       value: controller.selectedServiceId.value.isNotEmpty
                           ? controller.selectedServiceId.value
                           : null,
-                      items: controller.services.isNotEmpty
-                          ? controller.services
-                              .map((service) => DropdownMenuItem<String>(
-                                    value: service['id'],
-                                    child: Text(service['name']),
-                                  ))
-                              .toList()
-                          : [],
-                      onChanged: controller.services.isNotEmpty
-                          ? (value) {
-                              controller.selectedServiceId.value = value!;
-                            }
-                          : null,
+                      items: controller.completedServices
+                          .map((service) => DropdownMenuItem<String>(
+                                value: service.id,
+                                child: Text(
+                                    "${service.serviceName} (${service.role})"),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          print("Service selected: $value"); // Debug print
+                          controller.updateSelectedService(value);
+                        }
+                      },
                       decoration: InputDecoration(
-                        labelText: 'Select Service',
+                        labelText: 'Select Completed Service',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                         contentPadding: const EdgeInsets.all(10),
                       ),
-                      disabledHint: const Text('No services available'),
                     ),
                   );
                 }),
                 const SizedBox(height: 10),
                 Obx(() {
+                  print(
+                      "Rebuilding role field. Current role: ${controller.role.value}"); // Debug print
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      readOnly: true,
+                      controller:
+                          TextEditingController(text: controller.role.value),
+                      decoration: InputDecoration(
+                        labelText: 'Role',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        contentPadding: const EdgeInsets.all(10),
+                      ),
+                    ),
+                  );
+                }),
+                const SizedBox(height: 10),
+                Obx(() {
+                  print(
+                      "Rebuilding review section. Selected service: ${controller.selectedServiceId.value}"); // Debug print
                   return controller.selectedServiceId.value.isNotEmpty
                       ? Column(
                           children: [
@@ -145,6 +106,8 @@ class AddReviewPage extends GetView<AddReviewController> {
                                   ),
                                   onPressed: () {
                                     controller.rating.value = index + 1;
+                                    print(
+                                        "Rating set to: ${controller.rating.value}"); // Debug print
                                   },
                                 );
                               }),
@@ -180,6 +143,7 @@ class AddReviewPage extends GetView<AddReviewController> {
                 const SizedBox(height: 30),
                 ApplyButton(
                   onPressed: () {
+                    print("Submit Review button pressed"); // Debug print
                     controller.addReview(context);
                   },
                   buttonText: "Submit Review",

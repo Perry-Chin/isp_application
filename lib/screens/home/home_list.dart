@@ -16,7 +16,8 @@ class HomeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final HomeController controller = Get.find<HomeController>(); // Retrieve HomeController instance
+    final HomeController controller =
+        Get.find<HomeController>(); // Retrieve HomeController instance
 
     return StreamBuilder<Map<String, UserData?>>(
       stream: controller.combinedStream,
@@ -42,11 +43,14 @@ class HomeList extends StatelessWidget {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         var serviceItem = controller.state.serviceList[index];
-                        var userData = userDataMap[serviceItem.data().reqUserid];
+                        var userData =
+                            userDataMap[serviceItem.data().reqUserid];
 
                         // Check if selectedService matches the current serviceItem
-                        if (selectedService.isNotEmpty && serviceItem.data().serviceName != selectedService) {
-                          return SizedBox.shrink(); // Skip rendering if not matching
+                        if (selectedService.isNotEmpty &&
+                            serviceItem.data().serviceName != selectedService) {
+                          return const SizedBox
+                              .shrink(); // Skip rendering if not matching
                         }
 
                         return homeListItem(serviceItem, userData);
@@ -63,7 +67,8 @@ class HomeList extends StatelessWidget {
     );
   }
 
-  Widget homeListItem(QueryDocumentSnapshot<ServiceData> serviceItem, UserData? userData) {
+  Widget homeListItem(
+      QueryDocumentSnapshot<ServiceData> serviceItem, UserData? userData) {
     return Card(
       color: Colors.transparent,
       elevation: 4,
@@ -91,7 +96,8 @@ class HomeList extends StatelessWidget {
                   radius: 28.0,
                   backgroundColor: Colors.transparent,
                   child: ClipOval(
-                    child: userData?.photourl != null && userData!.photourl!.isNotEmpty
+                    child: userData?.photourl != null &&
+                            userData!.photourl!.isNotEmpty
                         ? FadeInImage.assetNetwork(
                             placeholder: AppImage.profile,
                             image: userData.photourl!,

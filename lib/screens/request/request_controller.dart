@@ -2,16 +2,17 @@
 
 // ignore_for_file: avoid_init_to_null, non_constant_identifier_names, use_build_context_synchronously
 
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
-
+import 'package:get/get.dart';
 
 import '../../common/data/service.dart';
 import '../../common/middlewares/middlewares.dart';
@@ -22,24 +23,14 @@ import '../../common/widgets/widgets.dart';
 import 'request_index.dart';
 
 class RequestController extends GetxController {
-  RequestController();
 
-  bool validateFields() {
-    return serviceController.text.isNotEmpty &&
-        descriptionController.text.isNotEmpty &&
-        rateController.text.isNotEmpty &&
-        locationController.text.isNotEmpty &&
-        dateController.text.isNotEmpty &&
-        starttimeController.text.isNotEmpty &&
-        endtimeController.text.isNotEmpty;
-  }
-
+  // Variables
   File? photo;
   var doc_id = null;
   final currentStep = 0.obs;
   final token = UserStore.to.token;
   var requestCompleted = false.obs;
-  //
+  Map<String, dynamic>? paymentIntent;
   final serviceController = TextEditingController();
   final descriptionController = TextEditingController();
   final rateController = TextEditingController();
@@ -95,73 +86,6 @@ class RequestController extends GetxController {
     updateFiltersAndNavigateBack();
   }
 
-  // Function to select a data using date picker
-  Future<void> selectDate(BuildContext context) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-      // Customizing the appearance of the date picker
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            // Customize colors of date picker
-            colorScheme: const ColorScheme.light(
-              primary: AppColor.secondaryColor,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: AppColor.secondaryColor,
-              ),
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-
-    // If a date is selected, update the dateController text with the selected date
-    if (pickedDate != null) {
-      dateController.text = pickedDate.toString().split(" ")[0];
-    }
-  }
-
-  // Function to select a time from the time picker
-  Future<void> selectTime(BuildContext context, bool isStartTime) async {
-    TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-      // Customizing the appearance of the time picker
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            // Customize colors of date picker
-            colorScheme: const ColorScheme.light(
-              primary: AppColor.secondaryColor,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: AppColor.secondaryColor,
-              ),
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-
-    // If a time is selected, update the timeController text with the selected time
-    if (pickedTime != null) {
-      final formattedTime = pickedTime.format(context);
-      if (isStartTime) {
-        starttimeController.text = formattedTime;
-      } else {
-        endtimeController.text = formattedTime;
-      }
-    }
-  }
-
   // Function to get the download URL of an image from Firebase Storage
   Future getImgUrl(String name) async {
     final spaceRef =
@@ -196,20 +120,22 @@ class RequestController extends GetxController {
    appLoading(context);
 
     try {
-      //Check if all fields are filled
-      if (!validateFields()) {
-        throw 'Please fill in all fields.';
-      }
+      // Form validation
+      // if (!requestFormKey.currentState!.validate()) {
+      //   // Dismiss loading dialog
+      //   Navigator.pop(context);
+      //   return;
+      // }
 
-      //Check if rate is number
-      if (int.tryParse(rateController.text) == null) {
-        throw 'Rate must be a number.';
-      }
+      final duration = calculateDuration(starttimeController.text, endtimeController.text);
 
-      // Create service document and add to Firestore
-      await createServiceDocument();
+      // Assuming rateController.text contains a valid number and duration is defined
+      String amount = (double.parse(rateController.text) * duration * 100).toInt().toString();
 
-      Navigator.of(context).pop();
+      // Dismiss loading dialog
+      Navigator.pop(context);
+
+      makePayment(amount);
     } catch (error) {
       // Dismiss loading dialog
       Navigator.pop(context);
@@ -238,6 +164,61 @@ class RequestController extends GetxController {
     super.onInit();
     var data = Get.parameters;
     doc_id = data['doc_id'];
+  }
+
+  void makePayment(String amount) async {
+    try {
+      paymentIntent = await createPaymentIntent(amount);
+
+      var gpay = const PaymentSheetGooglePay(
+        merchantCountryCode: 'SG',
+        currencyCode: 'SG',
+        testEnv: true,
+      );
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: paymentIntent!['client_secret'],
+          merchantDisplayName: 'Flutter Stripe Store Demo',
+          style: ThemeMode.dark,
+          googlePay: gpay
+      ));
+
+      displayPaymentSheet();
+        
+      print("objectsdfsd");
+    } catch (e) {
+      print('Exception: $e');
+    }
+  }
+
+  createPaymentIntent(String amount) async {
+    try {
+      final body = {
+        'amount': amount,
+        'currency': "SGD",
+      };
+      http.Response response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/payment_intents'),
+        body: body,
+        headers: {
+          'Authorization': 'Bearer sk_test_51PW9k609OEdaNyd6QgHUeSko1k4I8mfw6sgnZBqHdgGaFru0PibwOxAejWOM7ETDIJUlCKWXze5ME4KBBMyDdi55002kBJbgBe',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+      );
+      return json.decode(response.body);
+    } catch (err) {
+      print('err charging user: ${err.toString()}');
+    }
+  }
+
+  void displayPaymentSheet() async {
+    try {
+      await Stripe.instance.presentPaymentSheet();
+      // Create service document and add to Firestore
+      await createServiceDocument();
+    } catch (e) {
+      print('Exception: $e');
+    }
   }
 
   Future<void> createServiceDocument() async {
@@ -290,12 +271,5 @@ class RequestController extends GetxController {
     final minutes = duration.inMinutes % 60;
 
     return hours + minutes / 60.0;
-  }
-
-  Future<String> getClientSecret(int amount) async {
-    final res = await FirebaseFunctions.instance
-        .httpsCallable('createPaymentIntent')
-        .call({'amount': '$amount', 'currency': 'sgd'});
-    return res.data['clientSecret'];
   }
 }

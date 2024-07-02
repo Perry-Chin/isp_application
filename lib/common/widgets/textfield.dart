@@ -57,7 +57,6 @@ class MyTextField extends GetView {
                   onPressed: () {},
                 )
               : null,
-          
           labelStyle: const TextStyle(
             color: Colors.black,
             fontSize: 14.0,
@@ -65,6 +64,10 @@ class MyTextField extends GetView {
           ),
           hintStyle: const TextStyle(
             color: Colors.grey,
+            fontSize: 14.0,
+          ),
+          errorStyle: const TextStyle(
+            color: Colors.red,
             fontSize: 14.0,
           ),
           enabledBorder: OutlineInputBorder(
@@ -79,6 +82,10 @@ class MyTextField extends GetView {
             borderSide: const BorderSide(color: AppColor.secondaryColor, width: 1.5),
             borderRadius: BorderRadius.circular(10.0),
           ),
+          errorBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.red, width: 1.5),
+            borderRadius: BorderRadius.circular(10.0),
+          )
         ),
         validator: validator
       ),

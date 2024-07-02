@@ -10,9 +10,9 @@ class ServiceData {
   final String? image;
   final String? location;
   final String? date;
-  late final String? starttime;
+  final String? starttime;
   final String? endtime;
-  final int? duration;
+  final double? duration;
   final String? status;
   final int? statusid;
   final String? reqUserid;
@@ -54,7 +54,7 @@ class ServiceData {
       date: data?['date'],
       starttime: data?['start_time'],
       endtime: data?['end_time'],
-      duration: data?['duration'],
+      duration: (data?['duration'] as num?)?.toDouble(),
       status: data?['status'],
       statusid: data?['statusid'],
       reqUserid: data?['requester_uid'],

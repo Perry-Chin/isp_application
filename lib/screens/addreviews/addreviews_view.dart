@@ -3,15 +3,13 @@ import 'package:get/get.dart';
 
 import '../../../common/values/values.dart';
 import '../../../common/widgets/widgets.dart';
-import 'addreviews_index.dart';
+import 'addreviews_controller.dart'; // Corrected the import statement
 
 class AddReviewPage extends GetView<AddReviewController> {
   const AddReviewPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    controller.loadUserAccounts();
-
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
       appBar: AppBar(

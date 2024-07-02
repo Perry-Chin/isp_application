@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+// import '../../common/data/data.dart';
 import '../../common/values/values.dart';
 
 class AddReviewController extends GetxController {
@@ -14,6 +15,9 @@ class AddReviewController extends GetxController {
   final services = <Map<String, dynamic>>[].obs;
   final selectedServiceId = ''.obs;
 
+  final db = FirebaseFirestore.instance;
+  final currentUser = FirebaseAuth.instance.currentUser;
+
   @override
   void onInit() {
     super.onInit();
@@ -21,19 +25,42 @@ class AddReviewController extends GetxController {
   }
 
   void loadUserAccounts() async {
-    String currentUserId = FirebaseAuth.instance.currentUser!.uid;
-    QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection('users').limit(5).get();
+    String currentUserId = currentUser!.uid;
 
-    userAccounts.value = snapshot.docs
-        .map((doc) {
-          return {
-            'id': doc.id,
-            'name': doc['username'],
-          };
-        })
-        .where((user) => user['id'] != currentUserId)
-        .toList();
+    // Fetch services with "Completed" status
+    QuerySnapshot completedServicesSnapshot = await db
+        .collection('services')
+        .where('status', isEqualTo: 'Completed')
+        .get();
+
+    // Extract unique user IDs from these services
+    Set<String> userIds = {};
+    for (var doc in completedServicesSnapshot.docs) {
+      if (doc['provider_uid'] != currentUserId) {
+        userIds.add(doc['provider_uid']);
+      }
+      if (doc['requester_uid'] != currentUserId) {
+        userIds.add(doc['requester_uid']);
+      }
+    }
+
+    if (userIds.isEmpty) {
+      userAccounts.clear();
+      return;
+    }
+
+    // Fetch user accounts based on these user IDs
+    QuerySnapshot usersSnapshot = await db
+        .collection('users')
+        .where(FieldPath.documentId, whereIn: userIds.toList())
+        .get();
+
+    userAccounts.value = usersSnapshot.docs.map((doc) {
+      return {
+        'id': doc.id,
+        'name': doc['username'],
+      };
+    }).toList();
 
     if (userAccounts.isNotEmpty) {
       selectedUserId.value = userAccounts[0]['id'];
@@ -47,17 +74,25 @@ class AddReviewController extends GetxController {
       return;
     }
 
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('services')
-        .where(
-            (role.value == 'all' || role.value == 'provider')
-                ? 'provider_uid'
-                : 'requester_uid',
-            isEqualTo: selectedUserId.value)
-        .where('status', isEqualTo: 'Completed')
-        .get();
+    Query completedServicesQuery =
+        db.collection('services').where('status', isEqualTo: 'Completed');
 
-    services.value = snapshot.docs.map((doc) {
+    if (role.value != 'all') {
+      if (role.value == 'requester') {
+        completedServicesQuery = completedServicesQuery.where('requester_uid',
+            isEqualTo: selectedUserId.value);
+      } else if (role.value == 'provider') {
+        completedServicesQuery = completedServicesQuery.where('provider_uid',
+            isEqualTo: selectedUserId.value);
+      }
+    } else {
+      completedServicesQuery = completedServicesQuery.where('requester_uid',
+          isEqualTo:
+              selectedUserId.value); // Default role to requester for 'all'
+    }
+
+    QuerySnapshot servicesSnapshot = await completedServicesQuery.get();
+    services.value = servicesSnapshot.docs.map((doc) {
       return {
         'id': doc.id,
         'name': doc['service_name'],
@@ -79,9 +114,8 @@ class AddReviewController extends GetxController {
       return;
     }
 
-    await FirebaseFirestore.instance.collection('reviews').add({
-      'from_uid':
-          FirebaseAuth.instance.currentUser!.uid, // Use logged in user ID
+    await db.collection('reviews').add({
+      'from_uid': currentUser!.uid, // Use logged in user ID
       'to_uid': selectedUserId.value,
       'service_id': selectedServiceId.value,
       'service_type': role.value,

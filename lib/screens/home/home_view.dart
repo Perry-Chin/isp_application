@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/values/values.dart';
+import '../../common/widgets/searchbox_bar.dart';
 import 'home_list.dart';
 
 class CurvedBackgroundPainter extends CustomPainter {
@@ -60,6 +61,7 @@ class _HomePageState extends State<HomePage> {
   String selectedServicePronun = '';
   String desc = '';
   String definition = '';
+  final TextEditingController _searchController = TextEditingController();
 
   static const List<String> serviceImages = [
     'assets/images/groomingdog.png',
@@ -130,6 +132,155 @@ class _HomePageState extends State<HomePage> {
           constraints: BoxConstraints(
             minHeight: MediaQuery.of(context).size.height,
           ),
+<<<<<<< HEAD
+          Positioned.fill(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(20, 40, 20, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "FurFriends",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 33,
+                      fontFamily: 'Silence Rocken',
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  SearchBoxBar(
+                    controller: _searchController,
+                    onChanged: (value) {
+                      // Call function to filter service list based on username
+                      _filterServiceList(value);
+                    },
+                    showSuffixIcon: true,
+                  ),
+                  const SizedBox(height: 180),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Choose",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: "Quicksand",
+                              fontSize: 30,
+                            ),
+                          ),
+                          const Text(
+                            "your service",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: "Quicksand",
+                              fontSize: 30,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          // ListView.builder for dynamic list of images
+                          if (serviceImages.length <= 5)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: List.generate(
+                                serviceImages.length,
+                                (index) => GestureDetector(
+                                  onTap: () => _onServiceImagePressed(index),
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.only(right: 14.0),
+                                    child: Image.asset(
+                                      serviceImages[index],
+                                      width: 60,
+                                      height: 60,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          if (serviceImages.length > 5)
+                            SizedBox(
+                              height: 150, // Adjust height as needed
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: serviceImages.length,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () =>
+                                        _onServiceImagePressed(index),
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 10.0),
+                                      child: Image.asset(
+                                        serviceImages[index],
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          if (selectedService.isNotEmpty) ...[
+                            const SizedBox(height: 30),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  selectedService,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: "Safety",
+                                    fontSize: 22,
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                                Text(
+                                  selectedServicePronun,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: "Doulos SIL",
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              desc,
+                              style: const TextStyle(
+                                fontFamily: 'Times New Roman',
+                                fontStyle: FontStyle.italic,
+                                color: Colors.black,
+                                fontSize: 18,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              definition,
+                              style: const TextStyle(
+                                fontFamily: 'Times New Roman',
+                                color: Colors.black,
+                                fontSize: 18,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              height: 470,
+                              child: HomeList(
+                                selectedService: selectedService,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+=======
           child: CustomPaint(
             painter: CurvedBackgroundPainter(),
             child: SafeArea(
@@ -317,15 +468,22 @@ class _HomePageState extends State<HomePage> {
                           ),
                         );
                       },
+>>>>>>> cfa87a38bda090b83efaeb7b340d92b830743705
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  void _filterServiceList(String value) {
+    // Implement your logic here to filter the service list
+    print('Filtering service list with value: $value');
+    // You can update state variables or call methods to update the UI based on the search value
   }
 }
 

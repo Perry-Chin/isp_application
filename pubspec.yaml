@@ -172,6 +172,8 @@ flutter:
     - family: Safety
       fonts: 
         - asset: fonts/safety/SafetyMedium.otf
+
+
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

@@ -1,19 +1,68 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import '../../common/data/data.dart';
-import '../../common/storage/storage.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'home_index.dart';
 
-class HomeList extends GetView<HomeController> {
-  final token = UserStore.to.token;
-  HomeList({super.key});
-  
+class HomeList extends StatelessWidget {
+  final String selectedService; // Define selectedService here
+
+  HomeList({Key? key, required this.selectedService}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final HomeController controller = Get.find<HomeController>(); // Retrieve HomeController instance
+
+    return StreamBuilder<Map<String, UserData?>>(
+      stream: controller.combinedStream,
+      builder: (context, snapshot) {
+        final userDataMap = snapshot.data ?? {};
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return Obx(
+          () => SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: true,
+            controller: controller.refreshController,
+            onLoading: controller.onLoading,
+            onRefresh: controller.onRefresh,
+            header: const WaterDropHeader(),
+            child: CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.w),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        var serviceItem = controller.state.serviceList[index];
+                        var userData = userDataMap[serviceItem.data().reqUserid];
+
+                        // Check if selectedService matches the current serviceItem
+                        if (selectedService.isNotEmpty && serviceItem.data().serviceName != selectedService) {
+                          return SizedBox.shrink(); // Skip rendering if not matching
+                        }
+
+                        return homeListItem(serviceItem, userData);
+                      },
+                      childCount: controller.state.serviceList.length,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget homeListItem(QueryDocumentSnapshot<ServiceData> serviceItem, UserData? userData) {
     return Card(
       color: Colors.transparent,
@@ -21,17 +70,10 @@ class HomeList extends GetView<HomeController> {
       margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       child: InkWell(
         onTap: () {
-          // Handle on tap
-          var reqUserid = "";
-          if(serviceItem.data().reqUserid == token) {
-            reqUserid = serviceItem.data().reqUserid ?? "";
-          }
-          else {
-            reqUserid = serviceItem.data().reqUserid ?? "";
-          }
+          var reqUserid = serviceItem.data().reqUserid ?? "";
           Get.toNamed("/detail", parameters: {
             "doc_id": serviceItem.id,
-            "req_uid": reqUserid
+            "req_uid": reqUserid,
           });
         },
         child: Container(
@@ -49,23 +91,22 @@ class HomeList extends GetView<HomeController> {
                   radius: 28.0,
                   backgroundColor: Colors.transparent,
                   child: ClipOval(
-                    child: userData?.photourl != null && userData!.photourl!.isNotEmpty ?
-                    FadeInImage.assetNetwork(
-                      placeholder: AppImage.profile,
-                      image: userData.photourl ?? "",
-                      fadeInDuration: const Duration(milliseconds: 100),
-                      fit: BoxFit.cover,
-                      width: 54.w,
-                      height: 54.w,
-                    ) :
-                    Image.asset(AppImage.profile),
+                    child: userData?.photourl != null && userData!.photourl!.isNotEmpty
+                        ? FadeInImage.assetNetwork(
+                            placeholder: AppImage.profile,
+                            image: userData.photourl!,
+                            fadeInDuration: const Duration(milliseconds: 100),
+                            fit: BoxFit.cover,
+                            width: 54.w,
+                            height: 54.w,
+                          )
+                        : Image.asset(AppImage.profile),
                   ),
                 ),
                 title: Padding(
                   padding: const EdgeInsets.only(bottom: 3),
                   child: Row(
                     children: [
-                      // Username of requester
                       Text(
                         userData?.username ?? "",
                         style: const TextStyle(
@@ -74,12 +115,10 @@ class HomeList extends GetView<HomeController> {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      // Rating
                       const Rating(rating: 4.5),
                     ],
                   ),
                 ),
-                // Date and time
                 subtitle: Text(
                   "${serviceItem.data().date}, ${serviceItem.data().starttime}",
                 ),
@@ -118,15 +157,7 @@ class HomeList extends GetView<HomeController> {
                         ),
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "\$${serviceItem.data().rate?.toString() ?? "0"}/h"
-                        ),
-                      ],
-                    ),
+                    Text("\$${serviceItem.data().rate?.toString() ?? "0"}/h"),
                   ],
                 ),
               ),
@@ -134,49 +165,6 @@ class HomeList extends GetView<HomeController> {
           ),
         ),
       ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // Use a StreamBuilder to listen to the combined data stream from the controller
-    return StreamBuilder<Map<String, UserData?>>(
-      stream: controller.combinedStream,
-      builder: (context, snapshot) {
-        // Create a map to associate user data with service data based on the 'reqUserid'
-        final userDataMap = snapshot.data ?? {};
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          // return const ShimmerLoading();
-          return const Center(child: CircularProgressIndicator());
-        }
-        return Obx(
-          () => SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: true,
-            controller: controller.refreshController,
-            onLoading: controller.onLoading,
-            onRefresh: controller.onRefresh,
-            header: const WaterDropHeader(),
-            child: CustomScrollView(
-              slivers: [
-                SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.w),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        var serviceItem = controller.state.filteredServiceList[index];
-                        var userData = userDataMap[serviceItem.data().reqUserid];
-                        return homeListItem(serviceItem, userData);
-                      },
-                      childCount: controller.state.filteredServiceList.length
-                    )
-                  ),
-                ),
-              ],
-            ),
-          )
-        );
-      }
     );
   }
 }

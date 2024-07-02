@@ -125,12 +125,12 @@ class RequestController extends GetxController {
     try {
       isProcessing.value = true;
       // Form validation
-      // if (!requestFormKey.currentState!.validate()) {
-      //   // Dismiss loading dialog
-      //   Navigator.pop(context);
-      //   isProcessing.value = false;
-      //   return;
-      // }
+      if (!requestFormKey.currentState!.validate()) {
+        // Dismiss loading dialog
+        Navigator.pop(context);
+        isProcessing.value = false;
+        return;
+      }
 
       print(isProcessing.value);
 
@@ -190,7 +190,7 @@ class RequestController extends GetxController {
           merchantDisplayName: 'Flutter Stripe Store Demo',
           style: ThemeMode.dark,
           googlePay: gpay,
-          billingDetails: BillingDetails(
+          billingDetails: const BillingDetails(
             address: Address(
               city: '',
               country: 'SG',

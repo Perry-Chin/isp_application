@@ -132,7 +132,6 @@ class _HomePageState extends State<HomePage> {
           constraints: BoxConstraints(
             minHeight: MediaQuery.of(context).size.height,
           ),
-<<<<<<< HEAD
           Positioned.fill(
             child: Container(
               margin: const EdgeInsets.fromLTRB(20, 40, 20, 0),
@@ -280,7 +279,6 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ],
                       ),
-=======
           child: CustomPaint(
             painter: CurvedBackgroundPainter(),
             child: SafeArea(
@@ -468,7 +466,6 @@ class _HomePageState extends State<HomePage> {
                           ),
                         );
                       },
->>>>>>> cfa87a38bda090b83efaeb7b340d92b830743705
                     ),
                   ),
                 ],

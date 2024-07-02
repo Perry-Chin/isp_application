@@ -27,7 +27,27 @@ class _ReviewsListState extends State<ReviewsList> {
 
   Future<void> _fetchReviews() async {
     await profileController.fetchReviews(widget.reviewsType);
+    _sortReviews();
     _refreshController.refreshCompleted();
+  }
+
+  void _sortReviews() {
+    switch (sortType) {
+      case 'Newest':
+        profileController.reviews
+            .sort((a, b) => b.timestamp.compareTo(a.timestamp));
+        break;
+      case 'Oldest':
+        profileController.reviews
+            .sort((a, b) => a.timestamp.compareTo(b.timestamp));
+        break;
+      case 'Highest Rating':
+        profileController.reviews.sort((a, b) => b.rating.compareTo(a.rating));
+        break;
+      case 'Lowest Rating':
+        profileController.reviews.sort((a, b) => a.rating.compareTo(b.rating));
+        break;
+    }
   }
 
   void _showSortOptions() {
@@ -47,8 +67,7 @@ class _ReviewsListState extends State<ReviewsList> {
                 onTap: () {
                   setState(() {
                     sortType = 'Newest';
-                    profileController.reviews
-                        .sort((a, b) => b.timestamp.compareTo(a.timestamp));
+                    _sortReviews();
                   });
                   Navigator.pop(context);
                 },
@@ -58,8 +77,7 @@ class _ReviewsListState extends State<ReviewsList> {
                 onTap: () {
                   setState(() {
                     sortType = 'Oldest';
-                    profileController.reviews
-                        .sort((a, b) => a.timestamp.compareTo(b.timestamp));
+                    _sortReviews();
                   });
                   Navigator.pop(context);
                 },
@@ -69,8 +87,7 @@ class _ReviewsListState extends State<ReviewsList> {
                 onTap: () {
                   setState(() {
                     sortType = 'Highest Rating';
-                    profileController.reviews
-                        .sort((a, b) => b.rating.compareTo(a.rating));
+                    _sortReviews();
                   });
                   Navigator.pop(context);
                 },
@@ -80,8 +97,7 @@ class _ReviewsListState extends State<ReviewsList> {
                 onTap: () {
                   setState(() {
                     sortType = 'Lowest Rating';
-                    profileController.reviews
-                        .sort((a, b) => a.rating.compareTo(b.rating));
+                    _sortReviews();
                   });
                   Navigator.pop(context);
                 },
@@ -117,7 +133,7 @@ class _ReviewsListState extends State<ReviewsList> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: Text(sortType), // Update button text dynamically
+                  child: Text(sortType),
                 ),
               ],
             ),
@@ -152,11 +168,11 @@ class _ReviewsListState extends State<ReviewsList> {
                             radius: 28.0,
                             backgroundColor: Colors.transparent,
                             child: ClipOval(
-                              child: review.fromPhotoUrl != null &&
-                                      review.fromPhotoUrl!.isNotEmpty
+                              child: review.photoUrl != null &&
+                                      review.photoUrl!.isNotEmpty
                                   ? FadeInImage.assetNetwork(
                                       placeholder: AppImage.profile,
-                                      image: review.fromPhotoUrl ?? "",
+                                      image: review.photoUrl!,
                                       fadeInDuration:
                                           const Duration(milliseconds: 100),
                                       fit: BoxFit.cover,
@@ -172,7 +188,7 @@ class _ReviewsListState extends State<ReviewsList> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  review.fromUsername ?? 'Anonymous',
+                                  review.username ?? 'Anonymous',
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -191,6 +207,15 @@ class _ReviewsListState extends State<ReviewsList> {
                                 const SizedBox(height: 8),
                                 Text(review.reviewText),
                                 const SizedBox(height: 8),
+                                Text(
+                                  review.isReceived ? 'Received' : 'Given',
+                                  style: TextStyle(
+                                    color: review.isReceived
+                                        ? Colors.green
+                                        : Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ],
                             ),
                           ),

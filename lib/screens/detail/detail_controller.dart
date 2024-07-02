@@ -195,9 +195,9 @@ class DetailController extends GetxController {
         double rate = service.rate!.toDouble();
         double? duration = service.duration;
 
-        subtotal.value = rate * duration!;
-        taxFee.value = subtotal.value * 0.1;
-        totalCost.value = subtotal.value - taxFee.value;
+        subtotal.value = double.parse((rate * duration!).toStringAsFixed(2));
+        taxFee.value = double.parse((subtotal.value * 0.1).toStringAsFixed(2));
+        totalCost.value = double.parse((subtotal.value + taxFee.value).toStringAsFixed(2));
       }
     }
   }

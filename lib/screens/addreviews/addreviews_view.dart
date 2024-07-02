@@ -10,7 +10,6 @@ class AddReviewPage extends GetView<AddReviewController> {
 
   @override
   Widget build(BuildContext context) {
-    print("Building AddReviewPage"); // Debug print
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
       appBar: AppBar(
@@ -19,79 +18,68 @@ class AddReviewPage extends GetView<AddReviewController> {
         title: const Text("Add Review"),
         backgroundColor: AppColor.secondaryColor,
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 30),
-                Obx(() {
-                  print(
-                      "Rebuilding dropdown. Selected service: ${controller.selectedServiceId.value}"); // Debug print
-                  print(
-                      "Number of completed services: ${controller.completedServices.length}"); // Debug print
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: DropdownButtonFormField<String>(
-                      value: controller.selectedServiceId.value.isNotEmpty
-                          ? controller.selectedServiceId.value
-                          : null,
-                      items: controller.completedServices
-                          .map((service) => DropdownMenuItem<String>(
-                                value: service.id,
-                                child: Text(
-                                    "${service.serviceName} (${service.role})"),
-                              ))
-                          .toList(),
-                      onChanged: (value) {
-                        if (value != null) {
-                          print("Service selected: $value"); // Debug print
-                          controller.updateSelectedService(value);
-                        }
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Select Completed Service',
-                        border: OutlineInputBorder(
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 30),
+                  Obx(() => Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        contentPadding: const EdgeInsets.all(10),
-                      ),
-                    ),
-                  );
-                }),
-                const SizedBox(height: 10),
-                Obx(() {
-                  print(
-                      "Rebuilding role field. Current role: ${controller.role.value}"); // Debug print
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      readOnly: true,
-                      controller:
-                          TextEditingController(text: controller.role.value),
-                      decoration: InputDecoration(
-                        labelText: 'Role',
-                        border: OutlineInputBorder(
+                        child: DropdownButtonFormField<String>(
+                          value: controller.selectedServiceId.value.isNotEmpty
+                              ? controller.selectedServiceId.value
+                              : null,
+                          items: controller.completedServices
+                              .map((service) => DropdownMenuItem<String>(
+                                    value: service['id'],
+                                    child: Text(
+                                        "${service['serviceName']} (${service['role']})"),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            if (value != null) {
+                              controller.updateSelectedService(value);
+                            }
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Select Completed Service',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            contentPadding: const EdgeInsets.all(10),
+                          ),
+                        ),
+                      )),
+                  const SizedBox(height: 10),
+                  Obx(() => Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        contentPadding: const EdgeInsets.all(10),
-                      ),
-                    ),
-                  );
-                }),
-                const SizedBox(height: 10),
-                Obx(() {
-                  print(
-                      "Rebuilding review section. Selected service: ${controller.selectedServiceId.value}"); // Debug print
-                  return controller.selectedServiceId.value.isNotEmpty
+                        child: TextField(
+                          readOnly: true,
+                          controller: TextEditingController(
+                              text: controller.role.value),
+                          decoration: InputDecoration(
+                            labelText: 'Role',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            contentPadding: const EdgeInsets.all(10),
+                          ),
+                        ),
+                      )),
+                  const SizedBox(height: 10),
+                  Obx(() => controller.selectedServiceId.value.isNotEmpty
                       ? Column(
                           children: [
                             Row(
@@ -106,8 +94,6 @@ class AddReviewPage extends GetView<AddReviewController> {
                                   ),
                                   onPressed: () {
                                     controller.rating.value = index + 1;
-                                    print(
-                                        "Rating set to: ${controller.rating.value}"); // Debug print
                                   },
                                 );
                               }),
@@ -123,6 +109,7 @@ class AddReviewPage extends GetView<AddReviewController> {
                                     controller.reviewDescriptionController,
                                 obscureText: false,
                                 maxLines: null,
+                                keyboardType: TextInputType.multiline,
                                 decoration: InputDecoration(
                                   hintText: 'Write your review here...',
                                   labelText: 'Review Description',
@@ -138,19 +125,16 @@ class AddReviewPage extends GetView<AddReviewController> {
                             ),
                           ],
                         )
-                      : Container();
-                }),
-                const SizedBox(height: 30),
-                ApplyButton(
-                  onPressed: () {
-                    print("Submit Review button pressed"); // Debug print
-                    controller.addReview(context);
-                  },
-                  buttonText: "Submit Review",
-                  buttonWidth: double.infinity,
-                  textAlignment: Alignment.center,
-                ),
-              ],
+                      : Container()),
+                  const SizedBox(height: 30),
+                  ApplyButton(
+                    onPressed: () => controller.addReview(context),
+                    buttonText: "Submit Review",
+                    buttonWidth: double.infinity,
+                    textAlignment: Alignment.center,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

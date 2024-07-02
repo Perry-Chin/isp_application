@@ -3,139 +3,101 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../common/storage/storage.dart';
 import '../../common/values/values.dart';
-
-class CompletedService {
-  final String id;
-  final String serviceName;
-  final String providerUid;
-  final String requesterUid;
-  final String role;
-
-  CompletedService({
-    required this.id,
-    required this.serviceName,
-    required this.providerUid,
-    required this.requesterUid,
-    required this.role,
-  });
-}
 
 class AddReviewController extends GetxController {
   final selectedServiceId = ''.obs;
   final role = ''.obs;
   final rating = 0.obs;
   final reviewDescriptionController = TextEditingController();
-  final completedServices = <CompletedService>[].obs;
+  final completedServices = <Map<String, dynamic>>[].obs;
 
+  final token = UserStore.to.token;
   final db = FirebaseFirestore.instance;
   final currentUser = FirebaseAuth.instance.currentUser;
 
   @override
   void onInit() {
     super.onInit();
-    print("AddReviewController initialized"); // Debug print
-    print(
-        "Current user: ${FirebaseAuth.instance.currentUser?.uid}"); // Debug print
     loadCompletedServices();
   }
 
   void loadCompletedServices() async {
-    print("Loading completed services"); // Debug print
-    print(
-        "Current user: ${FirebaseAuth.instance.currentUser?.uid}"); // Debug print
     try {
-      // Fetch all services
-      QuerySnapshot allServicesSnapshot = await db.collection('services').get();
-
-      print("All services: ${allServicesSnapshot.docs.length}"); // Debug print
-
-      // Print details of all services
-      for (var doc in allServicesSnapshot.docs) {
-        print("Service ID: ${doc.id}");
-        print("Service Name: ${doc['service_name']}");
-        print("Status: ${doc['status']}");
-        print("Requester UID: ${doc['requester_uid']}");
-        print("Provider UID: ${doc['provider_uid']}");
-        print("------------------------");
-      }
-
-      print("Querying with status: Completed");
-      print("Querying with requester_uid: ${currentUser!.uid}");
-
-      // More general query for requester services
-      QuerySnapshot requesterServicesSnapshot = await db
-          .collection('services')
-          .where('requester_uid', isEqualTo: currentUser!.uid)
+      var requesterServicesSnapshot = await db
+          .collection('service')
+          .where('requester_uid', isEqualTo: token)
           .where('status', isEqualTo: 'Completed')
           .get();
 
-      print(
-          "Requester services (completed): ${requesterServicesSnapshot.docs.length}"); // Debug print
-
-      // More general query for provider services
       QuerySnapshot providerServicesSnapshot = await db
-          .collection('services')
-          .where('provider_uid', isEqualTo: currentUser!.uid)
+          .collection('service')
+          .where('provider_uid', isEqualTo: token)
           .where('status', isEqualTo: 'Completed')
           .get();
 
-      print(
-          "Provider services (completed): ${providerServicesSnapshot.docs.length}"); // Debug print
-
-      List<CompletedService> services = [];
+      List<Map<String, dynamic>> services = [];
 
       for (var doc in requesterServicesSnapshot.docs) {
-        services.add(CompletedService(
-          id: doc.id,
-          serviceName: doc['service_name'],
-          providerUid: doc['provider_uid'],
-          requesterUid: doc['requester_uid'],
-          role: 'requester',
-        ));
+        if (!(await hasReviewed(doc.id, 'requester'))) {
+          services.add({
+            'id': doc.id,
+            'serviceName': doc['service_name'],
+            'providerUid': doc['provider_uid'],
+            'requesterUid': doc['requester_uid'],
+            'role': 'requester',
+          });
+        }
       }
 
       for (var doc in providerServicesSnapshot.docs) {
-        services.add(CompletedService(
-          id: doc.id,
-          serviceName: doc['service_name'],
-          providerUid: doc['provider_uid'],
-          requesterUid: doc['requester_uid'],
-          role: 'provider',
-        ));
+        if (!(await hasReviewed(doc.id, 'provider'))) {
+          services.add({
+            'id': doc.id,
+            'serviceName': doc['service_name'],
+            'providerUid': doc['provider_uid'],
+            'requesterUid': doc['requester_uid'],
+            'role': 'provider',
+          });
+        }
       }
 
       completedServices.assignAll(services);
 
       if (completedServices.isNotEmpty) {
-        selectedServiceId.value = completedServices[0].id;
-        role.value = completedServices[0].role;
+        selectedServiceId.value = completedServices[0]['id'];
+        role.value = completedServices[0]['role'];
       }
+    } catch (e) {
+      print("Error loading completed services: $e");
+    }
+  }
 
-      print(
-          "Completed services loaded: ${completedServices.length}"); // Debug print
-    } catch (e, stackTrace) {
-      print("Error loading completed services: $e"); // Debug print
-      print("Stack trace: $stackTrace"); // Debug print
+  Future<bool> hasReviewed(String serviceId, String userRole) async {
+    try {
+      var reviewSnapshot = await db
+          .collection('reviews')
+          .where('service_id', isEqualTo: serviceId)
+          .where('from_uid', isEqualTo: currentUser!.uid)
+          .get();
+
+      return reviewSnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print("Error checking if user has reviewed: $e");
+      return false;
     }
   }
 
   void updateSelectedService(String serviceId) {
-    print("Updating selected service to: $serviceId"); // Debug print
     selectedServiceId.value = serviceId;
-    CompletedService selectedService = completedServices.firstWhere(
-      (service) => service.id == serviceId,
+    Map<String, dynamic> selectedService = completedServices.firstWhere(
+      (service) => service['id'] == serviceId,
     );
-    role.value = selectedService.role;
-    print("Updated role: ${role.value}"); // Debug print
+    role.value = selectedService['role'];
   }
 
   void addReview(BuildContext context) async {
-    print("Adding review"); // Debug print
-    print("Selected service ID: ${selectedServiceId.value}"); // Debug print
-    print("Rating: ${rating.value}"); // Debug print
-    print("Review text: ${reviewDescriptionController.text}"); // Debug print
-
     if (reviewDescriptionController.text.isEmpty ||
         rating.value == 0 ||
         selectedServiceId.value.isEmpty) {
@@ -143,16 +105,16 @@ class AddReviewController extends GetxController {
       return;
     }
 
-    CompletedService selectedService = completedServices.firstWhere(
-      (service) => service.id == selectedServiceId.value,
+    Map<String, dynamic> selectedService = completedServices.firstWhere(
+      (service) => service['id'] == selectedServiceId.value,
     );
 
-    String toUid = selectedService.role == 'requester'
-        ? selectedService.providerUid
-        : selectedService.requesterUid;
+    String toUid = selectedService['role'] == 'requester'
+        ? selectedService['providerUid']
+        : selectedService['requesterUid'];
 
     try {
-      await db.collection('reviews').add({
+      DocumentReference reviewRef = await db.collection('reviews').add({
         'from_uid': currentUser!.uid,
         'to_uid': toUid,
         'service_id': selectedServiceId.value,
@@ -162,17 +124,16 @@ class AddReviewController extends GetxController {
         'timestamp': Timestamp.now(),
       });
 
-      print("Review added successfully"); // Debug print
+      await reviewRef.update({'review_id': reviewRef.id});
+
       Get.back();
       Get.snackbar('Success', 'Review added successfully');
     } catch (e) {
-      print("Error adding review: $e"); // Debug print
       showRoundedErrorDialog(context, 'Error adding review: $e');
     }
   }
 
   void showRoundedErrorDialog(BuildContext context, String message) {
-    print("Showing error dialog: $message"); // Debug print
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

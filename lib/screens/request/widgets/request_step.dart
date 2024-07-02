@@ -59,7 +59,13 @@ List<Step> getSteps(int currentStep) {
             labeltext: 'Image',
             prefixicon: Icons.image,
             textController: controller.imageController,
-            onTap: () => showImagePicker(Get.context!, (selectedImage) {})
+            onTap: () => showImagePicker(Get.context!, (selectedImage) {
+              controller.photo = selectedImage; // Update the photo
+              // If user has selected an image, update the textfield
+              if (selectedImage != null) {
+                controller.imageController.text = "Image uploaded successfully";
+              }
+            }),
           ),
         ],
       )

@@ -99,7 +99,7 @@ class RequestController extends GetxController {
     return str;
   }
 
-  // Function to upload a file to Firebase Storage
+    // Function to upload a file to Firebase Storage
   Future uploadFile() async {
     if (photo == null) return;
     // Generating a unique file name for the uploaded file
@@ -115,10 +115,10 @@ class RequestController extends GetxController {
       final imgUrl = await snapshot.ref.getDownloadURL();
       return imgUrl;
     } catch (e) {
-      print("There's an error $e");
+      // Show error message to the user
+      print('Error Uploading Image $e');
     }
   }
-
   Future<void> confirmRequest(BuildContext context) async {
     // Show loading dialog
    appLoading(context);
@@ -192,12 +192,8 @@ class RequestController extends GetxController {
           googlePay: gpay,
           billingDetails: const BillingDetails(
             address: Address(
-              city: '',
-              country: 'SG',
-              state: '',
-              line1: '',
-              line2: '',
-              postalCode: '',
+              city: '', country: 'SG', state: '', 
+              line1: '', line2: '', postalCode: '',
             )
           )
       ));

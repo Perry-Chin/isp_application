@@ -56,25 +56,4 @@ class RouteValidateServiceMiddleware extends GetMiddleware {
     }
     return null;
   }
-
-  static String? validateImage(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Image is required.';
-    }
-    return null;
-  }
-
-  static String? validateTags(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'At least one tag is required.';
-    }
-
-    final tags = value.split(',').map((tag) => tag.trim()).toList();
-
-    if (tags.isEmpty || tags.any((tag) => tag.isEmpty)) {
-      return 'Each tag must be a non-empty string.';
-    }
-
-    return null;
-  }
 }

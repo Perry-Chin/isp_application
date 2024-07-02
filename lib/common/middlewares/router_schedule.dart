@@ -6,7 +6,7 @@ import '../utils/utils.dart';
 
 void updateFiltersAndNavigateBack() {
   // Read stored values
-  List<bool>? storedStatus = GetStorage().read('selectedStatus');
+  List<dynamic>? storedStatusDynamic = GetStorage().read('selectedStatus');
   int? storedRating = GetStorage().read<int>('selectedRating');
 
   // Initialize the observables
@@ -14,8 +14,8 @@ void updateFiltersAndNavigateBack() {
   int selectedRating = storedRating ?? 0;
 
   // Handle conversion and default values
-  if (storedStatus != null) {
-    selectedStatus.assignAll(storedStatus);
+  if (storedStatusDynamic != null) {
+    selectedStatus.assignAll(storedStatusDynamic.map((e) => e as bool).toList());
   } else {
     selectedStatus.assignAll(List<bool>.filled(FilterStatus.filters.length, false));
   }

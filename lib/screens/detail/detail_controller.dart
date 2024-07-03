@@ -63,15 +63,17 @@ class DetailController extends GetxController {
 
   Stream<Map<String, UserData?>> getCombinedStream(String token) {
     return getServiceStream(token).switchMap((serviceDocs) {
-      
       // Filter out documents where reqUserid or provUserid is null or empty
       List<String> userIds = serviceDocs
-        .where((doc) => doc.data().reqUserid != null && doc.data().reqUserid!.isNotEmpty)
-        .map((doc) => doc.data().reqUserid!)
-        .toList()
-      ..addAll(serviceDocs
-          .where((doc) => doc.data().provUserid != null && doc.data().provUserid!.isNotEmpty)
-          .map((doc) => doc.data().provUserid!));
+          .where((doc) =>
+              doc.data().reqUserid != null && doc.data().reqUserid!.isNotEmpty)
+          .map((doc) => doc.data().reqUserid!)
+          .toList()
+        ..addAll(serviceDocs
+            .where((doc) =>
+                doc.data().provUserid != null &&
+                doc.data().provUserid!.isNotEmpty)
+            .map((doc) => doc.data().provUserid!));
 
       if (userIds.isEmpty) {
         return Stream.value({});
@@ -117,18 +119,26 @@ class DetailController extends GetxController {
     }
   }
 
-   Future<void> updateServiceStatus(String serviceId, String status, int statusid) async {
+  Future<void> updateServiceStatus(
+      String serviceId, String status, int statusid) async {
     try {
-      await db.collection('service').doc(serviceId).update({'status': status, 'statusid': statusid});
+      await db
+          .collection('service')
+          .doc(serviceId)
+          .update({'status': status, 'statusid': statusid});
       updateFiltersAndNavigateBack();
     } catch (e) {
       print('Error updating status: $e');
     }
   }
 
-  Future<void> bookServiceStatus(String serviceId, String status, int statusid) async {
+  Future<void> bookServiceStatus(
+      String serviceId, String status, int statusid) async {
     try {
-      await db.collection('service').doc(serviceId).update({'status': status, 'statusid': statusid});
+      await db
+          .collection('service')
+          .doc(serviceId)
+          .update({'status': status, 'statusid': statusid});
     } catch (e) {
       print('Error updating status: $e');
     }
@@ -197,9 +207,14 @@ class DetailController extends GetxController {
 
         subtotal.value = double.parse((rate * duration!).toStringAsFixed(2));
         taxFee.value = double.parse((subtotal.value * 0.1).toStringAsFixed(2));
-        totalCost.value = double.parse((subtotal.value + taxFee.value).toStringAsFixed(2));
+        totalCost.value =
+            double.parse((subtotal.value + taxFee.value).toStringAsFixed(2));
       }
     }
+  }
+
+  void goToReviews(String serviceId) {
+    Get.toNamed('/detail_reviews', arguments: {'service_id': serviceId});
   }
 
   void goChat(UserData userData) async {

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
+import '../../screens/detail/reviews/detail_reviews_index.dart';
 import '../../screens/schedule/schedule_index.dart';
 import 'routes.dart';
 import '../middlewares/middlewares.dart';
@@ -88,5 +89,10 @@ class AppPages {
         name: AppRoutes.addReviews,
         page: () => const AddReviewPage(),
         binding: AddReviewsBinding()),
+    GetPage(
+      name: AppRoutes.detailReview,
+      page: () => const DetailReviewView(),
+      binding: DetailReviewBinding(),
+    ),
   ];
 }

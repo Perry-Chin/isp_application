@@ -273,8 +273,9 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     Expanded(
                                       child: ClipRRect(
-                                        borderRadius: const BorderRadius.vertical(
-                                            top: Radius.circular(15)),
+                                        borderRadius:
+                                            const BorderRadius.vertical(
+                                                top: Radius.circular(15)),
                                         child: Image.asset(
                                           'assets/images/groomingdog.png',
                                           fit: BoxFit.cover,
@@ -296,7 +297,8 @@ class _HomePageState extends State<HomePage> {
                                           Text(
                                             filteredServiceCards[index]['date'],
                                             style: const TextStyle(
-                                                color: Colors.grey, fontSize: 12),
+                                                color: Colors.grey,
+                                                fontSize: 12),
                                           ),
                                           const SizedBox(height: 5),
                                           Row(
@@ -311,7 +313,8 @@ class _HomePageState extends State<HomePage> {
                                                       fontSize: 12)),
                                               const Spacer(),
                                               Text(
-                                                filteredServiceCards[index]['price'],
+                                                filteredServiceCards[index]
+                                                    ['price'],
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 16,

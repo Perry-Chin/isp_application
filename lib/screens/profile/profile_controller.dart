@@ -7,7 +7,10 @@ class ProfileController extends GetxController {
   final token = UserStore.to.token;
   final db = FirebaseFirestore.instance;
   final user = Rx<UserData?>(null);
-  final reviews = <Review>[].obs;
+  final allReviews = <Review>[].obs;
+  final filteredReviews = <Review>[].obs;
+  final Rx<String> currentTab = 'All'.obs;
+  final Rx<String> currentSortType = 'Newest'.obs;
 
   @override
   void onInit() {
@@ -16,13 +19,18 @@ class ProfileController extends GetxController {
   }
 
   void fetchUserData() async {
+    if (token.isEmpty) {
+      print('Error: User token is null or empty');
+      return;
+    }
+
     try {
       DocumentSnapshot<Map<String, dynamic>> userDoc =
           await db.collection('users').doc(token).get();
 
       if (userDoc.exists) {
         user.value = UserData.fromFirestore(userDoc, null);
-        await fetchReviews('All');
+        await fetchUserReviews();
         await updateAverageRating();
       } else {
         print('User not found');
@@ -32,58 +40,98 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> fetchReviews(String type) async {
+  Future<void> fetchUserReviews() async {
+    if (token.isEmpty) {
+      print('Error: User token is null or empty');
+      return;
+    }
+
     try {
-      Query<Map<String, dynamic>> receivedQuery =
-          db.collection('reviews').where('to_uid', isEqualTo: token);
-      Query<Map<String, dynamic>> givenQuery =
-          db.collection('reviews').where('from_uid', isEqualTo: token);
+      QuerySnapshot<Map<String, dynamic>> reviewsSnapshot = await db
+          .collection('reviews')
+          .where('to_uid', isEqualTo: token)
+          .get();
 
-      if (type == 'Provider' || type == 'Requester') {
-        receivedQuery =
-            receivedQuery.where('service_type', isEqualTo: type.toLowerCase());
-        givenQuery =
-            givenQuery.where('service_type', isEqualTo: type.toLowerCase());
-      }
+      final fetchedReviews = await Future.wait(
+          reviewsSnapshot.docs.map((doc) => _processReview(doc)));
 
-      QuerySnapshot<Map<String, dynamic>> receivedSnapshot =
-          await receivedQuery.get();
-      QuerySnapshot<Map<String, dynamic>> givenSnapshot =
-          await givenQuery.get();
-
-      final fetchedReviews = await Future.wait([
-        ...receivedSnapshot.docs
-            .map((doc) => _processReview(doc, isReceived: true)),
-        ...givenSnapshot.docs
-            .map((doc) => _processReview(doc, isReceived: false))
-      ]);
-
-      reviews.assignAll(fetchedReviews);
+      allReviews.assignAll(fetchedReviews);
+      filterReviews(currentTab.value);
     } catch (e) {
       print('Error fetching reviews: $e');
     }
   }
 
-  Future<Review> _processReview(DocumentSnapshot<Map<String, dynamic>> doc,
-      {required bool isReceived}) async {
+  Future<Review> _processReview(
+      DocumentSnapshot<Map<String, dynamic>> doc) async {
     Review review = Review.fromFirestore(doc);
-    String userIdToFetch = isReceived ? review.fromUid : review.toUid;
-    DocumentSnapshot<Map<String, dynamic>> userDoc =
-        await db.collection('users').doc(userIdToFetch).get();
-    if (userDoc.exists) {
-      review.username = userDoc.data()?['username'];
-      review.photoUrl = userDoc.data()?['photourl'];
+
+    if (review.fromUid.isEmpty) {
+      print('Error: User ID who gave the review is empty');
+      return review;
     }
-    review.isReceived = isReceived;
+
+    try {
+      DocumentSnapshot<Map<String, dynamic>> userDoc =
+          await db.collection('users').doc(review.fromUid).get();
+      if (userDoc.exists) {
+        review.username = userDoc.data()?['username'];
+        review.photoUrl = userDoc.data()?['photourl'];
+      }
+    } catch (e) {
+      print('Error fetching user data for review: $e');
+    }
+
     return review;
   }
 
-  Future<void> updateAverageRating() async {
-    try {
-      if (reviews.isEmpty) return;
+  void filterReviews(String type) {
+    currentTab.value = type;
+    switch (type) {
+      case 'All':
+        filteredReviews.assignAll(allReviews);
+        break;
+      case 'Provider':
+        filteredReviews.assignAll(allReviews
+            .where((review) => review.serviceType.toLowerCase() == 'provider'));
+        break;
+      case 'Requester':
+        filteredReviews.assignAll(allReviews.where(
+            (review) => review.serviceType.toLowerCase() == 'requester'));
+        break;
+    }
+    sortReviews(currentSortType.value);
+  }
 
-      double sum = reviews.fold(0, (prev, review) => prev + review.rating);
-      double averageRating = sum / reviews.length;
+  void sortReviews(String sortType) {
+    currentSortType.value = sortType;
+    switch (sortType) {
+      case 'Newest':
+        filteredReviews.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+        break;
+      case 'Oldest':
+        filteredReviews.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+        break;
+      case 'Highest Rating':
+        filteredReviews.sort((a, b) => b.rating.compareTo(a.rating));
+        break;
+      case 'Lowest Rating':
+        filteredReviews.sort((a, b) => a.rating.compareTo(b.rating));
+        break;
+    }
+  }
+
+  Future<void> updateAverageRating() async {
+    if (token.isEmpty) {
+      print('Error: User token is null or empty');
+      return;
+    }
+
+    try {
+      if (allReviews.isEmpty) return;
+
+      double sum = allReviews.fold(0, (prev, review) => prev + review.rating);
+      double averageRating = sum / allReviews.length;
 
       await db.collection('users').doc(token).update({'rating': averageRating});
 
@@ -94,26 +142,6 @@ class ProfileController extends GetxController {
       });
     } catch (e) {
       print('Error updating average rating: $e');
-    }
-  }
-
-  Future<void> addReview(Review newReview) async {
-    try {
-      await db.collection('reviews').add(newReview.toFirestore());
-      await fetchReviews('All');
-      await updateAverageRating();
-    } catch (e) {
-      print('Error adding review: $e');
-    }
-  }
-
-  Future<void> deleteReview(String reviewId) async {
-    try {
-      await db.collection('reviews').doc(reviewId).delete();
-      await fetchReviews('All');
-      await updateAverageRating();
-    } catch (e) {
-      print('Error deleting review: $e');
     }
   }
 

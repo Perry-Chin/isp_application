@@ -17,36 +17,22 @@ class _ReviewsListState extends State<ReviewsList> {
   final ProfileController profileController = Get.find<ProfileController>();
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  String sortType = 'Newest';
 
   @override
   void initState() {
     super.initState();
-    _fetchReviews();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      profileController.filterReviews(widget.reviewsType);
+    });
   }
 
-  Future<void> _fetchReviews() async {
-    await profileController.fetchReviews(widget.reviewsType);
-    _sortReviews();
-    _refreshController.refreshCompleted();
-  }
-
-  void _sortReviews() {
-    switch (sortType) {
-      case 'Newest':
-        profileController.reviews
-            .sort((a, b) => b.timestamp.compareTo(a.timestamp));
-        break;
-      case 'Oldest':
-        profileController.reviews
-            .sort((a, b) => a.timestamp.compareTo(b.timestamp));
-        break;
-      case 'Highest Rating':
-        profileController.reviews.sort((a, b) => b.rating.compareTo(a.rating));
-        break;
-      case 'Lowest Rating':
-        profileController.reviews.sort((a, b) => a.rating.compareTo(b.rating));
-        break;
+  Future<void> _onRefresh() async {
+    try {
+      await profileController.fetchUserReviews();
+    } catch (e) {
+      print('Error refreshing reviews: $e');
+    } finally {
+      _refreshController.refreshCompleted();
     }
   }
 
@@ -65,40 +51,28 @@ class _ReviewsListState extends State<ReviewsList> {
               ListTile(
                 title: const Text('Newest'),
                 onTap: () {
-                  setState(() {
-                    sortType = 'Newest';
-                    _sortReviews();
-                  });
+                  profileController.sortReviews('Newest');
                   Navigator.pop(context);
                 },
               ),
               ListTile(
                 title: const Text('Oldest'),
                 onTap: () {
-                  setState(() {
-                    sortType = 'Oldest';
-                    _sortReviews();
-                  });
+                  profileController.sortReviews('Oldest');
                   Navigator.pop(context);
                 },
               ),
               ListTile(
                 title: const Text('Highest Rating'),
                 onTap: () {
-                  setState(() {
-                    sortType = 'Highest Rating';
-                    _sortReviews();
-                  });
+                  profileController.sortReviews('Highest Rating');
                   Navigator.pop(context);
                 },
               ),
               ListTile(
                 title: const Text('Lowest Rating'),
                 onTap: () {
-                  setState(() {
-                    sortType = 'Lowest Rating';
-                    _sortReviews();
-                  });
+                  profileController.sortReviews('Lowest Rating');
                   Navigator.pop(context);
                 },
               ),
@@ -112,7 +86,7 @@ class _ReviewsListState extends State<ReviewsList> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (profileController.reviews.isEmpty) {
+      if (profileController.filteredReviews.isEmpty) {
         return const Center(
           child: Text(
             'No Reviews',
@@ -133,19 +107,19 @@ class _ReviewsListState extends State<ReviewsList> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: Text(sortType),
+                  child: Text(profileController.currentSortType.value),
                 ),
               ],
             ),
             Expanded(
               child: SmartRefresher(
                 controller: _refreshController,
-                onRefresh: _fetchReviews,
+                onRefresh: _onRefresh,
                 header: const WaterDropHeader(),
                 child: ListView.builder(
-                  itemCount: profileController.reviews.length,
+                  itemCount: profileController.filteredReviews.length,
                   itemBuilder: (context, index) {
-                    final review = profileController.reviews[index];
+                    final review = profileController.filteredReviews[index];
                     return Container(
                       margin: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
@@ -206,16 +180,17 @@ class _ReviewsListState extends State<ReviewsList> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(review.reviewText),
-                                const SizedBox(height: 8),
-                                Text(
-                                  review.isReceived ? 'Received' : 'Given',
-                                  style: TextStyle(
-                                    color: review.isReceived
-                                        ? Colors.green
-                                        : Colors.blue,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                // const SizedBox(height: 8),
+                                // Text(
+                                //   'Service Type: ${review.serviceType.capitalize}',
+                                //   style: TextStyle(
+                                //     color: review.serviceType.toLowerCase() ==
+                                //             'provider'
+                                //         ? Colors.blue
+                                //         : Colors.green,
+                                //     fontWeight: FontWeight.bold,
+                                //   ),
+                                // ),
                               ],
                             ),
                           ),

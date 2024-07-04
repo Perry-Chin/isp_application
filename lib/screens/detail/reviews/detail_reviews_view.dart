@@ -29,12 +29,7 @@ class DetailReviewView extends GetView<DetailReviewController> {
                 ),
               ];
             },
-            body: Column(
-              children: [
-                _buildRatingBars(),
-                Expanded(child: _buildReviewsList()),
-              ],
-            ),
+            body: Expanded(child: _buildReviewsList()),
           ),
         );
       }),
@@ -45,10 +40,10 @@ class DetailReviewView extends GetView<DetailReviewController> {
     return Container(
       padding: const EdgeInsets.all(16),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
+            flex: 2,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -73,41 +68,42 @@ class DetailReviewView extends GetView<DetailReviewController> {
               ],
             ),
           ),
+          Expanded(
+            flex: 3,
+            child: _buildRatingBars(),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildRatingBars() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: List.generate(5, (index) {
-          int starCount = 5 - index;
-          int reviewCount = controller.ratingCounts[starCount] ?? 0;
-          double percentage = controller.totalReviews.value > 0
-              ? reviewCount / controller.totalReviews.value
-              : 0;
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2),
-            child: Row(
-              children: [
-                Text('$starCount'),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: LinearProgressIndicator(
-                    value: percentage,
-                    backgroundColor: Colors.grey[300],
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(AppColor.secondaryColor),
-                    minHeight: 8,
-                  ),
+    return Column(
+      children: List.generate(5, (index) {
+        int starCount = 5 - index;
+        int reviewCount = controller.ratingCounts[starCount] ?? 0;
+        double percentage = controller.totalReviews.value > 0
+            ? reviewCount / controller.totalReviews.value
+            : 0;
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: Row(
+            children: [
+              Text('$starCount'),
+              const SizedBox(width: 8),
+              Expanded(
+                child: LinearProgressIndicator(
+                  value: percentage,
+                  backgroundColor: Colors.grey[300],
+                  valueColor: const AlwaysStoppedAnimation<Color>(
+                      AppColor.secondaryColor),
+                  minHeight: 8,
                 ),
-              ],
-            ),
-          );
-        }),
-      ),
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 

@@ -20,11 +20,11 @@ class NavbarPage extends GetView<NavbarController> {
         physics: const NeverScrollableScrollPhysics(),
         controller: controller.pageController,
         onPageChanged: controller.handlePageChanged,
-        children:  [
+        children: const [
           HomePage(),
-          const SchedulePage(),
-          const MessagePage(),
-          const ProfilePage(),
+          SchedulePage(),
+          MessagePage(),
+          ProfilePage(),
         ],
       );
     }

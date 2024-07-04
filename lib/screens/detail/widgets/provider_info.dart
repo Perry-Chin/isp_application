@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 import '../../../common/data/data.dart';
+import '../../../common/routes/routes.dart';
 import '../../../common/values/values.dart';
 import '../../../common/widgets/widgets.dart';
 import '../detail_index.dart';
+import '../reviews/detail_reviews_index.dart';
 
 class ProviderInfo extends StatelessWidget {
-
   final DetailController controller;
   final UserData? userData;
   final bool hideButtons;
-  
+
   const ProviderInfo({
     required this.controller,
     required this.userData,
@@ -40,16 +42,17 @@ class ProviderInfo extends StatelessWidget {
             radius: 28.0,
             backgroundColor: Colors.transparent,
             child: ClipOval(
-              child: userData?.photourl != null && userData!.photourl!.isNotEmpty ?
-              FadeInImage.assetNetwork(
-                placeholder: AppImage.profile,
-                image: userData!.photourl ?? "",
-                fadeInDuration: const Duration(milliseconds: 100),
-                fit: BoxFit.cover,
-                width: 54.w,
-                height: 54.w,
-              ) :
-              Image.asset(AppImage.profile),
+              child:
+                  userData?.photourl != null && userData!.photourl!.isNotEmpty
+                      ? FadeInImage.assetNetwork(
+                          placeholder: AppImage.profile,
+                          image: userData!.photourl ?? "",
+                          fadeInDuration: const Duration(milliseconds: 100),
+                          fit: BoxFit.cover,
+                          width: 54.w,
+                          height: 54.w,
+                        )
+                      : Image.asset(AppImage.profile),
             ),
           ),
           title: Padding(
@@ -91,7 +94,8 @@ class ProviderInfo extends StatelessWidget {
           Expanded(
             child: ElevatedButton(
               onPressed: () {
-                // View reviews action
+                // View reviews actions
+                Get.toNamed(AppRoutes.detailReview);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,

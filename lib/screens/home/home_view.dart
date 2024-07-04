@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/values/values.dart';
-import 'home_list.dart';
 
 class CurvedBackgroundPainter extends CustomPainter {
   @override

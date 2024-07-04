@@ -15,7 +15,7 @@ class PaymentPage extends GetView<PaymentController> {
       backgroundColor: AppColor.secondaryColor,
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,14 +33,14 @@ class PaymentPage extends GetView<PaymentController> {
               showBackView: false,
               obscureCardNumber: true,
               isHolderNameVisible: true,
-              chipColor: Color(0xFFD4AF37),
+              chipColor: const Color(0xFFD4AF37),
               onCreditCardWidgetChange: (CreditCardBrand) {},
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 18.0, top: 8.0),
+          const Padding(
+            padding: EdgeInsets.only(left: 18.0, top: 8.0),
             child: Text(
-              "Recent Payments", 
+              "Recent Payments",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,

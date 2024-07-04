@@ -7,7 +7,7 @@ import '../../../common/routes/routes.dart';
 import '../../../common/values/values.dart';
 import '../../../common/widgets/widgets.dart';
 import '../detail_index.dart';
-import '../reviews/detail_reviews_index.dart';
+// import '../reviews/detail_reviews_index.dart';
 
 class ProviderInfo extends StatelessWidget {
   final DetailController controller;

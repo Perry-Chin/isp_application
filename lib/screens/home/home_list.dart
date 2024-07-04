@@ -139,9 +139,12 @@ class HomeList extends StatelessWidget {
                 children: [
                   Text(
                     userData!.username ?? "",
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 15),
                   ),
-                  SizedBox(height: 3,),
+                  const SizedBox(
+                    height: 3,
+                  ),
                   Text(
                     dateDisplay,
                     style: const TextStyle(color: Colors.grey, fontSize: 12),

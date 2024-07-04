@@ -6,8 +6,10 @@ import '../profile/profile_controller.dart';
 
 class ReviewsList extends StatefulWidget {
   final String reviewsType;
+  final String? userId;
 
-  const ReviewsList({required this.reviewsType, Key? key}) : super(key: key);
+  const ReviewsList({required this.reviewsType, this.userId, Key? key})
+      : super(key: key);
 
   @override
   State<ReviewsList> createState() => _ReviewsListState();
@@ -22,6 +24,7 @@ class _ReviewsListState extends State<ReviewsList> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      profileController.fetchUserReviews(widget.userId);
       profileController.filterReviews(widget.reviewsType);
     });
   }

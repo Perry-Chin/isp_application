@@ -8,6 +8,7 @@ class AppRoutes {
   static const chat = '/chat';
   static const welcome = '/welcome';
   static const profile = '/profile';
+  static const userProfile = '/userProfile';
   static const setting = '/setting';
   static const settingsx = '/settingsx';
   static const userSettings = '/userSettings';

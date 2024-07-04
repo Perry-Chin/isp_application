@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import '../../common/data/data.dart';
-import '../../common/storage/storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../common/data/data.dart';
 
-class ProfileController extends GetxController {
-  final token = UserStore.to.token;
+class UserProfileController extends GetxController {
   final db = FirebaseFirestore.instance;
   final user = Rx<UserData?>(null);
   final allReviews = <Review>[].obs;
@@ -12,27 +10,23 @@ class ProfileController extends GetxController {
   final Rx<String> currentTab = 'All'.obs;
   final Rx<String> currentSortType = 'Newest'.obs;
 
+  late String userId;
+
   @override
   void onInit() {
     super.onInit();
+    userId = Get.arguments['userId'];
     fetchUserData();
   }
 
-  void fetchUserData([String? userId]) async {
-    final String fetchUserId = userId ?? token;
-
-    if (fetchUserId.isEmpty) {
-      print('Error: User ID is null or empty');
-      return;
-    }
-
+  void fetchUserData() async {
     try {
       DocumentSnapshot<Map<String, dynamic>> userDoc =
-          await db.collection('users').doc(fetchUserId).get();
+          await db.collection('users').doc(userId).get();
 
       if (userDoc.exists) {
         user.value = UserData.fromFirestore(userDoc, null);
-        await fetchUserReviews(fetchUserId);
+        await fetchUserReviews();
         await updateAverageRating();
       } else {
         print('User not found');
@@ -42,18 +36,11 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> fetchUserReviews([String? userId]) async {
-    final String fetchUserId = userId ?? token;
-
-    if (fetchUserId.isEmpty) {
-      print('Error: User ID is null or empty');
-      return;
-    }
-
+  Future<void> fetchUserReviews() async {
     try {
       QuerySnapshot<Map<String, dynamic>> reviewsSnapshot = await db
           .collection('reviews')
-          .where('to_uid', isEqualTo: fetchUserId)
+          .where('to_uid', isEqualTo: userId)
           .get();
 
       final fetchedReviews = await Future.wait(
@@ -126,18 +113,16 @@ class ProfileController extends GetxController {
   }
 
   Future<void> updateAverageRating() async {
-    if (token.isEmpty) {
-      print('Error: User token is null or empty');
-      return;
-    }
-
     try {
       if (allReviews.isEmpty) return;
 
       double sum = allReviews.fold(0, (prev, review) => prev + review.rating);
       double averageRating = sum / allReviews.length;
 
-      await db.collection('users').doc(token).update({'rating': averageRating});
+      await db
+          .collection('users')
+          .doc(userId)
+          .update({'rating': averageRating});
 
       user.update((val) {
         if (val != null) {
@@ -147,9 +132,5 @@ class ProfileController extends GetxController {
     } catch (e) {
       print('Error updating average rating: $e');
     }
-  }
-
-  void updateUserProfile(UserData updatedUser) {
-    user.value = updatedUser;
   }
 }

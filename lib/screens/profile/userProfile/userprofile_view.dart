@@ -2,37 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../common/values/values.dart';
-import 'settingsx/settingsx_index.dart';
-import 'profile_index.dart';
-import 'editProfile/edit_profile_index.dart';
+import '../../../common/values/values.dart';
+import '../profile_allreviews.dart';
+import 'userprofile_index.dart';
 
-class ProfilePage extends GetView<ProfileController> {
-  final String? userId;
-  const ProfilePage({Key? key, this.userId}) : super(key: key);
+class UserProfilePage extends GetView<UserProfileController> {
+  const UserProfilePage({Key? key}) : super(key: key);
 
   AppBar _buildAppBar() {
     return AppBar(
       elevation: 0,
       centerTitle: true,
-      title: const Text("Profile"),
+      title: const Text("User Profile"),
       backgroundColor: AppColor.secondaryColor,
-      leading: userId != null
-          ? IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => Get.back(),
-            )
-          : null,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => Get.back(),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    // If userId is provided, fetch that user's data
-    if (userId != null) {
-      controller.fetchUserData(userId);
-    }
-
     return Scaffold(
       appBar: _buildAppBar(),
       body: profileView(context),
@@ -52,72 +43,45 @@ class ProfilePage extends GetView<ProfileController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Obx(() {
-                          final photoUrl = controller.user.value?.photourl;
-                          return Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: AppColor.secondaryColor,
-                                width: 4.0,
-                              ),
-                            ),
-                            child: ClipOval(
-                              child: photoUrl != null && photoUrl.isNotEmpty
-                                  ? FadeInImage.assetNetwork(
-                                      placeholder: AppImage.profile,
-                                      image: photoUrl,
-                                      fadeInDuration:
-                                          const Duration(milliseconds: 100),
-                                      fit: BoxFit.cover,
-                                      width: 90.w,
-                                      height: 90.w,
-                                      imageErrorBuilder:
-                                          (context, error, stackTrace) {
-                                        return Image.asset(
-                                          AppImage.profile,
-                                          fit: BoxFit.cover,
-                                          width: 90.w,
-                                          height: 90.w,
-                                        );
-                                      },
-                                    )
-                                  : Image.asset(
+                    Obx(() {
+                      final photoUrl = controller.user.value?.photourl;
+                      return Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppColor.secondaryColor,
+                            width: 4.0,
+                          ),
+                        ),
+                        child: ClipOval(
+                          child: photoUrl != null && photoUrl.isNotEmpty
+                              ? FadeInImage.assetNetwork(
+                                  placeholder: AppImage.profile,
+                                  image: photoUrl,
+                                  fadeInDuration:
+                                      const Duration(milliseconds: 100),
+                                  fit: BoxFit.cover,
+                                  width: 90.w,
+                                  height: 90.w,
+                                  imageErrorBuilder:
+                                      (context, error, stackTrace) {
+                                    return Image.asset(
                                       AppImage.profile,
                                       fit: BoxFit.cover,
                                       width: 90.w,
                                       height: 90.w,
-                                    ),
-                            ),
-                          );
-                        }),
-                        const Spacer(),
-                        if (userId == null) ...[
-                          IconButton(
-                            icon: const Icon(Icons.settings),
-                            onPressed: () {
-                              Get.to(() => const SettingsxPage(),
-                                  binding: SettingsxBinding());
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {
-                              final photoUrl =
-                                  controller.user.value?.photourl ?? '';
-                              Get.to(
-                                  () => EditProfilePage(
-                                        initialProfileImageUrl: photoUrl,
-                                      ),
-                                  binding: EditProfileBinding());
-                            },
-                          ),
-                        ],
-                      ],
-                    ),
+                                    );
+                                  },
+                                )
+                              : Image.asset(
+                                  AppImage.profile,
+                                  fit: BoxFit.cover,
+                                  width: 90.w,
+                                  height: 90.w,
+                                ),
+                        ),
+                      );
+                    }),
                     const SizedBox(height: 16),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -129,7 +93,7 @@ class ProfilePage extends GetView<ProfileController> {
                           );
                         }),
                         const SizedBox(width: 8),
-                        _buildRatingRectangle(controller),
+                        _buildRatingRectangle(),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -144,19 +108,19 @@ class ProfilePage extends GetView<ProfileController> {
     );
   }
 
-  Widget _buildRatingRectangle(ProfileController controller) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColor.secondaryColor,
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 7.0),
-      child: Obx(() {
-        return Row(
+  Widget _buildRatingRectangle() {
+    return Obx(() {
+      return Container(
+        decoration: BoxDecoration(
+          color: AppColor.secondaryColor,
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 7.0),
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              controller.user.value?.rating?.toStringAsFixed(1) ?? '4.6',
+              controller.user.value?.rating?.toStringAsFixed(1) ?? '0.0',
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -169,9 +133,9 @@ class ProfilePage extends GetView<ProfileController> {
               size: 16,
             ),
           ],
-        );
-      }),
-    );
+        ),
+      );
+    });
   }
 
   Widget _buildReviewSection() {
@@ -180,23 +144,16 @@ class ProfilePage extends GetView<ProfileController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, top: 16.0, right: 16.0),
+          const Padding(
+            padding: EdgeInsets.only(left: 16.0, top: 16.0, right: 16.0),
             child: Row(
               children: [
-                const Text(
+                Text(
                   'Reviews',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.rate_review),
-                  onPressed: () {
-                    Get.toNamed('/addReviews');
-                  },
                 ),
               ],
             ),

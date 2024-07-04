@@ -142,4 +142,26 @@ class DetailReviewController extends GetxController {
   String formatDate(DateTime date) {
     return DateFormat('MMM d, yyyy').format(date);
   }
+
+  void onRefresh() => _refreshData(refreshController, fetchUserReviews);
+  void onLoading() => _loadData(refreshController, fetchUserReviews);
+
+  // Helper functions for refresh and load
+  void _refreshData(
+      RefreshController controller, Future<void> Function() loadData) {
+    loadData().then((_) {
+      controller.refreshCompleted(resetFooterState: true);
+    }).catchError((_) {
+      controller.refreshFailed();
+    });
+  }
+
+  void _loadData(
+      RefreshController controller, Future<void> Function() loadData) {
+    loadData().then((_) {
+      controller.loadComplete();
+    }).catchError((_) {
+      controller.loadFailed();
+    });
+  }
 }

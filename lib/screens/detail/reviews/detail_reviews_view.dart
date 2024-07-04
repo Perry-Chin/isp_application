@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/values/values.dart';
 import 'detail_reviews_controller.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -17,25 +16,40 @@ class DetailReviewView extends GetView<DetailReviewController> {
         elevation: 0,
       ),
       body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        return Container(
-          color: AppColor.backgroundColor,
-          child: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: _buildRatingSummary(),
+        return Stack(
+          children: [
+            Container(
+              color: AppColor.backgroundColor,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: _buildRatingSummary(),
+                        ),
+                        SliverFillRemaining(
+                          child: SmartRefresher(
+                            controller: controller.refreshController,
+                            onRefresh: controller.onRefresh,
+                            onLoading: controller.onLoading,
+                            child: _buildReviewsList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              SliverFillRemaining(
-                child: SmartRefresher(
-                  controller: controller.refreshController,
-                  onRefresh: controller.fetchUserReviews,
-                  child: _buildReviewsList(),
+            ),
+            if (controller.isLoading.value)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: const Center(child: CircularProgressIndicator()),
                 ),
               ),
-            ],
-          ),
+          ],
         );
       }),
     );
@@ -97,12 +111,15 @@ class DetailReviewView extends GetView<DetailReviewController> {
               Text('$starCount'),
               const SizedBox(width: 8),
               Expanded(
-                child: LinearProgressIndicator(
-                  value: percentage,
-                  backgroundColor: Colors.grey[300],
-                  valueColor: const AlwaysStoppedAnimation<Color>(
-                      AppColor.secondaryColor),
-                  minHeight: 8,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: percentage,
+                    backgroundColor: Colors.grey[300],
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                        AppColor.secondaryColor),
+                    minHeight: 8,
+                  ),
                 ),
               ),
             ],

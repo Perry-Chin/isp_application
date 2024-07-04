@@ -95,7 +95,8 @@ class ProviderInfo extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 // View reviews actions
-                Get.toNamed(AppRoutes.detailReview);
+                Get.toNamed(AppRoutes.detailReview,
+                    parameters: {"doc_id": controller.doc_id});
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,

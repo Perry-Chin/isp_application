@@ -213,8 +213,11 @@ class DetailController extends GetxController {
     }
   }
 
-  void goToReviews(String serviceId) {
-    Get.toNamed('/detail_reviews', arguments: {'service_id': serviceId});
+  void goToReviews() {
+    Get.toNamed('/detail_reviews', parameters: {
+      'doc_id': doc_id,
+      'requested': Get.parameters['requested'] ?? 'false',
+    });
   }
 
   void goChat(UserData userData) async {

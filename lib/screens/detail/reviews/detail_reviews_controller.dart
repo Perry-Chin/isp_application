@@ -2,75 +2,114 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
-
+import 'package:rxdart/rxdart.dart';
 import '../../../common/data/data.dart';
 
 class DetailReviewController extends GetxController {
-  final String serviceId = Get.parameters['service_id'] ?? '';
+  final String docId = Get.parameters['doc_id'] ?? '';
+  final bool isRequested = Get.parameters['requested'] == 'true';
   final db = FirebaseFirestore.instance;
-
   final reviews = <Review>[].obs;
   final isLoading = true.obs;
   final averageRating = 0.0.obs;
   final totalReviews = 0.obs;
   final ratingCounts = <int, int>{}.obs;
   final sortType = 'Newest'.obs;
-
+  final currentTab = 'All'.obs;
   final RefreshController refreshController =
       RefreshController(initialRefresh: false);
+
+  late Stream<Map<String, UserData?>> combinedStream;
 
   @override
   void onInit() {
     super.onInit();
-    fetchReviews();
+    if (docId.isNotEmpty) {
+      combinedStream = getCombinedStream();
+      fetchUserReviews();
+    } else {
+      print('Error: Document ID is empty');
+      isLoading(false);
+    }
   }
 
-  Future<void> fetchReviews() async {
+  Stream<Map<String, UserData?>> getCombinedStream() {
+    return db
+        .collection('service')
+        .doc(docId)
+        .snapshots()
+        .switchMap((serviceDoc) {
+      var serviceData = ServiceData.fromFirestore(serviceDoc, null);
+      var userIds = [
+        if (serviceData.reqUserid != null) serviceData.reqUserid!,
+        if (serviceData.provUserid != null) serviceData.provUserid!,
+      ];
+
+      return db
+          .collection('users')
+          .where(FieldPath.documentId, whereIn: userIds)
+          .snapshots()
+          .map((userSnapshot) {
+        return Map.fromEntries(userSnapshot.docs
+            .map((doc) => MapEntry(doc.id, UserData.fromFirestore(doc, null))));
+      });
+    });
+  }
+
+  Future<void> fetchUserReviews() async {
     try {
       isLoading(true);
-      QuerySnapshot<Map<String, dynamic>> snapshot = await db
-          .collection('reviews')
-          .where('service_id', isEqualTo: serviceId)
-          .get();
+      await combinedStream.first.then((userDataMap) async {
+        var serviceData = (await db.collection('service').doc(docId).get())
+            .data() as Map<String, dynamic>;
+        String userId = isRequested
+            ? serviceData['provider_uid']
+            : serviceData['requester_uid'];
 
-      reviews.value = await Future.wait(
-        snapshot.docs.map((doc) => _processReview(doc)),
-      );
+        QuerySnapshot<Map<String, dynamic>> snapshot = await db
+            .collection('reviews')
+            .where(isRequested ? 'to_uid' : 'from_uid', isEqualTo: userId)
+            .get();
 
-      _calculateStats();
-      _sortReviews();
+        reviews.value = await Future.wait(
+          snapshot.docs.map((doc) => _processReview(doc, userDataMap)),
+        );
+
+        _calculateStats();
+        _sortReviews();
+      });
+    } catch (e) {
+      print('Error fetching user reviews: $e');
+    } finally {
       isLoading(false);
       refreshController.refreshCompleted();
-    } catch (e) {
-      print('Error fetching reviews: $e');
-      isLoading(false);
-      refreshController.refreshFailed();
     }
   }
 
-  Future<Review> _processReview(
-      DocumentSnapshot<Map<String, dynamic>> doc) async {
+  Future<Review> _processReview(DocumentSnapshot<Map<String, dynamic>> doc,
+      Map<String, UserData?> userDataMap) async {
     Review review = Review.fromFirestore(doc);
-    DocumentSnapshot<Map<String, dynamic>> userDoc =
-        await db.collection('users').doc(review.fromUid).get();
-    if (userDoc.exists) {
-      review.username = userDoc.data()?['username'];
-      review.photoUrl = userDoc.data()?['photourl'];
+    String reviewerUserId = isRequested ? review.fromUid : review.toUid;
+
+    if (userDataMap.containsKey(reviewerUserId)) {
+      UserData? userData = userDataMap[reviewerUserId];
+      review.username = userData?.username;
+      review.photoUrl = userData?.photourl;
     }
+
     return review;
   }
 
   void _calculateStats() {
-    if (reviews.isEmpty) return;
-
     totalReviews.value = reviews.length;
-    double sum = reviews.fold(0, (prev, review) => prev + review.rating);
-    averageRating.value = sum / totalReviews.value;
-
     ratingCounts.clear();
+    double totalRating = 0;
     for (var review in reviews) {
       ratingCounts[review.rating] = (ratingCounts[review.rating] ?? 0) + 1;
+      totalRating += review.rating;
     }
+    averageRating.value =
+        totalReviews.value > 0 ? totalRating / totalReviews.value : 0.0;
   }
 
   void _sortReviews() {
@@ -93,6 +132,11 @@ class DetailReviewController extends GetxController {
   void updateSortType(String newSortType) {
     sortType.value = newSortType;
     _sortReviews();
+  }
+
+  void filterReviews(String type) {
+    currentTab.value = type;
+    // Implement filtering logic if needed
   }
 
   String formatDate(DateTime date) {

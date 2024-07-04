@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/values/values.dart';
 import 'detail_reviews_controller.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class DetailReviewView extends GetView<DetailReviewController> {
   const DetailReviewView({Key? key}) : super(key: key);
@@ -21,15 +22,19 @@ class DetailReviewView extends GetView<DetailReviewController> {
         }
         return Container(
           color: AppColor.backgroundColor,
-          child: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                SliverToBoxAdapter(
-                  child: _buildRatingSummary(),
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: _buildRatingSummary(),
+              ),
+              SliverFillRemaining(
+                child: SmartRefresher(
+                  controller: controller.refreshController,
+                  onRefresh: controller.fetchUserReviews,
+                  child: _buildReviewsList(),
                 ),
-              ];
-            },
-            body: Expanded(child: _buildReviewsList()),
+              ),
+            ],
           ),
         );
       }),
@@ -48,7 +53,7 @@ class DetailReviewView extends GetView<DetailReviewController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  controller.averageRating.toStringAsFixed(1),
+                  controller.averageRating.value.toStringAsFixed(1),
                   style: const TextStyle(
                       fontSize: 48, fontWeight: FontWeight.bold),
                 ),
@@ -57,14 +62,14 @@ class DetailReviewView extends GetView<DetailReviewController> {
                     5,
                     (index) => Icon(
                       Icons.star,
-                      color: index < controller.averageRating.floor()
+                      color: index < controller.averageRating.value.floor()
                           ? AppColor.secondaryColor
                           : Colors.grey,
                       size: 24,
                     ),
                   ),
                 ),
-                Text('${controller.totalReviews} ratings'),
+                Text('${controller.totalReviews.value} ratings'),
               ],
             ),
           ),

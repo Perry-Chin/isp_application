@@ -23,16 +23,18 @@ class DetailController extends GetxController {
   final taxFee = 0.0.obs;
   final totalCost = 0.0.obs;
   final displayController = TextEditingController();
-  final selectedDate = DateTime.now().obs; // Observable for selected date
-  final selectedTime = TimeOfDay.now().obs; // Observable for selected time
+  final selectedDate = DateTime.now().obs;
+  final selectedTime = TimeOfDay.now().obs;
 
-  var userData = Rxn<UserData>(); // Observable for UserData
+  var userData = Rxn<UserData>();
+  final userRating = 0.0.obs;
+  final serviceRating = 0.0.obs; // New observable for service-specific rating
 
   bool showPaymentSection = false;
 
   void togglePaymentSection() {
     showPaymentSection = !showPaymentSection;
-    update(); // Notify listeners about the change
+    update();
   }
 
   Stream<List<QueryDocumentSnapshot<ServiceData>>> getServiceStream(
@@ -63,7 +65,6 @@ class DetailController extends GetxController {
 
   Stream<Map<String, UserData?>> getCombinedStream(String token) {
     return getServiceStream(token).switchMap((serviceDocs) {
-      // Filter out documents where reqUserid or provUserid is null or empty
       List<String> userIds = serviceDocs
           .where((doc) =>
               doc.data().reqUserid != null && doc.data().reqUserid!.isNotEmpty)
@@ -97,14 +98,55 @@ class DetailController extends GetxController {
     doc_id = data['doc_id'];
     print(doc_id);
 
-    // Listen to the combined stream and assign the first user's data to userData
     combinedStream.listen((userDataMap) {
       if (userDataMap.isNotEmpty) {
         userData.value = userDataMap.values.first;
+        fetchUserRating(userData.value!.id!);
+        fetchServiceRating(doc_id);
       }
     });
 
     asyncLoadAllData();
+  }
+
+  Future<void> fetchUserRating(String userId) async {
+    try {
+      QuerySnapshot reviewsSnapshot = await db
+          .collection('reviews')
+          .where('to_uid', isEqualTo: userId)
+          .get();
+
+      if (reviewsSnapshot.docs.isNotEmpty) {
+        double totalRating = 0;
+        reviewsSnapshot.docs.forEach((doc) {
+          totalRating += doc['rating'] as num;
+        });
+        userRating.value = totalRating / reviewsSnapshot.docs.length;
+      } else {
+        userRating.value = 0;
+      }
+    } catch (e) {
+      print('Error fetching user rating: $e');
+      userRating.value = 0;
+    }
+  }
+
+  Future<void> fetchServiceRating(String serviceId) async {
+    try {
+      DocumentSnapshot serviceDoc =
+          await db.collection('service').doc(serviceId).get();
+      if (serviceDoc.exists) {
+        Map<String, dynamic> data = serviceDoc.data() as Map<String, dynamic>;
+        if (data.containsKey('rating')) {
+          serviceRating.value = (data['rating'] as num).toDouble();
+        } else {
+          serviceRating.value = 0.0;
+        }
+      }
+    } catch (e) {
+      print('Error fetching service rating: $e');
+      serviceRating.value = 0.0;
+    }
   }
 
   Future<void> updateServiceProvUserid(
@@ -179,7 +221,6 @@ class DetailController extends GetxController {
         .add(content)
         .then((DocumentReference doc) {
       print("Propose document added with id, ${doc.id}");
-      // Update service status to pending and provider_uid after proposing a new time
       updateServiceStatusAndProvider(doc_id, 'Pending', token);
     }).catchError((e) {
       print("Error creating propose document: $e");
@@ -245,9 +286,7 @@ class DetailController extends GetxController {
           .where("to_uid", isEqualTo: token)
           .get();
 
-      //If both users have not messaged before
       if (fromMessages.docs.isEmpty && toMessages.docs.isEmpty) {
-        //Get user information
         String profile = await UserStore.to.getProfile();
         UserLoginResponseEntity userdata =
             UserLoginResponseEntity.fromJson(jsonDecode(profile));
@@ -271,9 +310,7 @@ class DetailController extends GetxController {
             "to_avatar": userData.photourl ?? ""
           });
         });
-      }
-      //If the user has messaged the other party
-      else {
+      } else {
         if (fromMessages.docs.isNotEmpty) {
           Get.toNamed("/chat", parameters: {
             "doc_id": fromMessages.docs.first.id,
@@ -294,6 +331,10 @@ class DetailController extends GetxController {
     } catch (e) {
       print("Error in goChat: $e");
     }
+  }
+
+  void updateFiltersAndNavigateBack() {
+    // Implement this method based on your navigation requirements
   }
 
   // void updateServiceStatus(String serviceId, String status) async {

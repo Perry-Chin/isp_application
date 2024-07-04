@@ -67,7 +67,7 @@ class RequesterInfo extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 6),
-                const Rating(rating: 4.5)
+                Obx(() => Rating(rating: controller.serviceRating.value))
               ],
             ),
           ),

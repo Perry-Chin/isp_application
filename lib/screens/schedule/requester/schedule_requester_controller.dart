@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../common/data/data.dart';
-import '../../common/storage/storage.dart';
-import 'schedule_index.dart';
+import '../../../common/data/data.dart';
+import '../../../common/storage/storage.dart';
+import '../schedule_index.dart';
 
 class ScheduleRequesterController extends GetxController {
   final db = FirebaseFirestore.instance;

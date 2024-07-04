@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/values/values.dart';
-import '../../common/widgets/button.dart';
-import '../../common/widgets/textfield.dart';
+import '../../common/widgets/input/button.dart';
+import '../../common/widgets/input/textfield.dart';
 import '../register/register_index.dart';
 import 'login_index.dart';
 

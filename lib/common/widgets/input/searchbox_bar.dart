@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../values/values.dart';
+import '../../values/values.dart';
 
 class SearchBoxBar extends StatelessWidget {
   final TextEditingController controller;

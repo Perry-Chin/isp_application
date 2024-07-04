@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../../screens/detail/reviews/detail_reviews_index.dart';
+import '../../screens/profile/settingsx/payment/payment_index.dart';
 import '../../screens/schedule/schedule_index.dart';
 import 'routes.dart';
 import '../middlewares/middlewares.dart';
@@ -94,5 +95,10 @@ class AppPages {
       page: () => const DetailReviewView(),
       binding: DetailReviewBinding(),
     ),
+    GetPage(
+      name: AppRoutes.payment, 
+      page: () => const PaymentPage(),
+      binding: PaymentBinding()
+    )
   ];
 }

@@ -17,4 +17,5 @@ class AppRoutes {
   static const filterSchedule = '/filterSchedule';
   static const addReviews = '/addReviews';
   static const detailReview = '/reviews'; // Add this line
+  static const payment = '/payment';
 }

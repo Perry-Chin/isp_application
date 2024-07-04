@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../common/routes/routes.dart';
 import '../../../common/values/values.dart';
-import 'settingsx_controller.dart';
-import 'settings/contact/settings_contact_page.dart';
+import 'payment/payment_index.dart';
+import 'settingsx_index.dart';
 
 class SettingsxPage extends GetView<SettingsxController> {
   const SettingsxPage({super.key});
@@ -78,9 +79,7 @@ class SettingsxPage extends GetView<SettingsxController> {
             ),
             _buildSettingsOption(
               title: 'View Payment Details',
-              onTap: () {
-                print("box3 tapped");
-              },
+              onTap: () => Get.toNamed(AppRoutes.payment),
             ),
             _buildSettingsOption(
               title: 'Logout',

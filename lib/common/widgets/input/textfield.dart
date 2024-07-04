@@ -2,7 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../values/values.dart';
+import '../../values/values.dart';
 
 class MyTextField extends GetView {
   const MyTextField({

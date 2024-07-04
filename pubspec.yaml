@@ -108,6 +108,8 @@ dependencies:
   http: ^1.1.0
   flutter_stripe: ^9.5.0+1
   webview_flutter: ^4.5.0
+  awesome_card: ^1.1.7
+  flutter_credit_card: ^4.0.1
   # flutter_settings_screens: ^0.3.4
 
 dev_dependencies:

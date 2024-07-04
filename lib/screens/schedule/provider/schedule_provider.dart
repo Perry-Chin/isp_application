@@ -4,10 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
-import '../../common/data/data.dart';
-import '../../common/storage/storage.dart';
-import '../../common/values/values.dart';
-import 'schedule_index.dart';
+import '../../../common/data/data.dart';
+import '../../../common/storage/storage.dart';
+import '../../../common/values/values.dart';
+import '../schedule_index.dart';
 
 class ProviderCard extends GetView<ScheduleController> {
   final List<String> selectedStatus;

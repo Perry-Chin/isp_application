@@ -7,7 +7,6 @@ import '../../../common/data/data.dart';
 
 class DetailReviewController extends GetxController {
   final String docId = Get.parameters['doc_id'] ?? '';
-  final bool isRequested = Get.parameters['requested'] == 'true';
   final db = FirebaseFirestore.instance;
   final reviews = <Review>[].obs;
   final isLoading = true.obs;
@@ -15,7 +14,7 @@ class DetailReviewController extends GetxController {
   final totalReviews = 0.obs;
   final ratingCounts = <int, int>{}.obs;
   final sortType = 'Newest'.obs;
-  final currentTab = 'All'.obs;
+  final currentTab = 'Requester'.obs; // Default to 'Requester'
   final RefreshController refreshController =
       RefreshController(initialRefresh: false);
 
@@ -62,11 +61,28 @@ class DetailReviewController extends GetxController {
     try {
       isLoading(true);
       await combinedStream.first.then((userDataMap) async {
-        var serviceData = (await db.collection('service').doc(docId).get())
-            .data() as Map<String, dynamic>;
-        String userId = isRequested
-            ? serviceData['provider_uid']
-            : serviceData['requester_uid'];
+        var serviceDoc = await db.collection('service').doc(docId).get();
+        var serviceData = serviceDoc.data();
+
+        if (serviceData == null) {
+          print('Error: Service data is null');
+          return;
+        }
+
+        print('Service Data: $serviceData'); // Debug service data structure
+
+        // Select user ID based on current tab
+        String? userId;
+        if (currentTab.value == 'Requester') {
+          userId = serviceData['requester_uid'] as String?;
+        } else if (currentTab.value == 'Provider') {
+          userId = serviceData['provider_uid'] as String?;
+        }
+
+        if (userId == null) {
+          print('Error: User ID is null for tab ${currentTab.value}');
+          return;
+        }
 
         print('Fetching reviews for User ID: $userId');
 
@@ -142,7 +158,7 @@ class DetailReviewController extends GetxController {
 
   void filterReviews(String type) {
     currentTab.value = type;
-    // Implement filtering logic if needed
+    fetchUserReviews(); // Fetch reviews again when the tab changes
   }
 
   String formatDate(DateTime date) {

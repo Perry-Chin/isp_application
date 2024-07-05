@@ -45,6 +45,8 @@ class DetailReviewController extends GetxController {
         if (serviceData.provUserid != null) serviceData.provUserid!,
       ];
 
+      print('Combined Stream User IDs: $userIds');
+
       return db
           .collection('users')
           .where(FieldPath.documentId, whereIn: userIds)
@@ -65,6 +67,8 @@ class DetailReviewController extends GetxController {
         String userId = isRequested
             ? serviceData['provider_uid']
             : serviceData['requester_uid'];
+
+        print('Fetching reviews for User ID: $userId');
 
         QuerySnapshot<Map<String, dynamic>> snapshot = await db
             .collection('reviews')
@@ -90,6 +94,8 @@ class DetailReviewController extends GetxController {
       Map<String, UserData?> userDataMap) async {
     Review review = Review.fromFirestore(doc);
     String reviewerUserId = isRequested ? review.fromUid : review.toUid;
+
+    print('Processing review for Reviewer User ID: $reviewerUserId');
 
     if (userDataMap.containsKey(reviewerUserId)) {
       UserData? userData = userDataMap[reviewerUserId];

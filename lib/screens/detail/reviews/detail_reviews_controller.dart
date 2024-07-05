@@ -72,7 +72,7 @@ class DetailReviewController extends GetxController {
 
         QuerySnapshot<Map<String, dynamic>> snapshot = await db
             .collection('reviews')
-            .where(isRequested ? 'to_uid' : 'from_uid', isEqualTo: userId)
+            .where('to_uid', isEqualTo: userId)
             .get();
 
         reviews.value = await Future.wait(
@@ -93,9 +93,9 @@ class DetailReviewController extends GetxController {
   Future<Review> _processReview(DocumentSnapshot<Map<String, dynamic>> doc,
       Map<String, UserData?> userDataMap) async {
     Review review = Review.fromFirestore(doc);
-    String reviewerUserId = isRequested ? review.fromUid : review.toUid;
+    String reviewerUserId = review.fromUid;
 
-    print('Processing review for Reviewer User ID: $reviewerUserId');
+    print('Processing review from Reviewer User ID: $reviewerUserId');
 
     if (userDataMap.containsKey(reviewerUserId)) {
       UserData? userData = userDataMap[reviewerUserId];

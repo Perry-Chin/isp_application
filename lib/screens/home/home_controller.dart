@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,7 +14,8 @@ class HomeController extends GetxController {
   final db = FirebaseFirestore.instance;
   final HomeState state = HomeState();
   TextEditingController searchController = TextEditingController();
-  final RefreshController refreshController = RefreshController(initialRefresh: false);
+  final RefreshController refreshController =
+      RefreshController(initialRefresh: false);
 
   // The pull_to_refresh dependency requires these functions to work
   void onRefresh() {
@@ -36,13 +38,17 @@ class HomeController extends GetxController {
   void filterServiceList(String username) {
     if (username.isEmpty) {
       // Reset to original service list if search box is empty
-      state.filteredServiceList.assignAll(state.serviceList); // Assign original service list
+      state.filteredServiceList
+          .assignAll(state.serviceList); // Assign original service list
     } else {
       // Filter service list based on username
       state.filteredServiceList.assignAll(state.serviceList.where((service) {
         var userData = state.userDataMap[service.data().reqUserid];
         // Check if userData is not null and if the username contains the search query
-        var usernameMatch = userData?.username?.toLowerCase()?.contains(username.toLowerCase()) ?? false;
+        var usernameMatch = userData?.username
+                ?.toLowerCase()
+                ?.contains(username.toLowerCase()) ??
+            false;
         return usernameMatch;
       }).toList());
     }
@@ -51,14 +57,16 @@ class HomeController extends GetxController {
   }
 
   // Stream to handle fetching service data
-  Stream<List<QueryDocumentSnapshot<ServiceData>>> getServiceStream(String token) {
+  Stream<List<QueryDocumentSnapshot<ServiceData>>> getServiceStream(
+      String token) {
     return FirebaseFirestore.instance
         .collection('service')
         .where('requester_uid', isNotEqualTo: token)
         .where('status', isEqualTo: 'Requested')
         .withConverter<ServiceData>(
           fromFirestore: ServiceData.fromFirestore,
-          toFirestore: (ServiceData serviceData, _) => serviceData.toFirestore(),
+          toFirestore: (ServiceData serviceData, _) =>
+              serviceData.toFirestore(),
         )
         .snapshots()
         .map((snapshot) => snapshot.docs);
@@ -75,21 +83,23 @@ class HomeController extends GetxController {
         )
         .snapshots()
         .map((snapshot) {
-          return snapshot.docs;
-        });
+      return snapshot.docs;
+    });
   }
 
   // Combine the streams to get user data for each service item
   Stream<Map<String, UserData?>> getCombinedStream(String token) {
     return getServiceStream(token).switchMap((serviceDocs) {
-      List<String> userIds = serviceDocs.map((doc) => doc.data().reqUserid!).toList();
+      List<String> userIds =
+          serviceDocs.map((doc) => doc.data().reqUserid!).toList();
 
       if (userIds.isEmpty) {
         return Stream.value({});
       }
 
       return getUserStream(userIds).map((userDocs) {
-        var userDataMap = Map.fromEntries(userDocs.map((doc) => MapEntry(doc.id, doc.data())));
+        var userDataMap = Map.fromEntries(
+            userDocs.map((doc) => MapEntry(doc.id, doc.data())));
         state.userDataMap.assignAll(userDataMap); // Update userDataMap in state
         return userDataMap;
       });
@@ -115,22 +125,30 @@ class HomeController extends GetxController {
   Future<void> asyncLoadAllData() async {
     try {
       String token = UserStore.to.token;
-      
+
       // Add a delay of 1 second
       // await Future.delayed(const Duration(milliseconds: 200));
 
-      var reqServices = await db.collection("service").withConverter(
-          fromFirestore: ServiceData.fromFirestore,
-          toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore())
-          .where("requester_uid", isNotEqualTo: token)  // Make sure the field matches the orderBy field
-          .where("status", isEqualTo: "Requested").get();
+      var reqServices = await db
+          .collection("service")
+          .withConverter(
+              fromFirestore: ServiceData.fromFirestore,
+              toFirestore: (ServiceData serviceData, options) =>
+                  serviceData.toFirestore())
+          .where("requester_uid",
+              isNotEqualTo:
+                  token) // Make sure the field matches the orderBy field
+          .where("status", isEqualTo: "Requested")
+          .get();
 
       List<QueryDocumentSnapshot<ServiceData>> documents = reqServices.docs;
 
       // Sort the documents based on date and time
       documents.sort((a, b) {
-        DateTime dateTimeA = combineDateTime(a.data().date!, a.data().starttime!);
-        DateTime dateTimeB = combineDateTime(b.data().date!, b.data().starttime!);
+        DateTime dateTimeA =
+            combineDateTime(a.data().date!, a.data().starttime!);
+        DateTime dateTimeB =
+            combineDateTime(b.data().date!, b.data().starttime!);
         return dateTimeA.compareTo(dateTimeB);
       });
 
@@ -167,5 +185,28 @@ class HomeController extends GetxController {
 
     // Construct and return the DateTime object using the correct year from the date
     return DateTime(DateTime.now().year, 1, 1, hours, minutes);
+  }
+
+  // Method to get a random subset of services
+  List<QueryDocumentSnapshot<ServiceData>> getRandomRecommendedServices(
+      int count) {
+    final List<QueryDocumentSnapshot<ServiceData>> allServices =
+        state.serviceList;
+    final Random random = Random();
+
+    // Ensure we don't exceed the number of available services
+    if (allServices.length <= count) {
+      return allServices;
+    }
+
+    final List<QueryDocumentSnapshot<ServiceData>> randomServices = [];
+    while (randomServices.length < count) {
+      final service = allServices[random.nextInt(allServices.length)];
+      if (!randomServices.contains(service)) {
+        randomServices.add(service);
+      }
+    }
+
+    return randomServices;
   }
 }

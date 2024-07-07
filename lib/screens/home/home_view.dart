@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:isp_application/screens/request/request_index.dart';
 
 import '../../common/values/values.dart';
 import '../../screens/home/home_list.dart';
@@ -94,6 +95,7 @@ class _HomePageState extends State<HomePage> {
           selectedServicePronun = '/ˈɡruːmɪŋ/';
           desc = 'noun';
           definition = 'hygienic care for your precious furfriend';
+          showHomeList = false; // Reset showHomeList when a service is selected
           break;
         case 1:
           selectedService = 'Walking';
@@ -101,12 +103,14 @@ class _HomePageState extends State<HomePage> {
           desc = 'verb';
           definition =
               "a tail-wagging exploration through your furfriend's neighbourhood";
+          showHomeList = false; // Reset showHomeList when a service is selected
           break;
         case 2:
           selectedService = 'Sitting';
           selectedServicePronun = '/ˈsɪtɪŋ/';
           desc = 'noun';
           definition = 'temporary care and companionship for your furry friend';
+          showHomeList = false; // Reset showHomeList when a service is selected
           break;
         case 3:
           selectedService = 'Training';
@@ -114,13 +118,22 @@ class _HomePageState extends State<HomePage> {
           desc = 'noun';
           definition =
               'the fine art of turning chaos into harmony, one pawshake at a time.';
+          showHomeList = false; // Reset showHomeList when a service is selected
           break;
         case 4:
-          selectedService = 'add';
+          Get.to(const RequestPage());
           break;
         default:
           selectedService = '';
       }
+    });
+  }
+
+  bool showHomeList = false;
+
+  void _onForYouPressed() {
+    setState(() {
+      showHomeList = true;
     });
   }
 
@@ -243,10 +256,51 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.3,
-                            child: HomeList(selectedService: selectedService),
+                          Row(
+                            children: [
+                              InkWell(
+                                onTap: _onForYouPressed,
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: AppColor.secondaryColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: const Text(
+                                    'For you',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontFamily: 'Quicksand',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: AppColor.secondaryColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Text(
+                                  'All',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontFamily: 'Quicksand',
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                          const SizedBox(height: 10),
+                          if (showHomeList)
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.3,
+                              child: HomeList(selectedService: selectedService),
+                            ),
                         ],
                       ),
                     ),

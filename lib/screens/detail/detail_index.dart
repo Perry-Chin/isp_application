@@ -6,6 +6,7 @@ export 'detail_controller.dart';
 export 'detail_index.dart';
 export 'detail_view.dart';
 export 'detail_state.dart';
+export 'detailreportuser_popup.dart';
 export 'widgets/fee_info.dart';
 export 'widgets/detail_title.dart';
 export 'widgets/service_detail.dart';

@@ -72,6 +72,10 @@ class ProviderInfo extends StatelessWidget {
             ),
           ),
           subtitle: Text(userData?.email ?? ""),
+          trailing: ReportUserMenu(
+            userId: userData?.id ?? "",
+            currentUserId: controller.token,
+          ),
         ),
         actionButtons(userData!),
         const Padding(

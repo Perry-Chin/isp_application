@@ -18,7 +18,7 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
       leading: IconButton(
         icon: const Icon(Icons.close),
         onPressed: () {
-          if(controller.changesMade) {
+          if (controller.changesMade) {
             _showConfirmationDialog(context);
           } else {
             controller.revertChanges();
@@ -27,10 +27,7 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
       ),
       actions: [
         TextButton(
-          child: const Text(
-            "Reset", 
-            style: TextStyle(color: Colors.white)
-          ),
+          child: const Text("Reset", style: TextStyle(color: Colors.white)),
           onPressed: () {
             controller.resetSelection();
           },
@@ -45,13 +42,15 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Save Changes?"),
-          content: const Text("Do you want to save the changes before exiting?"),
+          content:
+              const Text("Do you want to save the changes before exiting?"),
           actions: [
             TextButton(
               child: const Text("No"),
               onPressed: () {
                 // Revert to old selections if user chooses 'No'
-                controller.revertChanges(); // This will reload the stored values from GetStorage
+                controller
+                    .revertChanges(); // This will reload the stored values from GetStorage
                 Get.back(); // Close the filter page
               },
             ),
@@ -73,49 +72,51 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColor.backgroundColor,
+      backgroundColor: AppColor.secondaryColor,
       appBar: _buildAppBar(context),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Status",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+      body: CustomContainer(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Status",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            // Add the status filter
-            customStatusFilter(FilterStatus.filters),
-            const SizedBox(height: 20),
-            const Text(
-              "Rating",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+              const SizedBox(height: 20),
+              // Add the status filter
+              customStatusFilter(FilterStatus.filters),
+              const SizedBox(height: 20),
+              const Text(
+                "Rating",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            // Add the Star Rating
-            Obx(() => StarRatingFilter(
-              rating: controller.selectedRating.value,
-              onChanged: (selectedRating) {
-                controller.setSelectedRating(selectedRating ?? 0);
-              },
-            )),
-            const Spacer(), // Add Spacer to push the button to the bottom
-            ApplyButton(
-              onPressed: () {
-                controller.applyFilters();
-              },
-              buttonText: "Apply Filter", 
-              buttonWidth: double.infinity,
-              textAlignment: Alignment.center,
-            ),
-          ],
+              const SizedBox(height: 20),
+              // Add the Star Rating
+              Obx(() => StarRatingFilter(
+                    rating: controller.selectedRating.value,
+                    onChanged: (selectedRating) {
+                      controller.setSelectedRating(selectedRating ?? 0);
+                    },
+                  )),
+              const Spacer(), // Add Spacer to push the button to the bottom
+              ApplyButton(
+                onPressed: () {
+                  controller.applyFilters();
+                },
+                buttonText: "Apply Filter",
+                buttonWidth: double.infinity,
+                textAlignment: Alignment.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

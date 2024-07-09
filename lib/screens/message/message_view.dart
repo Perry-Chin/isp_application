@@ -3,7 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../common/theme/custom/custom_theme.dart';
 import '../../common/values/values.dart';
+import '../../common/widgets/custom_container.dart';
 import '../../common/widgets/widgets.dart';
 import 'message_index.dart';
 
@@ -16,9 +18,12 @@ class MessagePage extends GetView<MessageController> {
       centerTitle: true,
       title: Text(
         "Message",
-        style: Theme.of(context).textTheme.headlineMedium,
+        style: TextStyle(
+          fontSize: 20,
+          color: AppColor.darkColor,
+          fontWeight: FontWeight.bold,
+        )
       ),
-      backgroundColor: AppColor.secondaryColor,
     );
   }
   
@@ -27,27 +32,34 @@ class MessagePage extends GetView<MessageController> {
     // IGNORE: Initiate controller if missing
     final MessageController messageController = Get.put(MessageController());
     return Scaffold(
-      backgroundColor: AppColor.backgroundColor,
+      backgroundColor: AppColor.secondaryColor,
       resizeToAvoidBottomInset: false,
       appBar: _buildAppBar(context),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
-            child: SearchBoxBar(
-              controller: controller.searchController, 
-              onChanged: (value) {
-                // Call controller function to filter service list based on username
-                controller.filterMessages(value);
-              },
-              showSuffixIcon: false,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 25, right: 25),
+              child: SearchBoxBar(
+                controller: controller.searchController, 
+                onChanged: (value) {
+                  // Call controller function to filter service list based on username
+                  controller.filterMessages(value);
+                },
+                showSuffixIcon: false,
+              ),
             ),
-          ),
-          const SizedBox(height: 15),
-          const Expanded(
-            child: MessageList()
-          ),
-        ]
+            const SizedBox(height: 15),
+            const Expanded(
+              child: CustomContainer(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 12.0, left: 4, right: 4),
+                  child: MessageList(),
+                ),
+              ),
+            ),
+          ]
+        ),
       ) 
     );
   }

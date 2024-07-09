@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:isp_application/common/widgets/custom_container.dart';
 import '../../common/values/values.dart';
 import 'schedule_index.dart';
 
@@ -13,8 +14,9 @@ class SchedulePage extends GetView<ScheduleController> {
         "Schedule",
         style: TextStyle(
           fontSize: 20,
+          color: AppColor.darkColor,
           fontWeight: FontWeight.bold,
-        ),
+        )
       ),
       centerTitle: true,
       backgroundColor: AppColor.secondaryColor,
@@ -25,7 +27,9 @@ class SchedulePage extends GetView<ScheduleController> {
           child: TabBar(
             labelColor: Colors.white,
             indicatorColor: Colors.white,
+            indicator: const BoxDecoration(),
             unselectedLabelColor: Colors.grey,
+            dividerColor: Colors.transparent,
             controller: controller.tabController,
             tabs: const [
               Tab(text: 'Provided'),
@@ -36,7 +40,7 @@ class SchedulePage extends GetView<ScheduleController> {
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.filter_list),
+          icon: const Icon(Icons.filter_list, color: AppColor.darkColor),
           onPressed: () {
             // Redirect to filter page
             Get.toNamed('/filterSchedule')!.then((_) {
@@ -54,30 +58,32 @@ class SchedulePage extends GetView<ScheduleController> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: AppColor.backgroundColor,
+        backgroundColor: AppColor.secondaryColor,
         appBar: _buildAppBar(context),
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-          child: TabBarView(
-            controller: controller.tabController,
-            children: [
-              GetBuilder<ScheduleController>(
-                builder: (controller) {
-                  return ProviderCard(
-                    selectedStatus: controller.selectedStatus,
-                    selectedRating: controller.selectedRating,
-                  );
-                },
-              ),
-              GetBuilder<ScheduleController>(
-                builder: (controller) {
-                  return RequesterCard(
-                    selectedStatus: controller.selectedStatus,
-                    selectedRating: controller.selectedRating,
-                  );
-                },
-              ),
-            ],
+        body: CustomContainer(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+            child: TabBarView(
+              controller: controller.tabController,
+              children: [
+                GetBuilder<ScheduleController>(
+                  builder: (controller) {
+                    return ProviderCard(
+                      selectedStatus: controller.selectedStatus,
+                      selectedRating: controller.selectedRating,
+                    );
+                  },
+                ),
+                GetBuilder<ScheduleController>(
+                  builder: (controller) {
+                    return RequesterCard(
+                      selectedStatus: controller.selectedStatus,
+                      selectedRating: controller.selectedRating,
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

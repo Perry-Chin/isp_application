@@ -7,7 +7,7 @@ class AppTheme {
   AppTheme._();
 
   static ThemeData lightTheme = ThemeData(
-    useMaterial3: true,
+    // useMaterial3: true,
     fontFamily: 'Roboto',
     brightness: Brightness.light,
     scaffoldBackgroundColor: Colors.white,
@@ -16,7 +16,7 @@ class AppTheme {
   );
 
   static ThemeData darkTheme = ThemeData(
-    useMaterial3: true,
+    // useMaterial3: true,
     fontFamily: 'Roboto',
     brightness: Brightness.dark,
     scaffoldBackgroundColor: Colors.black,

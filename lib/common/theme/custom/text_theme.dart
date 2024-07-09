@@ -17,7 +17,7 @@ class CustomTextTheme {
   static TextTheme darkTheme = TextTheme(
     // Used for bold heading text - Most Common
     headlineMedium: const TextStyle().copyWith(
-      fontSize: 22,
+      fontSize: 18,
       fontWeight: FontWeight.w600,
       color: AppColor.darkColor
     ),

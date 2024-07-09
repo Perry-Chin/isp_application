@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:isp_application/screens/request/request_index.dart';
 
@@ -7,11 +6,13 @@ import '../../common/values/values.dart';
 import '../../screens/home/home_list.dart';
 
 class CurvedBackgroundPainter extends StatelessWidget {
+  const CurvedBackgroundPainter({super.key});
+
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _CurvedBackgroundPainter(),
-      child: Container(
+      child: SizedBox(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
       ),
@@ -69,7 +70,7 @@ class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
@@ -142,7 +143,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Stack(
         children: [
-          CurvedBackgroundPainter(),
+          const CurvedBackgroundPainter(),
           SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -297,7 +298,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           const SizedBox(height: 10),
                           if (showHomeList)
-                            Container(
+                            SizedBox(
                               height: MediaQuery.of(context).size.height * 0.3,
                               child: HomeList(selectedService: selectedService),
                             ),

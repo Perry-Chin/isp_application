@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../../../common/routes/routes.dart';
 import '../../../common/values/values.dart';
-import 'payment/payment_index.dart';
 import 'settingsx_index.dart';
 
 class SettingsxPage extends GetView<SettingsxController> {

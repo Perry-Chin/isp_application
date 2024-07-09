@@ -3,9 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../common/theme/custom/custom_theme.dart';
 import '../../common/values/values.dart';
-import '../../common/widgets/custom_container.dart';
 import '../../common/widgets/widgets.dart';
 import 'message_index.dart';
 
@@ -16,7 +14,7 @@ class MessagePage extends GetView<MessageController> {
     return AppBar(
       elevation: 0,
       centerTitle: true,
-      title: Text(
+      title: const Text(
         "Message",
         style: TextStyle(
           fontSize: 20,

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../common/values/values.dart';
+import '../../common/widgets/widgets.dart';
 import 'settingsx/settingsx_index.dart';
 import 'profile_index.dart';
 import 'editProfile/edit_profile_index.dart';
@@ -34,8 +35,9 @@ class ProfilePage extends GetView<ProfileController> {
     }
 
     return Scaffold(
+      backgroundColor: AppColor.secondaryColor,
       appBar: _buildAppBar(),
-      body: profileView(context),
+      body: CustomContainer(child: profileView(context)),
     );
   }
 

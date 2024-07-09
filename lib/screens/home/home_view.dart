@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import 'package:isp_application/screens/request/request_index.dart';
 
 import '../../common/values/values.dart';
+import '../../common/widgets/input/searchbox_bar.dart';
 import '../../screens/home/home_list.dart';
+import 'home_controller.dart'; // Import your HomeController
 
 class CurvedBackgroundPainter extends StatelessWidget {
   const CurvedBackgroundPainter({super.key});
@@ -79,6 +81,7 @@ class _HomePageState extends State<HomePage> {
   String desc = '';
   String definition = '';
   final TextEditingController _searchController = TextEditingController();
+  late HomeController controller; // Declare controller variable
 
   static const List<String> serviceImages = [
     'assets/images/groomingdog.png',
@@ -87,6 +90,12 @@ class _HomePageState extends State<HomePage> {
     'assets/images/training.png',
     'assets/images/add.png',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(HomeController()); // Initialize controller
+  }
 
   void _onServiceImagePressed(int index) {
     setState(() {
@@ -161,19 +170,13 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  TextField(
+                  SearchBoxBar(
                     controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Search for a service',
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-                      prefixIcon: const Icon(Icons.search),
-                    ),
-                    // onChanged:
+                    onChanged: (value) {
+                      // Call controller function to filter service list based on username
+                      controller.filterServiceList(value);
+                    },
+                    showSuffixIcon: true,
                   ),
                   const SizedBox(height: 80),
                   const Text(

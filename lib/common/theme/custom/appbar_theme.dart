@@ -10,7 +10,7 @@ class CustomAppBarTheme {
     centerTitle: true,
     scrolledUnderElevation: 0,
     backgroundColor: AppColor.secondaryColor,
-    surfaceTintColor: Colors.transparent,
+    surfaceTintColor: AppColor.secondaryColor,
     titleTextStyle: TextStyle(
       fontSize: 20,
       color: AppColor.darkColor,

@@ -83,6 +83,7 @@ List<Step> getSteps(int currentStep) {
             labeltext: 'Location',
             prefixicon: Icons.add_location_alt_outlined,
             textController: controller.locationController,
+            //onTap: () => selectLocation(Get.context!, controller.locationController),
             validator: (value) => RouteValidateServiceMiddleware.validateLocation(value)
           ),
           const SizedBox(height: 20),

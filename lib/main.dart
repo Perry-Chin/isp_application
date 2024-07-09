@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 
 import 'common/routes/routes.dart';
 import 'common/storage/storage.dart';
+import 'common/theme/theme.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -41,7 +42,10 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         initialRoute: AppPages.initial,
-        getPages: AppPages.routes
+        getPages: AppPages.routes,
+        themeMode: ThemeMode.system,
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
       )
     );
   }

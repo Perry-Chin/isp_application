@@ -10,11 +10,14 @@ import 'message_index.dart';
 class MessagePage extends GetView<MessageController> {
   const MessagePage({super.key});
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(context) {
     return AppBar(
       elevation: 0,
       centerTitle: true,
-      title: const Text("Message"),
+      title: Text(
+        "Message",
+        style: Theme.of(context).textTheme.headlineMedium,
+      ),
       backgroundColor: AppColor.secondaryColor,
     );
   }
@@ -26,7 +29,7 @@ class MessagePage extends GetView<MessageController> {
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
       resizeToAvoidBottomInset: false,
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: Column(
         children: [
           Padding(

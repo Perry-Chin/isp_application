@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/values/values.dart';
+import '../../common/widgets/widgets.dart';
 import 'request_index.dart';
 
 class RequestPage extends GetView<RequestController> {
@@ -28,17 +29,18 @@ class RequestPage extends GetView<RequestController> {
         return true; //Allow the back navigation
       },
       child: Scaffold(
-        backgroundColor: AppColor.backgroundColor,
-          appBar: _buildAppBar(),
-          body: Obx(() {
+        backgroundColor: AppColor.secondaryColor,
+        appBar: _buildAppBar(),
+        body: CustomContainer(
+          child: Obx(() {
             //Request submitted successfully
             if (controller.requestCompleted.value) {
               return requestSuccess(controller, context);
             } else {
               return requestForm(controller, context);
             }
-          }
-        )
+          }),
+        ),
       ),
     );
   }

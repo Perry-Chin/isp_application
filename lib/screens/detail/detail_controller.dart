@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../common/data/data.dart';
-import '../../common/middlewares/middlewares.dart';
 import '../../common/storage/storage.dart';
 import 'detail_index.dart';
 
@@ -118,9 +117,9 @@ class DetailController extends GetxController {
 
       if (reviewsSnapshot.docs.isNotEmpty) {
         double totalRating = 0;
-        reviewsSnapshot.docs.forEach((doc) {
+        for (var doc in reviewsSnapshot.docs) {
           totalRating += doc['rating'] as num;
-        });
+        }
         userRating.value = totalRating / reviewsSnapshot.docs.length;
       } else {
         userRating.value = 0;
@@ -232,6 +231,7 @@ class DetailController extends GetxController {
     try {
       await db.collection('service').doc(serviceId).update({
         'status': status,
+        'statusid': 1,
         'provider_uid': providerUid,
       });
     } catch (e) {

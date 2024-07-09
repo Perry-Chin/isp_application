@@ -12,7 +12,7 @@ import 'home_controller.dart';
 class HomeList extends StatelessWidget {
   final String selectedService;
 
-  HomeList({Key? key, required this.selectedService}) : super(key: key);
+  const HomeList({Key? key, required this.selectedService}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

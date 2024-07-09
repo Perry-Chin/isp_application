@@ -1,10 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
-import '../../common/values/values.dart';
-import '../../common/widgets/widgets.dart';
-import '../login/login_index.dart';
-import 'register_index.dart';
 
 class Recommendations extends StatelessWidget {
   const Recommendations({super.key});

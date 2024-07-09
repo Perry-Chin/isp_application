@@ -98,6 +98,7 @@ class MessageList extends GetView<MessageController> {
             controller: controller.refreshController,
             onLoading: controller.onLoading,
             onRefresh: controller.onRefresh,
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
             header: const WaterDropHeader(),
             child: CustomScrollView(
               slivers: [

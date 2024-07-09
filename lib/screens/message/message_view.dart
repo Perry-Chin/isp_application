@@ -10,12 +10,9 @@ import 'message_index.dart';
 class MessagePage extends GetView<MessageController> {
   const MessagePage({super.key});
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(context) {
     return AppBar(
-      elevation: 0,
-      centerTitle: true,
       title: const Text("Message"),
-      backgroundColor: AppColor.secondaryColor,
     );
   }
   
@@ -24,27 +21,34 @@ class MessagePage extends GetView<MessageController> {
     // IGNORE: Initiate controller if missing
     final MessageController messageController = Get.put(MessageController());
     return Scaffold(
-      backgroundColor: AppColor.backgroundColor,
+      backgroundColor: AppColor.secondaryColor,
       resizeToAvoidBottomInset: false,
-      appBar: _buildAppBar(),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
-            child: SearchBoxBar(
-              controller: controller.searchController, 
-              onChanged: (value) {
-                // Call controller function to filter service list based on username
-                controller.filterMessages(value);
-              },
-              showSuffixIcon: false,
+      appBar: _buildAppBar(context),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 25, right: 25),
+              child: SearchBoxBar(
+                controller: controller.searchController, 
+                onChanged: (value) {
+                  // Call controller function to filter service list based on username
+                  controller.filterMessages(value);
+                },
+                showSuffixIcon: false,
+              ),
             ),
-          ),
-          const SizedBox(height: 15),
-          const Expanded(
-            child: MessageList()
-          ),
-        ]
+            const SizedBox(height: 15),
+            const Expanded(
+              child: CustomContainer(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 12.0, left: 4, right: 4),
+                  child: MessageList(),
+                ),
+              ),
+            ),
+          ]
+        ),
       ) 
     );
   }

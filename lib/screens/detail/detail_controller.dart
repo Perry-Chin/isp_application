@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../common/data/data.dart';
+import '../../common/middlewares/middlewares.dart';
 import '../../common/storage/storage.dart';
 import 'detail_index.dart';
 
@@ -331,10 +332,6 @@ class DetailController extends GetxController {
     } catch (e) {
       print("Error in goChat: $e");
     }
-  }
-
-  void updateFiltersAndNavigateBack() {
-    // Implement this method based on your navigation requirements
   }
 
   // void updateServiceStatus(String serviceId, String status) async {

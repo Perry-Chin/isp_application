@@ -10,10 +10,7 @@ class SettingsxPage extends GetView<SettingsxController> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      elevation: 0,
-      centerTitle: true,
       title: const Text("Settings"),
-      backgroundColor: AppColor.secondaryColor,
     );
   }
 

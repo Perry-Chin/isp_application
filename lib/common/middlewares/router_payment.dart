@@ -15,8 +15,8 @@ class RoutePaymentMiddleware extends GetMiddleware {
       serviceid: docId,
       amount: totalCost,
       timestamp: Timestamp.now(),
-      requested: true,
-      paid: true,
+      income: true,
+      dismiss: false,
     );
 
     print("Payment: ");

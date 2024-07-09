@@ -12,16 +12,7 @@ class MessagePage extends GetView<MessageController> {
 
   AppBar _buildAppBar(context) {
     return AppBar(
-      elevation: 0,
-      centerTitle: true,
-      title: const Text(
-        "Message",
-        style: TextStyle(
-          fontSize: 20,
-          color: AppColor.darkColor,
-          fontWeight: FontWeight.bold,
-        )
-      ),
+      title: const Text("Message"),
     );
   }
   

@@ -2,6 +2,7 @@ library widget;
 
 export 'input/button.dart';
 export 'loading.dart';
+export './top_indicator.dart';
 export './error_message.dart';
 export 'picker/image_picker.dart';
 export './searchfield.dart';

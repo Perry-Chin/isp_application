@@ -231,6 +231,7 @@ class DetailController extends GetxController {
     try {
       await db.collection('service').doc(serviceId).update({
         'status': status,
+        'statusid': 1,
         'provider_uid': providerUid,
       });
     } catch (e) {

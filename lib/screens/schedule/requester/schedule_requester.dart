@@ -18,154 +18,185 @@ class RequesterCard extends GetView<ScheduleController> {
     required this.selectedRating,
   }) : super(key: key);
 
- Widget requesterListItem(
-  QueryDocumentSnapshot<ServiceData> item,
-  UserData? userData,
-) {
-  // Determine status color based on item status
-  Color statusColor = getStatusColor(item.data().status);
+  Widget requesterListItem(
+    QueryDocumentSnapshot<ServiceData> item,
+    UserData? userData,
+  ) {
+    Color statusColor = getStatusColor(item.data().status);
 
-  // Widget content remains unchanged
-  return Card(
-    elevation: 8,
-    margin: const EdgeInsets.all(14),
-    color: Colors.transparent,
-    child: InkWell(
-      onTap: () => controller.redirectToServiceDetail(item, "true"),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.grey, width: 0.2),
-        ),
+    return Card(
+      elevation: 8,
+      margin: const EdgeInsets.all(14),
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => controller.redirectToServiceDetail(item, "true"),
         child: Container(
           decoration: BoxDecoration(
-            border: Border(
-              left: BorderSide(width: 8.0, color: statusColor),
-            ),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey, width: 0.2),
           ),
-          padding: const EdgeInsets.all(6),
-          child: Column(
-            children: [
-              ListTile(
-                leading: CircleAvatar(
-                  radius: 28.0,
-                  backgroundColor: Colors.transparent,
-                  child: ClipOval(
-                    child: userData?.photourl != null && userData!.photourl!.isNotEmpty
-                      ? FadeInImage.assetNetwork(
-                          placeholder: AppImage.profile,
-                          image: userData.photourl ?? "",
-                          fadeInDuration: const Duration(milliseconds: 100),
-                          fit: BoxFit.cover,
-                          width: 58.w,
-                          height: 58.w,
-                        )
-                      : Image.asset(AppImage.profile),
-                  ),
-                ),
-                title: Padding(
-                  padding: const EdgeInsets.only(bottom: 3),
-                  child: Row(
-                    children: [
-                      Text(
-                        userData?.username ?? "",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      // Rating(rating: userData?.rating ?? 0),
-                    ],
-                  ),
-                ),
-                subtitle: Text(
-                  "${item.data().date}, ${item.data().starttime} - ${item.data().endtime}",
-                ),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(width: 8.0, color: statusColor),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15, top: 5),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.location_on,
-                      color: AppColor.secondaryColor,
+            ),
+            padding: const EdgeInsets.all(6),
+            child: Column(
+              children: [
+                ListTile(
+                  leading: CircleAvatar(
+                    radius: 28.0,
+                    backgroundColor: Colors.transparent,
+                    child: ClipOval(
+                      child: userData?.photourl != null &&
+                              userData!.photourl!.isNotEmpty
+                          ? FadeInImage.assetNetwork(
+                              placeholder: AppImage.profile,
+                              image: userData.photourl ?? "",
+                              fadeInDuration: const Duration(milliseconds: 100),
+                              fit: BoxFit.cover,
+                              width: 58.w,
+                              height: 58.w,
+                            )
+                          : Image.asset(AppImage.profile),
                     ),
-                    const SizedBox(width: 2),
-                    Text(
-                      item.data().location ?? "",
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: item.data().serviceName!.length * 11,
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffF2F2F2),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Text(
-                          item.data().serviceName ?? "",
+                  ),
+                  title: Padding(
+                    padding: const EdgeInsets.only(bottom: 3),
+                    child: Row(
+                      children: [
+                        Text(
+                          userData?.username ?? "",
                           style: const TextStyle(
+                            fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                      ),
+                        const SizedBox(width: 6),
+                        // Rating(rating: userData?.rating ?? 0),
+                      ],
                     ),
-                    Container(
-                      width: item.data().status!.length * 12,
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: statusColor,
-                        borderRadius: BorderRadius.circular(20),
+                  ),
+                  subtitle: Text(
+                    "${item.data().date}, ${item.data().starttime} - ${item.data().endtime}",
+                  ),
+                ),
+                FutureBuilder<QuerySnapshot>(
+                  future: FirebaseFirestore.instance
+                      .collection('service')
+                      .doc(item.id)
+                      .collection('propose')
+                      .limit(1)
+                      .get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const SizedBox.shrink();
+                    }
+
+                    if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                      final proposeDoc = snapshot.data!.docs.first;
+                      final startTime = proposeDoc.get('start_time') as String?;
+                      if (startTime != null) {
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 16, bottom: 8),
+                          child: Text(
+                            "Proposed time is: $startTime",
+                            style: const TextStyle(
+                              fontStyle: FontStyle.italic,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        );
+                      }
+                    }
+
+                    return const SizedBox.shrink();
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, top: 5),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.location_on,
+                        color: AppColor.secondaryColor,
                       ),
-                      child: Center(
-                        child: Text(
-                          "${item.data().status}",
-                          style: const TextStyle(
-                            fontSize: 15,
-                            color: Colors.white,
+                      const SizedBox(width: 2),
+                      Text(
+                        item.data().location ?? "",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: item.data().serviceName!.length * 11,
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xffF2F2F2),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(
+                            item.data().serviceName ?? "",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      Container(
+                        width: item.data().status!.length * 12,
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: statusColor,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "${item.data().status}",
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
-
-Color getStatusColor(String? status) {
-  switch (status?.toLowerCase()) {
-    case 'requested':
-      return Colors.blue;
-    case 'cancelled':
-      return Colors.red;
-    case 'pending':
-      return Colors.orangeAccent;
-    case 'booked':
-      return Colors.cyan;
-    case 'started':
-      return Colors.redAccent;
-    default:
-      return Colors.green;
+    );
   }
-}
+
+  Color getStatusColor(String? status) {
+    switch (status?.toLowerCase()) {
+      case 'requested':
+        return Colors.blue;
+      case 'cancelled':
+        return Colors.red;
+      case 'pending':
+        return Colors.orangeAccent;
+      case 'booked':
+        return Colors.cyan;
+      case 'started':
+        return Colors.redAccent;
+      default:
+        return Colors.green;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

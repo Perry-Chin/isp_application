@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/data/data.dart';
+import '../../common/middlewares/middlewares.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'confirmpg.dart';
@@ -93,7 +94,7 @@ class DetailPage extends GetView<DetailController> {
             children: [
               const TopIndicator(),
               DetailTitle(name: serviceData.serviceName),
-              ServiceDetail(serviceData: serviceData, hideButtons: hideButtons),
+              ServiceDetail(serviceData: serviceData, hideButtons: hideButtons, controller: controller,),
               ServiceDescription(description: serviceData.description),
               if (Get.parameters['requested'] != "true")
                 RequesterInfo(
@@ -131,21 +132,22 @@ class DetailPage extends GetView<DetailController> {
             const SizedBox(width: 10),
             if (status == "Booked") ...[
               Expanded(
-                  flex: 6,
-                  child: CancelButton(
-                      onPressed: () => controller.updateServiceStatus(
-                          controller.doc_id, "Cancelled", 5),
-                      buttonText: "Cancel Service",
-                      buttonWidth: 135)),
+                flex: 6,
+                child: CancelButton(
+                  onPressed: () => controller.updateServiceStatus(controller.doc_id, "Cancelled", 5),
+                  buttonText: "Cancel Service",
+                  buttonWidth: 135
+                )
+              ),
             ],
             if (status == "Pending") ...[
               Expanded(
-                  flex: 6,
-                  child: CancelButton(
-                      onPressed: () => controller.updateServiceStatus(
-                          controller.doc_id, "Requested", 3),
-                      buttonText: "Deny Request",
-                      buttonWidth: 130)),
+                flex: 6,
+                child: CancelButton(
+                  onPressed: () => controller.updateServiceStatus(controller.doc_id, "Requested", 3),
+                  buttonText: "Deny Request",
+                  buttonWidth: 130)
+                ),
             ],
           ]
         ],
@@ -171,8 +173,11 @@ class DetailPage extends GetView<DetailController> {
       );
     } else if (status == "Started" && requested == "true") {
       return ApplyButton(
-        onPressed: () =>
-            controller.updateServiceStatus(controller.doc_id, "Completed", 4),
+        onPressed: () async {
+          controller.updateServiceStatus(controller.doc_id, "Completed", 4);
+          await RoutePaymentMiddleware().createPaymentDocument(controller.doc_id, controller.totalCost.value, Get.parameters['prov_uid'], controller.token, true);
+          await RoutePaymentMiddleware().updatePaymentDocument(controller.doc_id, controller.token, Get.parameters['prov_uid']);
+        },
         buttonText: "Complete Service",
         buttonWidth: 160,
       );

@@ -67,7 +67,10 @@ class ProviderInfo extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 6),
-                Obx(() => Rating(rating: controller.serviceRating.value))
+                Obx(() => Rating(
+                    rating: Get.parameters['requested'] == "true"
+                        ? (controller.providerRating.value * 10).round() / 10
+                        : (controller.requesterRating.value * 10).round() / 10))
               ],
             ),
           ),
@@ -99,8 +102,10 @@ class ProviderInfo extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 // View reviews actions
-                Get.toNamed(AppRoutes.detailReview,
-                    parameters: {"doc_id": controller.doc_id});
+                Get.toNamed(AppRoutes.detailReview, parameters: {
+                  "doc_id": controller.doc_id,
+                  'requested': Get.parameters['requested'] ?? 'false'
+                });
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,

@@ -7,3 +7,4 @@ export 'msgcontent.dart';
 export 'review.dart';
 export 'payment.dart';
 export 'reports.dart';
+export 'propose.dart';

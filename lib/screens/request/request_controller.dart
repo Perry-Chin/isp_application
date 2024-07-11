@@ -172,10 +172,12 @@ class RequestController extends GetxController {
 
   Future<void> createServiceDocument(BuildContext context) async {
     final imgUrl = await uploadFile();
+    final docRef = FirebaseFirestore.instance.collection('service').doc();
+    final String serviceDoc = docRef.id;
     final duration = calculateDuration(starttimeController.text, endtimeController.text);
 
     final serviceData = ServiceData(
-      serviceid: docId,
+      serviceid: serviceDoc,
       serviceName: serviceController.text,
       description: descriptionController.text,
       rate: int.tryParse(rateController.text),
@@ -193,8 +195,8 @@ class RequestController extends GetxController {
 
     final amount = (double.parse(rateController.text) * duration);
   
-    await FirebaseFirestore.instance.collection('service').doc(docId).set(serviceData.toFirestore());
-    await RoutePaymentMiddleware().createPaymentDocument(docId, amount);
+    await docRef.set(serviceData.toFirestore());
+    await RoutePaymentMiddleware().createPaymentDocument(serviceDoc, amount, token, token, false);
     requestCompleted.value = true;
   }
 }

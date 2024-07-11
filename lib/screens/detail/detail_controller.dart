@@ -29,7 +29,10 @@ class DetailController extends GetxController {
   var userData = Rxn<UserData>();
   final userRating = 0.0.obs;
   final serviceRating = 0.0.obs; // New observable for service-specific rating
+  final requesterRating = 0.0.obs;
+  final providerRating = 0.0.obs;
 
+  bool hasProposedTime = false;
   bool showPaymentSection = false;
 
   void togglePaymentSection() {
@@ -96,20 +99,28 @@ class DetailController extends GetxController {
     super.onInit();
     var data = Get.parameters;
     doc_id = data['doc_id'];
-    print(doc_id);
 
     combinedStream.listen((userDataMap) {
       if (userDataMap.isNotEmpty) {
         userData.value = userDataMap.values.first;
-        fetchUserRating(userData.value!.id!);
+
+        var serviceData = state.serviceList.first.data();
+        var reqUserId = serviceData.reqUserid;
+        var provUserId = serviceData.provUserid;
+
+        fetchUserRating(reqUserId!, isRequester: true);
+        if (provUserId != null) {
+          fetchUserRating(provUserId, isRequester: false);
+        }
+
         fetchServiceRating(doc_id);
       }
     });
-
     asyncLoadAllData();
   }
 
-  Future<void> fetchUserRating(String userId) async {
+  Future<void> fetchUserRating(String userId,
+      {required bool isRequester}) async {
     try {
       QuerySnapshot reviewsSnapshot = await db
           .collection('reviews')
@@ -121,13 +132,27 @@ class DetailController extends GetxController {
         for (var doc in reviewsSnapshot.docs) {
           totalRating += doc['rating'] as num;
         }
-        userRating.value = totalRating / reviewsSnapshot.docs.length;
+        double averageRating = totalRating / reviewsSnapshot.docs.length;
+
+        if (isRequester) {
+          requesterRating.value = averageRating;
+        } else {
+          providerRating.value = averageRating;
+        }
       } else {
-        userRating.value = 0;
+        if (isRequester) {
+          requesterRating.value = 0;
+        } else {
+          providerRating.value = 0;
+        }
       }
     } catch (e) {
       print('Error fetching user rating: $e');
-      userRating.value = 0;
+      if (isRequester) {
+        requesterRating.value = 0;
+      } else {
+        providerRating.value = 0;
+      }
     }
   }
 
@@ -249,8 +274,7 @@ class DetailController extends GetxController {
 
         subtotal.value = double.parse((rate * duration!).toStringAsFixed(2));
         taxFee.value = double.parse((subtotal.value * 0.1).toStringAsFixed(2));
-        totalCost.value =
-            double.parse((subtotal.value + taxFee.value).toStringAsFixed(2));
+        totalCost.value = double.parse((subtotal.value - taxFee.value).toStringAsFixed(2));
       }
     }
   }

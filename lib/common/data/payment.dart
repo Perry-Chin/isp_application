@@ -25,7 +25,7 @@ class PaymentData {
     final data = snapshot.data();
     return PaymentData(
       uid: data?['user_id'],
-      serviceid: data?['serviceid'],
+      serviceid: data?['service_id'],
       amount: data?['amount'],
       timestamp: data?['timestamp'],
       income: data?['income'],
@@ -36,7 +36,7 @@ class PaymentData {
   Map<String, dynamic> toFirestore() {
     return {
       if (uid != null) "user_id": uid,
-      if (serviceid != null) "serviceid": serviceid,
+      if (serviceid != null) "service_id": serviceid,
       if (amount != null) "amount": amount,
       if (timestamp != null) "timestamp": timestamp,
       if (income != null) "income": income,

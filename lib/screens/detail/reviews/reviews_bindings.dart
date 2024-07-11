@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'detail_reviews_controller.dart';
+import 'reviews_controller.dart';
 
 class DetailReviewBinding implements Bindings {
   @override

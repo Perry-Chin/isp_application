@@ -1,12 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:rxdart/rxdart.dart';
+
 import '../../../common/data/data.dart';
+import 'add_reviews/add_reviews_index.dart';
 
 class DetailReviewController extends GetxController {
   final String docId = Get.parameters['doc_id'] ?? '';
+  final String requested = Get.parameters['requested'] ?? 'false';
   final db = FirebaseFirestore.instance;
   final reviews = <Review>[].obs;
   final isLoading = true.obs;
@@ -14,7 +18,6 @@ class DetailReviewController extends GetxController {
   final totalReviews = 0.obs;
   final ratingCounts = <int, int>{}.obs;
   final sortType = 'Newest'.obs;
-  final currentTab = 'Requester'.obs; // Default to 'Requester'
   final RefreshController refreshController =
       RefreshController(initialRefresh: false);
 
@@ -69,22 +72,28 @@ class DetailReviewController extends GetxController {
           return;
         }
 
-        print('Service Data: $serviceData'); // Debug service data structure
+        // print('Service Data: $serviceData');
 
-        // Select user ID based on current tab
+        // Determine which user's reviews to fetch based on 'requested' parameter
         String? userId;
-        if (currentTab.value == 'Requester') {
-          userId = serviceData['requester_uid'] as String?;
-        } else if (currentTab.value == 'Provider') {
+        if (requested == 'true') {
+          // Current user is the requester, so fetch provider's reviews
           userId = serviceData['provider_uid'] as String?;
+        } else {
+          // Current user is the provider or potential provider, so fetch requester's reviews
+          userId = serviceData['requester_uid'] as String?;
         }
 
         if (userId == null) {
-          print('Error: User ID is null for tab ${currentTab.value}');
+          print('Error: User ID is null');
           return;
         }
+        // print('Requested parameter: $requested');
+        // print(
+        //     'Fetching reviews for role: ${requested == 'true' ? 'Provider' : 'Requester'}');
+        // print('User ID to fetch reviews for: $userId');
 
-        print('Fetching reviews for User ID: $userId');
+        // print('Fetching reviews for User ID: $userId');
 
         QuerySnapshot<Map<String, dynamic>> snapshot = await db
             .collection('reviews')
@@ -156,11 +165,6 @@ class DetailReviewController extends GetxController {
     _sortReviews();
   }
 
-  void filterReviews(String type) {
-    currentTab.value = type;
-    fetchUserReviews(); // Fetch reviews again when the tab changes
-  }
-
   String formatDate(DateTime date) {
     return DateFormat('MMM d, yyyy').format(date);
   }
@@ -185,5 +189,20 @@ class DetailReviewController extends GetxController {
     }).catchError((_) {
       controller.loadFailed();
     });
+  }
+
+  // Helper functions for add review
+  void addReview(BuildContext context) {
+    showModalBottomSheet(
+      context: context, 
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: const DetailAddReviewPage(),
+      )
+    );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../common/values/values.dart';
-import 'detail_reviews_controller.dart';
+import 'reviews_controller.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class DetailReviewView extends GetView<DetailReviewController> {
@@ -14,6 +14,13 @@ class DetailReviewView extends GetView<DetailReviewController> {
         title: const Text('Reviews & Ratings'),
         backgroundColor: AppColor.secondaryColor,
         elevation: 0,
+        // Add rating button
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () => controller.addReview(context)
+          ),
+        ],
       ),
       body: Obx(() {
         return Stack(

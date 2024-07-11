@@ -28,7 +28,7 @@ class DetailController extends GetxController {
 
   var userData = Rxn<UserData>();
   final userRating = 0.0.obs;
-  final serviceRating = 0.0.obs; // New observable for service-specific rating
+  final serviceRating = 0.0.obs;
   final requesterRating = 0.0.obs;
   final providerRating = 0.0.obs;
 
@@ -40,15 +40,13 @@ class DetailController extends GetxController {
     update();
   }
 
-  Stream<List<QueryDocumentSnapshot<ServiceData>>> getServiceStream(
-      String token) {
+  Stream<List<QueryDocumentSnapshot<ServiceData>>> getServiceStream(String token) {
     return db
         .collection('service')
         .where(FieldPath.documentId, isEqualTo: doc_id)
         .withConverter<ServiceData>(
           fromFirestore: ServiceData.fromFirestore,
-          toFirestore: (ServiceData serviceData, _) =>
-              serviceData.toFirestore(),
+          toFirestore: (ServiceData serviceData, _) => serviceData.toFirestore(),
         )
         .snapshots()
         .map((snapshot) => snapshot.docs);
@@ -69,14 +67,11 @@ class DetailController extends GetxController {
   Stream<Map<String, UserData?>> getCombinedStream(String token) {
     return getServiceStream(token).switchMap((serviceDocs) {
       List<String> userIds = serviceDocs
-          .where((doc) =>
-              doc.data().reqUserid != null && doc.data().reqUserid!.isNotEmpty)
+          .where((doc) => doc.data().reqUserid != null && doc.data().reqUserid!.isNotEmpty)
           .map((doc) => doc.data().reqUserid!)
           .toList()
         ..addAll(serviceDocs
-            .where((doc) =>
-                doc.data().provUserid != null &&
-                doc.data().provUserid!.isNotEmpty)
+            .where((doc) => doc.data().provUserid != null && doc.data().provUserid!.isNotEmpty)
             .map((doc) => doc.data().provUserid!));
 
       if (userIds.isEmpty) {
@@ -84,8 +79,7 @@ class DetailController extends GetxController {
       }
 
       return getUserStream(userIds).map((userDocs) {
-        return Map.fromEntries(
-            userDocs.map((doc) => MapEntry(doc.id, doc.data())));
+        return Map.fromEntries(userDocs.map((doc) => MapEntry(doc.id, doc.data())));
       });
     });
   }
@@ -100,27 +94,34 @@ class DetailController extends GetxController {
     var data = Get.parameters;
     doc_id = data['doc_id'];
 
-    combinedStream.listen((userDataMap) {
-      if (userDataMap.isNotEmpty) {
-        userData.value = userDataMap.values.first;
+    asyncLoadAllData().then((_) {
+      combinedStream.listen((userDataMap) {
+        if (userDataMap.isNotEmpty) {
+          userData.value = userDataMap.values.first;
 
-        var serviceData = state.serviceList.first.data();
-        var reqUserId = serviceData.reqUserid;
-        var provUserId = serviceData.provUserid;
+          if (state.serviceList.isNotEmpty) {
+            var serviceData = state.serviceList.first.data();
+            var reqUserId = serviceData.reqUserid;
+            var provUserId = serviceData.provUserid;
 
-        fetchUserRating(reqUserId!, isRequester: true);
-        if (provUserId != null) {
-          fetchUserRating(provUserId, isRequester: false);
+            if (reqUserId != null) {
+              fetchUserRating(reqUserId, isRequester: true);
+            }
+            if (provUserId != null) {
+              fetchUserRating(provUserId, isRequester: false);
+            }
+
+            fetchServiceRating(doc_id);
+          } else {
+            print("Service list is empty");
+            // Handle the case when service list is empty
+          }
         }
-
-        fetchServiceRating(doc_id);
-      }
+      });
     });
-    asyncLoadAllData();
   }
 
-  Future<void> fetchUserRating(String userId,
-      {required bool isRequester}) async {
+  Future<void> fetchUserRating(String userId, {required bool isRequester}) async {
     try {
       QuerySnapshot reviewsSnapshot = await db
           .collection('reviews')
@@ -158,8 +159,7 @@ class DetailController extends GetxController {
 
   Future<void> fetchServiceRating(String serviceId) async {
     try {
-      DocumentSnapshot serviceDoc =
-          await db.collection('service').doc(serviceId).get();
+      DocumentSnapshot serviceDoc = await db.collection('service').doc(serviceId).get();
       if (serviceDoc.exists) {
         Map<String, dynamic> data = serviceDoc.data() as Map<String, dynamic>;
         if (data.containsKey('rating')) {
@@ -174,38 +174,26 @@ class DetailController extends GetxController {
     }
   }
 
-  Future<void> updateServiceProvUserid(
-      String serviceId, String provUserid) async {
+  Future<void> updateServiceProvUserid(String serviceId, String provUserid) async {
     try {
-      await db
-          .collection('service')
-          .doc(serviceId)
-          .update({'provider_uid': provUserid});
+      await db.collection('service').doc(serviceId).update({'provider_uid': provUserid});
     } catch (e) {
       print('Error updating provUserid: $e');
     }
   }
 
-  Future<void> updateServiceStatus(
-      String serviceId, String status, int statusid) async {
+  Future<void> updateServiceStatus(String serviceId, String status, int statusid) async {
     try {
-      await db
-          .collection('service')
-          .doc(serviceId)
-          .update({'status': status, 'statusid': statusid});
+      await db.collection('service').doc(serviceId).update({'status': status, 'statusid': statusid});
       updateFiltersAndNavigateBack();
     } catch (e) {
       print('Error updating status: $e');
     }
   }
 
-  Future<void> bookServiceStatus(
-      String serviceId, String status, int statusid) async {
+  Future<void> bookServiceStatus(String serviceId, String status, int statusid) async {
     try {
-      await db
-          .collection('service')
-          .doc(serviceId)
-          .update({'status': status, 'statusid': statusid});
+      await db.collection('service').doc(serviceId).update({'status': status, 'statusid': statusid});
     } catch (e) {
       print('Error updating status: $e');
     }
@@ -217,8 +205,7 @@ class DetailController extends GetxController {
           .collection("service")
           .withConverter<ServiceData>(
             fromFirestore: ServiceData.fromFirestore,
-            toFirestore: (ServiceData serviceData, options) =>
-                serviceData.toFirestore(),
+            toFirestore: (ServiceData serviceData, options) => serviceData.toFirestore(),
           )
           .where(FieldPath.documentId, isEqualTo: doc_id)
           .get();
@@ -252,8 +239,7 @@ class DetailController extends GetxController {
     });
   }
 
-  Future<void> updateServiceStatusAndProvider(
-      String serviceId, String status, String providerUid) async {
+  Future<void> updateServiceStatusAndProvider(String serviceId, String status, String providerUid) async {
     try {
       await db.collection('service').doc(serviceId).update({
         'status': status,
@@ -313,8 +299,7 @@ class DetailController extends GetxController {
 
       if (fromMessages.docs.isEmpty && toMessages.docs.isEmpty) {
         String profile = await UserStore.to.getProfile();
-        UserLoginResponseEntity userdata =
-            UserLoginResponseEntity.fromJson(jsonDecode(profile));
+        UserLoginResponseEntity userdata = UserLoginResponseEntity.fromJson(jsonDecode(profile));
         var msgdata = Msg(
             fromUserid: userdata.accessToken,
             toUserid: userData.id,
@@ -358,6 +343,7 @@ class DetailController extends GetxController {
     }
   }
 
+  // The following method is commented out as it's duplicated above
   // void updateServiceStatus(String serviceId, String status) async {
   //   try {
   //     await db.collection('service').doc(serviceId).update({

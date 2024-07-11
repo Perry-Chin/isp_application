@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -58,7 +61,7 @@ class ServiceDetail extends StatelessWidget {
                 width: 40,
                 child: const Icon(Icons.date_range),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 5),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -71,6 +74,66 @@ class ServiceDetail extends StatelessWidget {
                     "${serviceData.starttime} - ${serviceData.endtime}",
                     style: const TextStyle(fontSize: 15),
                   ),
+                  const SizedBox(height: 10,),
+                  GetBuilder(builder: )
+                 FutureBuilder<QuerySnapshot>(
+                  future: FirebaseFirestore.instance
+                      .collection('service')
+                      .doc(serviceData.serviceid)
+                      .collection('propose')
+                      .limit(1)
+                      .get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      print("Loading");
+                      return const SizedBox.shrink();
+                    }
+
+                    if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                      print("snapshot.hasData");
+                      final proposeDoc = snapshot.data!.docs.first;
+                      final startTime = proposeDoc.get('start_time') as String?;
+                      if (startTime != null) {
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 16, bottom: 8),
+                          child: Text(
+                            "Proposed time is: $startTime",
+                            style: const TextStyle(
+                              fontStyle: FontStyle.italic,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        );
+                      }
+                    }
+
+                    return const SizedBox.shrink();
+                  },
+                ),
+
+                    //     if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                    //       // print(serviceData.serviceid);
+                    //       final data = snapshot.data!.docs.first;
+                    //       final startTime = data["start_time"];
+                    //       // print(startTime);
+                    //       if (startTime != null) {
+                    //         return Padding(
+                    //           padding: const EdgeInsets.only(bottom: 8),
+                    //           child: Text(
+                    //             "Your proposed time: $startTime",
+                    //             style: const TextStyle(
+                    //               fontStyle: FontStyle.italic,
+                    //               color: Colors.blue,
+                    //             ),
+                    //           ),
+                    //         );
+                    //       }
+                    //     }
+
+                    //     return const SizedBox.shrink();
+                    //   },
+                    // ),
+
                   if (!hideButtons) ...[
                     const SizedBox(height: 10),
                     const Text(

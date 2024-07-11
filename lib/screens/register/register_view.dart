@@ -73,9 +73,6 @@ class RegisterPage extends GetView<RegisterController> {
                           controller.isPasswordHidden.value
                               ? Icons.visibility_off
                               : Icons.visibility,
-                          color: controller.isPasswordHidden.value
-                              ? Colors.grey
-                              : AppColor.secondaryColor,
                         ),
                         onPressed: () => controller.togglePasswordVisibility(),
                       ),
@@ -94,9 +91,6 @@ class RegisterPage extends GetView<RegisterController> {
                           controller.isPasswordHidden.value
                               ? Icons.visibility_off
                               : Icons.visibility,
-                          color: controller.isPasswordHidden.value
-                              ? Colors.grey
-                              : AppColor.secondaryColor,
                         ),
                         onPressed: () => controller.togglePasswordVisibility(),
                       ),

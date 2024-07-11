@@ -94,7 +94,7 @@ class DetailPage extends GetView<DetailController> {
             children: [
               const TopIndicator(),
               DetailTitle(name: serviceData.serviceName),
-              ServiceDetail(serviceData: serviceData, hideButtons: hideButtons),
+              ServiceDetail(serviceData: serviceData, hideButtons: hideButtons, controller: controller,),
               ServiceDescription(description: serviceData.description),
               if (Get.parameters['requested'] != "true")
                 RequesterInfo(

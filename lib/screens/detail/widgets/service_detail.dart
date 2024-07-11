@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,10 +8,12 @@ import '../detail_index.dart';
 class ServiceDetail extends StatelessWidget {
   const ServiceDetail({
     super.key,
+    required this.controller,
     required this.serviceData,
     required this.hideButtons,
   });
 
+  final DetailController controller;
   final ServiceData serviceData;
   final bool hideButtons;
 
@@ -37,14 +40,14 @@ class ServiceDetail extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            detail(serviceData, hideButtons)
+            detail(serviceData, hideButtons, controller),
           ],
         ),
       ),
     );
   }
 
-  Widget detail(ServiceData serviceData, bool hideButtons) {
+  Widget detail(ServiceData serviceData, bool hideButtons, DetailController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       child: Column(
@@ -80,6 +83,36 @@ class ServiceDetail extends StatelessWidget {
                     const SizedBox(height: 8),
                     proposeNewTimeButton(),
                   ],
+                  FutureBuilder<QuerySnapshot>(
+                    future: FirebaseFirestore.instance
+                        .collection('service')
+                        .doc(serviceData.serviceid)
+                        .collection('propose')
+                        .limit(1)
+                        .get(),
+                      builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const SizedBox.shrink();
+                      }
+                      if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                        final proposeDoc = snapshot.data!.docs.first;
+                        final startTime = proposeDoc.get('start_time') as String?;
+                        if (startTime != null) {
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              "Proposed time: $startTime",
+                              style: const TextStyle(
+                                fontStyle: FontStyle.italic,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          );
+                        }
+                      }
+                      return const SizedBox.shrink();
+                      },
+                  )
                 ],
               ),
             ],

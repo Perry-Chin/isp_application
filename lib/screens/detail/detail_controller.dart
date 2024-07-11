@@ -105,7 +105,6 @@ class DetailController extends GetxController {
         fetchServiceRating(doc_id);
       }
     });
-
     asyncLoadAllData();
   }
 

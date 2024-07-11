@@ -1,9 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:rxdart/rxdart.dart';
+
 import '../../../common/data/data.dart';
+import 'add_reviews/add_reviews_index.dart';
 
 class DetailReviewController extends GetxController {
   final String docId = Get.parameters['doc_id'] ?? '';
@@ -186,5 +189,20 @@ class DetailReviewController extends GetxController {
     }).catchError((_) {
       controller.loadFailed();
     });
+  }
+
+  // Helper functions for add review
+  void addReview(BuildContext context) {
+    showModalBottomSheet(
+      context: context, 
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: const DetailAddReviewPage(),
+      )
+    );
   }
 }

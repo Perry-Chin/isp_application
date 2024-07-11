@@ -32,6 +32,7 @@ class DetailController extends GetxController {
   final requesterRating = 0.0.obs;
   final providerRating = 0.0.obs;
 
+  bool hasProposedTime = false;
   bool showPaymentSection = false;
 
   void togglePaymentSection() {

@@ -10,6 +10,7 @@ export 'input/textfield.dart';
 export './shimmer.dart';
 export './shimmer_list.dart';
 export 'input/searchbox_bar.dart';
+export './input/rating_filter_big.dart';
 export './rating.dart';
 export './custom_container.dart';
 export 'input/cancel_button.dart';

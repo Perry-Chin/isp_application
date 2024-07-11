@@ -181,6 +181,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
       Get.toNamed("/detail", parameters: {
         "doc_id": item.id,
         "req_uid": serviceData.reqUserid ?? "",
+        "prov_uid": serviceData.provUserid ?? "",
         "hide_buttons": "false",
         "requested": requested,
         "status": serviceData.status ?? "",

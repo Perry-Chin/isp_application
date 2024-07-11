@@ -107,7 +107,7 @@ class PaymentList extends StatelessWidget {
             userData?.username ?? "Unknown User", 
             style: const TextStyle(
               fontSize: 15,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
               color: AppColor.lightColor
             )
           ),
@@ -116,7 +116,7 @@ class PaymentList extends StatelessWidget {
               " (You)", 
               style: TextStyle(
                 fontSize: 15,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
                 color: AppColor.lightColor
               )
           )
@@ -139,7 +139,7 @@ class PaymentList extends StatelessWidget {
             Text(
               "\$${item.amount.toDouble().toStringAsFixed(2)}", 
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: income ? Colors.green : Colors.red,
               ) 

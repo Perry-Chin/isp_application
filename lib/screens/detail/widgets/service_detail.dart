@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -6,11 +7,13 @@ import '../detail_index.dart';
 
 class ServiceDetail extends StatelessWidget {
   const ServiceDetail({
-    super.key,
+    Key? key,
+    required this.controller,
     required this.serviceData,
     required this.hideButtons,
-  });
+  }) : super(key: key);
 
+  final DetailController controller;
   final ServiceData serviceData;
   final bool hideButtons;
 
@@ -37,52 +40,48 @@ class ServiceDetail extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            detail(serviceData, hideButtons)
+            detail(serviceData, hideButtons, controller),
           ],
         ),
       ),
     );
   }
 
-  Widget detail(ServiceData serviceData, bool hideButtons) {
+  Widget detail(ServiceData serviceData, bool hideButtons, DetailController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                alignment: Alignment.topCenter,
-                height: hideButtons ? 40 : 120,
-                width: 40,
-                child: const Icon(Icons.date_range),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          FutureBuilder<QuerySnapshot>(
+            future: FirebaseFirestore.instance
+                .collection('service')
+                .doc(serviceData.serviceid)
+                .collection('propose')
+                .limit(1)
+                .get(),
+            builder: (context, snapshot) {
+              double containerHeight;
+              if (serviceData.status == "Requested") {
+                containerHeight = 140;
+              } else if (serviceData.status == "Pending" && snapshot.data?.docs.length == 1) {
+                containerHeight = 85;
+              } else {
+                containerHeight = 55;
+              }
+              return Row(
                 children: [
-                  Text(
-                    serviceData.date ?? "Description",
-                    style: const TextStyle(fontSize: 15),
+                  Container(
+                    alignment: Alignment.topCenter,
+                    height: containerHeight,
+                    width: 40,
+                    child: const Icon(Icons.date_range),
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "${serviceData.starttime} - ${serviceData.endtime}",
-                    style: const TextStyle(fontSize: 15),
-                  ),
-                  if (!hideButtons) ...[
-                    const SizedBox(height: 10),
-                    const Text(
-                      "Unavailable at this time?",
-                      style: TextStyle(fontSize: 15, color: Color(0xFFCE761D)),
-                    ),
-                    const SizedBox(height: 8),
-                    proposeNewTimeButton(),
-                  ],
+                  const SizedBox(width: 10),
+                  dateTimeContent(serviceData, hideButtons, controller, snapshot),
                 ],
-              ),
-            ],
+              );
+            },
           ),
           const Divider(
             thickness: 2,
@@ -111,6 +110,42 @@ class ServiceDetail extends StatelessWidget {
     );
   }
 
+  Widget dateTimeContent(ServiceData serviceData, bool hideButtons, DetailController controller, snapshot) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          serviceData.date ?? "Description",
+          style: const TextStyle(fontSize: 15),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          "${serviceData.starttime} - ${serviceData.endtime}",
+          style: const TextStyle(fontSize: 15),
+        ),
+        if (!hideButtons && serviceData.status == "Requested") ...[
+          const SizedBox(height: 10),
+          const Text(
+            "Unavailable at this time?",
+            style: TextStyle(fontSize: 15, color: Color(0xFFCE761D)),
+          ),
+          const SizedBox(height: 8),
+          proposeNewTimeButton(),
+        ],
+        if (snapshot.hasData && snapshot.data != null && snapshot.data!.docs.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          Text(
+            "Proposed time: ${snapshot.data!.docs.first['start_time']}",
+            style: const TextStyle(
+              fontStyle: FontStyle.italic,
+              color: Colors.blue,
+            ),
+          )
+        ]
+      ],
+    );
+  }
+
   Widget proposeNewTimeButton() {
     return ElevatedButton(
       onPressed: () {
@@ -125,6 +160,7 @@ class ServiceDetail extends StatelessWidget {
         side: const BorderSide(color: Colors.black, width: 0.5),
       ),
       child: Container(
+        width: 160,
         padding: const EdgeInsets.symmetric(vertical: 10), // Set padding
         child: const Row(
           children: [

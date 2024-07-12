@@ -1,9 +1,11 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../../common/routes/routes.dart';
+import '../../common/theme/custom/custom_theme.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'detail_index.dart';
@@ -68,28 +70,23 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Center(
+          Center(
             child: Text(
               "Propose Time",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 25,
-                  fontFamily: 'Open Sans'),
+              style: CustomTextTheme.lightTheme.labelMedium?.copyWith(
+                fontSize: 24
+              )
             ),
           ),
           const SizedBox(height: 15),
-          const Text(
-            "Once submitted, FurFriends will share your proposed time with the Requester for their confirmation.",
-            style: TextStyle(
-              fontSize: 16,
+          Text(
+            "Once submitted, we will share your proposed time with the Requester for their confirmation.",
+            style: GoogleFonts.poppins(
+              fontSize: 15,
             ),
           ),
           const SizedBox(height: 15),
-          const Text('Original Time',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              )),
+          Text('Original Time', style: CustomTextTheme.lightTheme.labelMedium?.copyWith(fontSize: 18)),
           const SizedBox(height: 15),
           FadeInUp(
             child: Container(
@@ -110,8 +107,8 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
                         ? controller.state.serviceList.first.data().starttime ??
                             "time"
                         : "time",
-                    style: const TextStyle(
-                        fontSize: 14.0,
+                    style: GoogleFonts.poppins(
+                        fontSize: 16.0,
                         color: Colors.black,
                         fontWeight: FontWeight.w400),
                   ),
@@ -130,12 +127,9 @@ class _ProposeTimeSheetState extends State<ProposeTimeSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             "Propose Time",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
+            style: CustomTextTheme.lightTheme.labelMedium?.copyWith(fontSize: 18)
           ),
           const SizedBox(height: 15),
           Row(

@@ -20,7 +20,7 @@ class MessagePage extends GetView<MessageController> {
           const SizedBox(width: 8),
           Text(
             "Message",
-            style: CustomTextTheme.lightTheme.titleMedium
+            style: CustomTextTheme.darkTheme.labelMedium
           ),
         ],
       ),

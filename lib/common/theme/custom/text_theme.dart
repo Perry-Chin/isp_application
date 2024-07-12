@@ -13,10 +13,15 @@ class CustomTextTheme {
       fontWeight: FontWeight.w600,
       color: AppColor.lightColor
     ),
-    titleMedium: GoogleFonts.poppins(
+    labelMedium: GoogleFonts.poppins(
       fontSize: 20,
-      color: AppColor.darkColor,
+      color: AppColor.lightColor,
       fontWeight: FontWeight.bold,
+    ),
+    labelSmall: GoogleFonts.poppins(
+      fontSize: 15,
+      color: AppColor.lightColor,
+      fontWeight: FontWeight.w500       
     )
   );
 
@@ -26,6 +31,11 @@ class CustomTextTheme {
       fontSize: 18,
       fontWeight: FontWeight.w600,
       color: AppColor.darkColor
+    ),
+    labelMedium: GoogleFonts.poppins(
+      fontSize: 20,
+      color: AppColor.darkColor,
+      fontWeight: FontWeight.bold,
     ),
   );
 }

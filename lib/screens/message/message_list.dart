@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import '../../common/data/data.dart';
+import '../../common/theme/custom/custom_theme.dart';
 import '../../common/utils/utils.dart';
 import '../../common/values/values.dart';
 import 'message_index.dart';
@@ -68,16 +69,14 @@ class MessageList extends GetView<MessageController> {
             userData?.username ?? "",
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            )
+            style: CustomTextTheme.lightTheme.labelSmall
           ),
           subtitle: Padding(
-            padding: const EdgeInsets.only(top: 3.0),
+            padding: const EdgeInsets.only(top: 2.0),
             child: Text(
               item.data().lastMsg ?? "",
               maxLines: 1,
+              style: GoogleFonts.poppins(),
             ),
           ),
           trailing: Text(

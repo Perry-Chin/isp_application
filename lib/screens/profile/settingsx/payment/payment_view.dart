@@ -20,7 +20,7 @@ class PaymentPage extends GetView<PaymentController> {
           const SizedBox(width: 8),
           Text(
             "Payment",
-            style: CustomTextTheme.lightTheme.titleMedium
+            style: CustomTextTheme.darkTheme.labelMedium
           ),
         ],
       ),
@@ -46,13 +46,14 @@ class PaymentPage extends GetView<PaymentController> {
           children: [
             Obx(
               () => CreditCardWidget(
-                cardNumber: "4242422424242424",
+                cardNumber: "424242424242424",
                 expiryDate: "04/24",
                 cardHolderName: controller.user.value?.username ?? 'Loading...',
                 cvvCode: "123",
                 showBackView: false,
                 obscureCardNumber: true,
                 isHolderNameVisible: true,
+                cardBgColor: AppColor.lightColor,
                 chipColor: const Color(0xFFD4AF37),
                 onCreditCardWidgetChange: (CreditCardBrand) {},
               ),

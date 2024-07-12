@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../common/data/data.dart';
 import '../detail_index.dart';
@@ -32,10 +33,10 @@ class ServiceDetail extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               "Details",
-              style: TextStyle(
-                fontSize: 20,
+              style: GoogleFonts.poppins(
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -100,7 +101,7 @@ class ServiceDetail extends StatelessWidget {
               Expanded(
                 child: Text(
                   serviceData.location ?? "Description",
-                  style: const TextStyle(fontSize: 15),
+                  style: GoogleFonts.poppins(fontSize: 15),
                 ),
               ),
             ],
@@ -116,18 +117,18 @@ class ServiceDetail extends StatelessWidget {
       children: [
         Text(
           serviceData.date ?? "Description",
-          style: const TextStyle(fontSize: 15),
+          style: GoogleFonts.poppins(fontSize: 15),
         ),
         const SizedBox(height: 10),
         Text(
           "${serviceData.starttime} - ${serviceData.endtime}",
-          style: const TextStyle(fontSize: 15),
+          style: GoogleFonts.poppins(fontSize: 15),
         ),
         if (!hideButtons && serviceData.status == "Requested") ...[
           const SizedBox(height: 10),
-          const Text(
+          Text(
             "Unavailable at this time?",
-            style: TextStyle(fontSize: 15, color: Color(0xFFCE761D)),
+            style: GoogleFonts.poppins(fontSize: 15, color: Color(0xFFCE761D)),
           ),
           const SizedBox(height: 8),
           proposeNewTimeButton(),
@@ -157,18 +158,19 @@ class ServiceDetail extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        side: const BorderSide(color: Colors.black, width: 0.5),
+        side: const BorderSide(color: Colors.black, width: 1),
       ),
       child: Container(
-        width: 160,
+        width: 171,
         padding: const EdgeInsets.symmetric(vertical: 10), // Set padding
-        child: const Row(
+        child: Row(
           children: [
-            Icon(Icons.alarm, color: Colors.black),
-            SizedBox(width: 8),
+            const Icon(Icons.alarm, color: Colors.black),
+            const SizedBox(width: 8),
             Text(
               "Propose a new time",
-              style: TextStyle(
+              style: GoogleFonts.poppins(
+                fontSize: 14,
                 color: Colors.black,
               ),
             ),

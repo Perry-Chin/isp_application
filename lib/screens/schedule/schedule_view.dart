@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../common/theme/custom/custom_theme.dart';
 import '../../common/values/values.dart';
@@ -18,7 +19,7 @@ class SchedulePage extends GetView<ScheduleController> {
           const SizedBox(width: 8),
           Text(
             "Schedule",
-            style: CustomTextTheme.lightTheme.titleMedium
+            style: CustomTextTheme.darkTheme.labelMedium
           ),
         ],
       ),
@@ -33,6 +34,7 @@ class SchedulePage extends GetView<ScheduleController> {
             unselectedLabelColor: Colors.grey,
             dividerColor: Colors.transparent,
             controller: controller.tabController,
+            labelStyle: GoogleFonts.poppins(),
             tabs: const [
               Tab(text: 'Provided'),
               Tab(text: 'Requested'),

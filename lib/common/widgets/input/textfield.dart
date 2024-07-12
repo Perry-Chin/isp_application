@@ -1,8 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../values/values.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MyTextField extends GetView {
   const MyTextField({
@@ -36,58 +35,27 @@ class MyTextField extends GetView {
   Widget build(BuildContext context) {
     return FadeInUp(
       child: TextFormField(
-          onTap: onTap,
-          minLines: 1,
-          maxLines: maxLines,
-          controller: textController,
-          readOnly: readOnly ?? false,
-          cursorColor: Colors.black,
-          keyboardType: keyboardType,
-          obscureText: obscuretext ?? false, // Add this line
-          decoration: InputDecoration(
-            labelText: labeltext,
-            hintText: hinttext,
-            filled: true,
-            fillColor: Colors.white,
-            prefixIcon: Icon(prefixicon, color: Colors.black, size: 20),
-            suffixIcon: suffixIcon, // Add this line
-            labelStyle: const TextStyle(
-              color: Colors.black,
-              fontSize: 14.0,
-              fontWeight: FontWeight.w400,
-            ),
-            hintStyle: const TextStyle(
-              color: Colors.grey,
-              fontSize: 14.0,
-            ),
-            errorStyle: const TextStyle(
-              color: Colors.red,
-              fontSize: 14.0,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide:
-                  const BorderSide(color: AppColor.secondaryColor, width: 1.5),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            floatingLabelStyle: const TextStyle(
-              color: Colors.black,
-              fontSize: 18.0,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide:
-                  const BorderSide(color: AppColor.secondaryColor, width: 1.5),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.red, width: 1.5),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.red, width: 1.5),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
+        onTap: onTap,
+        minLines: 1,
+        maxLines: maxLines,
+        controller: textController,
+        readOnly: readOnly ?? false,
+        cursorColor: Colors.black,
+        keyboardType: keyboardType,
+        obscureText: obscuretext ?? false, // Add this line
+        style: GoogleFonts.poppins(),
+        decoration: InputDecoration(
+          labelText: labeltext,
+          hintText: hinttext,
+          filled: true,
+          fillColor: Colors.white,
+          prefixIcon: Padding(
+            padding: const EdgeInsets.only(bottom: 2),
+            child: Icon(prefixicon, color: Colors.black, size: 20),
           ),
-          validator: validator),
+          suffixIcon: suffixIcon,
+        ),
+        validator: validator),
     );
   }
 }

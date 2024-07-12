@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../../theme/custom/custom_theme.dart';
+
 class CancelButton extends StatelessWidget {
   // Define properties for the button
   final VoidCallback onPressed;
@@ -36,11 +38,9 @@ class CancelButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 18), // Set padding
         child: Text(
           buttonText, // Display text on the button
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.white, // Set text color to white
-          ),
+          style: CustomTextTheme.darkTheme.labelMedium?.copyWith(
+            fontSize: 17
+          )
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // Local Dependencies
 import '../../../common/middlewares/middlewares.dart';
@@ -12,7 +13,13 @@ List<Step> getSteps(int currentStep) {
     Step(
       state: currentStep > 0 ? StepState.complete : StepState.indexed, 
       isActive: currentStep >= 0,
-      title: const Text('Details'), 
+      title: Text(
+        'Details',
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w500
+        )
+      ), 
       content: Column(
         children: [
           const SizedBox(height: 5),
@@ -43,8 +50,8 @@ List<Step> getSteps(int currentStep) {
           const SizedBox(height: 20),
           // Rate/hour (int)
           MyTextField(
-            hinttext: 'Your rate',
-            labeltext: 'Rate',
+            hinttext: 'Your rate in SGD per hour',
+            labeltext: 'Rate/hour',
             prefixicon: Icons.price_change,
             keyboardType: TextInputType.number,
             textController: controller.rateController,
@@ -73,7 +80,13 @@ List<Step> getSteps(int currentStep) {
     Step(
       state: currentStep > 1 ? StepState.complete : StepState.indexed,
       isActive: currentStep >= 1,
-      title: const Text('Personal Details'),
+      title: Text(
+        'Personal Details',
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w500
+        )
+      ),
       content: Column(
         children: [
           const SizedBox(height: 5),

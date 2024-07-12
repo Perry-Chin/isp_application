@@ -12,7 +12,8 @@ class AppTheme {
     brightness: Brightness.light,
     scaffoldBackgroundColor: Colors.white,
     textTheme: CustomTextTheme.darkTheme,
-    appBarTheme: CustomAppBarTheme.lightAppBarTheme
+    appBarTheme: CustomAppBarTheme.lightAppBarTheme,
+    inputDecorationTheme: CustomTextFormFieldTheme.lightInputDecorationTheme,
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -20,6 +21,7 @@ class AppTheme {
     fontFamily: 'Roboto',
     brightness: Brightness.dark,
     scaffoldBackgroundColor: Colors.black,
-    appBarTheme: CustomAppBarTheme.darkAppBarTheme
+    appBarTheme: CustomAppBarTheme.darkAppBarTheme,
+    inputDecorationTheme: CustomTextFormFieldTheme.darkInputDecorationTheme,
   );
 }

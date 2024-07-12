@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../common/values/values.dart';
 import '../detail_index.dart';
@@ -38,16 +39,16 @@ class PaymentDetail extends StatelessWidget {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     "Total Payout",
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
                       fontSize: 17,
                     ),
                   ),
                   Text(
                     "\$$totalCost",
-                    style: const TextStyle(
+                    style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
                       fontSize: 17,
                     ),
@@ -69,16 +70,16 @@ class PaymentDetail extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Subtotal"),
-                        Text("\$$subtotal"),
+                        Text("Subtotal", style: GoogleFonts.poppins()),
+                        Text("\$$subtotal", style: GoogleFonts.poppins()),
                       ],
                     ),
                     const SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Tax Fee"),
-                        Text("\$$taxFee"),
+                        Text("Tax Fee", style: GoogleFonts.poppins()),
+                        Text("\$$taxFee", style: GoogleFonts.poppins()),
                       ],
                     ),
                     const SizedBox(height: 15),
@@ -88,7 +89,7 @@ class PaymentDetail extends StatelessWidget {
                         const Text("Total"),
                         Text(
                           "\$$totalCost",
-                          style: const TextStyle(
+                          style: GoogleFonts.poppins(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -101,7 +102,7 @@ class PaymentDetail extends StatelessWidget {
                       height: 15,
                     ),
                     const SizedBox(height: 10),
-                    const Row(
+                    Row(
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,25 +110,25 @@ class PaymentDetail extends StatelessWidget {
                           children: [
                             Text(
                               "Payment Method",
-                              style: TextStyle(
+                              style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
                             ),
-                            SizedBox(height: 5),
+                            const SizedBox(height: 5),
                             Padding(
-                              padding: EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(8.0),
                               child: Row(
                                 children: [
-                                  Image(
+                                  const Image(
                                     image: AssetImage("assets/images/paynow.png"),
                                     width: 24,
                                     height: 24,
                                   ),
-                                  SizedBox(width: 10),
+                                  const SizedBox(width: 10),
                                   Text(
                                     "PayNow",
-                                    style: TextStyle(
+                                    style: GoogleFonts.poppins(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
                                     ),
@@ -147,9 +148,9 @@ class PaymentDetail extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Fee Breakdown',
-                style: TextStyle(color: Colors.blue),
+                style: GoogleFonts.poppins(color: Colors.blue),
               ),
               IconButton(
                 onPressed: () {

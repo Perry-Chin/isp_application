@@ -21,7 +21,7 @@ class RequestPage extends GetView<RequestController> {
           const SizedBox(width: 8),
           Text(
             "Request Service",
-            style: CustomTextTheme.lightTheme.titleMedium
+            style: CustomTextTheme.darkTheme.labelMedium
           ),
         ],
       ),

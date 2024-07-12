@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../common/theme/custom/custom_theme.dart';
 import '../../../common/routes/routes.dart';
@@ -18,7 +19,7 @@ class SettingsxPage extends GetView<SettingsxController> {
           const SizedBox(width: 8),
           Text(
             "Settings",
-            style: CustomTextTheme.lightTheme.titleMedium
+            style: CustomTextTheme.darkTheme.labelMedium
           ),
         ],
       ),
@@ -55,7 +56,7 @@ class SettingsxPage extends GetView<SettingsxController> {
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(color: Colors.black, fontSize: 18),
+                  style: GoogleFonts.poppins(fontSize: 16)
                 ),
               ),
               const Icon(Icons.arrow_forward_ios, color: Colors.grey),

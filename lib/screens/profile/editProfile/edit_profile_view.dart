@@ -24,7 +24,7 @@ class EditProfilePage extends GetView<EditProfileController> {
             const SizedBox(width: 8),
             Text(
               "Edit Profile",
-              style: CustomTextTheme.lightTheme.titleMedium
+              style: CustomTextTheme.darkTheme.labelMedium
             ),
           ],
         ),

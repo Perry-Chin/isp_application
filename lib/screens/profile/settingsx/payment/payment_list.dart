@@ -1,11 +1,13 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
 import '../../../../common/data/data.dart';
+import '../../../../common/theme/custom/custom_theme.dart';
 import '../../../../common/values/values.dart';
 import 'payment_index.dart';
 
@@ -104,30 +106,20 @@ class PaymentList extends StatelessWidget {
         children: [
           Text(
             userData?.username ?? "Unknown User", 
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              color: AppColor.lightColor
-            )
+            style: CustomTextTheme.lightTheme.labelSmall
           ),
           if (userData?.id == controller.userToken)
-            const Text(
+            Text(
               " (You)", 
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                color: AppColor.lightColor
-              )
-          )
+              style: CustomTextTheme.lightTheme.labelSmall
+            )
         ],
       ),
       subtitle: Padding(
-        padding: const EdgeInsets.only(top: 6.0),
+        padding: const EdgeInsets.only(top: 3.0),
         child: Text(
           DateFormat('HH:mm | dd MMMM yyyy').format(item.timestamp.toDate()), 
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            fontSize: 14
-          )
+          style: GoogleFonts.poppins()
         ),
       ),
       trailing: Padding(
@@ -137,13 +129,12 @@ class PaymentList extends StatelessWidget {
           children: [
             Text(
               "\$${item.amount.toDouble().toStringAsFixed(2)}", 
-              style: TextStyle(
+              style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: income ? Colors.green : Colors.red,
               ) 
             ),
-            const SizedBox(height: 2),
             Container(
               width: 84,
               alignment: Alignment.center,
@@ -156,12 +147,10 @@ class PaymentList extends StatelessWidget {
                     color: income ? Colors.green : Colors.red,
                     size: 20,
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 3),
                   Text(
                     "Expense", 
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: 15
-                    )
+                    style: GoogleFonts.poppins()
                   ),
                 ],
               )

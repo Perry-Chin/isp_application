@@ -62,7 +62,7 @@ class ServiceDetail extends StatelessWidget {
                 .get(),
             builder: (context, snapshot) {
               double containerHeight;
-              if (serviceData.status == "Requested") {
+              if (serviceData.status == "Requested" && serviceData.reqUserid != controller.token) {
                 containerHeight = 140;
               } else if (serviceData.status == "Pending" && snapshot.data?.docs.length == 1) {
                 containerHeight = 85;

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:isp_application/common/widgets/custom_container.dart';
+
+import '../../common/theme/custom/custom_theme.dart';
 import '../../common/values/values.dart';
+import '../../common/widgets/widgets.dart';
 import 'schedule_index.dart';
 
 class SchedulePage extends GetView<ScheduleController> {
@@ -9,17 +11,17 @@ class SchedulePage extends GetView<ScheduleController> {
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      elevation: 0,
-      title: const Text(
-        "Schedule",
-        style: TextStyle(
-          fontSize: 20,
-          color: AppColor.darkColor,
-          fontWeight: FontWeight.bold,
-        )
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
+          const SizedBox(width: 8),
+          Text(
+            "Schedule",
+            style: CustomTextTheme.lightTheme.titleMedium
+          ),
+        ],
       ),
-      centerTitle: true,
-      backgroundColor: AppColor.secondaryColor,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(50),
         child: Material(
@@ -40,7 +42,7 @@ class SchedulePage extends GetView<ScheduleController> {
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.filter_list, color: AppColor.darkColor),
+          icon: const Icon(Icons.filter_list, color: Colors.white,),
           onPressed: () {
             // Redirect to filter page
             Get.toNamed('/filterSchedule')!.then((_) {

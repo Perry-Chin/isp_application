@@ -96,7 +96,6 @@ class PaymentList extends StatelessWidget {
             placeholder: AppImage.profile,
             image: userData.photourl ?? "",
             fadeInDuration: const Duration(milliseconds: 100),
-
           ) :
           Image.asset(AppImage.profile),
         ),

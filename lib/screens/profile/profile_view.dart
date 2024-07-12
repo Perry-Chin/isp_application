@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../common/theme/custom/custom_theme.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'settingsx/settingsx_index.dart';
@@ -14,15 +15,23 @@ class ProfilePage extends GetView<ProfileController> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      elevation: 0,
-      title: const Text("Profile"),
-      backgroundColor: AppColor.secondaryColor,
-      leading: userId != null
-          ? IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => Get.back(),
-            )
-          : null,
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
+          const SizedBox(width: 8),
+          Text(
+            "Profile",
+            style: CustomTextTheme.lightTheme.titleMedium
+          ),
+        ],
+      ),
+      // leading: userId != null
+      //     ? IconButton(
+      //         icon: const Icon(Icons.arrow_back),
+      //         onPressed: () => Get.back(),
+      //       )
+      //     : null,
     );
   }
 

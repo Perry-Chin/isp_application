@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:get/get.dart';
 
+import '../../../../common/theme/custom/custom_theme.dart';
 import '../../../../common/values/values.dart';
 import 'payment_index.dart';
 
@@ -12,7 +13,17 @@ class PaymentPage extends GetView<PaymentController> {
 
   AppBar _buildAppBar(context) {
     return AppBar(
-      title: const Text("Payment History"),
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
+          const SizedBox(width: 8),
+          Text(
+            "Payment",
+            style: CustomTextTheme.lightTheme.titleMedium
+          ),
+        ],
+      ),
       actions: [
         Padding(
           padding: const EdgeInsets.all(4.0),

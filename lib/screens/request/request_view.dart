@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../common/theme/custom/custom_theme.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'request_index.dart';
@@ -13,10 +14,17 @@ class RequestPage extends GetView<RequestController> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      elevation: 0,
-      centerTitle: true,
-      title: const Text("Request service"),
-      backgroundColor: AppColor.secondaryColor,
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
+          const SizedBox(width: 8),
+          Text(
+            "Request Service",
+            style: CustomTextTheme.lightTheme.titleMedium
+          ),
+        ],
+      ),
     );
   }
 

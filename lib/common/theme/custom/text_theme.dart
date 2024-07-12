@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../values/values.dart';
 
@@ -12,6 +13,11 @@ class CustomTextTheme {
       fontWeight: FontWeight.w600,
       color: AppColor.lightColor
     ),
+    titleMedium: GoogleFonts.poppins(
+      fontSize: 20,
+      color: AppColor.darkColor,
+      fontWeight: FontWeight.bold,
+    )
   );
 
   static TextTheme darkTheme = TextTheme(

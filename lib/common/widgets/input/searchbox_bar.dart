@@ -28,7 +28,7 @@ class SearchBoxBar extends StatelessWidget {
             offset: Offset(1.6, 1.6)
           )
         ],
-        color: Colors.white,
+        color: AppColor.backgroundColor,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: AppColor.secondaryColor,

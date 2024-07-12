@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../common/theme/custom/custom_theme.dart';
 import '../../../common/values/values.dart';
 import '../../../common/widgets/widgets.dart';
 import 'edit_profile_controller.dart';
@@ -15,12 +16,18 @@ class EditProfilePage extends GetView<EditProfileController> {
     controller.setInitialProfileImageUrl(initialProfileImageUrl);
 
     return Scaffold(
-      backgroundColor: AppColor.backgroundColor,
       appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        title: const Text("Edit Profile"),
-        backgroundColor: AppColor.secondaryColor,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
+            const SizedBox(width: 8),
+            Text(
+              "Edit Profile",
+              style: CustomTextTheme.lightTheme.titleMedium
+            ),
+          ],
+        ),
       ),
       body: Center(
         child: SingleChildScrollView(

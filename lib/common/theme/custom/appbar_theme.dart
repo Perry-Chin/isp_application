@@ -8,6 +8,7 @@ class CustomAppBarTheme {
   static const lightAppBarTheme = AppBarTheme(
     elevation: 0,
     centerTitle: true,
+    toolbarHeight: 60,
     scrolledUnderElevation: 0,
     backgroundColor: AppColor.secondaryColor,
     surfaceTintColor: AppColor.secondaryColor,

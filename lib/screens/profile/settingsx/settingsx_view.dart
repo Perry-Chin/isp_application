@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../common/theme/custom/custom_theme.dart';
 import '../../../common/routes/routes.dart';
 import '../../../common/values/values.dart';
 import 'settingsx_index.dart';
@@ -10,7 +11,17 @@ class SettingsxPage extends GetView<SettingsxController> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      title: const Text("Settings"),
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
+          const SizedBox(width: 8),
+          Text(
+            "Settings",
+            style: CustomTextTheme.lightTheme.titleMedium
+          ),
+        ],
+      ),
     );
   }
 

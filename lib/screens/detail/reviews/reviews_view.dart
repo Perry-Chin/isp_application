@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../common/theme/custom/custom_theme.dart';
 import '../../../common/values/values.dart';
 import 'reviews_controller.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -11,9 +13,17 @@ class DetailReviewView extends GetView<DetailReviewController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reviews & Ratings'),
-        backgroundColor: AppColor.secondaryColor,
-        elevation: 0,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
+            const SizedBox(width: 8),
+            Text(
+              "Reviews",
+              style: CustomTextTheme.lightTheme.titleMedium
+            ),
+          ],
+        ),
         // Add rating button
         actions: [
           IconButton(

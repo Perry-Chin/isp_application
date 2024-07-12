@@ -34,7 +34,7 @@ class _MyTextFieldState extends State<MySearchField> {
   Widget build(BuildContext context) {
     return FadeInUp(
       child: Container(
-        color: Colors.white,
+        color: AppColor.backgroundColor,
         child: SearchField(
           controller: widget.controller, // Set controller for textfield
           suggestions: widget.suggestions

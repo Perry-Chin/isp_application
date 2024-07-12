@@ -13,10 +13,7 @@ class AddReviewPage extends GetView<AddReviewController> {
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
       appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
         title: const Text("Add Review"),
-        backgroundColor: AppColor.secondaryColor,
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),

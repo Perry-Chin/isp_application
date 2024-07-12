@@ -111,6 +111,7 @@ dependencies:
   awesome_card: ^1.1.7
   flutter_credit_card: ^4.0.1
   flutter_slidable: ^3.1.0
+  google_fonts: ^5.1.0 
   # flutter_settings_screens: ^0.3.4
 
 dev_dependencies:

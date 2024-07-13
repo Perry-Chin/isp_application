@@ -343,7 +343,7 @@ class DetailController extends GetxController {
     }
   }
 
-  // The following method is commented out as it's duplicated above
+  // The following method is commented out as it's duplicated above  
   // void updateServiceStatus(String serviceId, String status) async {
   //   try {
   //     await db.collection('service').doc(serviceId).update({

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:get/get.dart';
 
@@ -69,10 +70,11 @@ class RequesterCard extends GetView<ScheduleController> {
                       children: [
                         Text(
                           userData?.username ?? "",
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: GoogleFonts.poppins(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black
+                          )
                         ),
                         const SizedBox(width: 6),
                         // Rating(rating: userData?.rating ?? 0),
@@ -81,40 +83,9 @@ class RequesterCard extends GetView<ScheduleController> {
                   ),
                   subtitle: Text(
                     "${item.data().date}, ${item.data().starttime} - ${item.data().endtime}",
+                    style: GoogleFonts.poppins()
                   ),
                 ),
-                // FutureBuilder<QuerySnapshot>(
-                //   future: FirebaseFirestore.instance
-                //       .collection('service')
-                //       .doc(item.id)
-                //       .collection('propose')
-                //       .limit(1)
-                //       .get(),
-                //   builder: (context, snapshot) {
-                //     if (snapshot.connectionState == ConnectionState.waiting) {
-                //       return const SizedBox.shrink();
-                //     }
-
-                //     if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                //       final proposeDoc = snapshot.data!.docs.first;
-                //       final startTime = proposeDoc.get('start_time') as String?;
-                //       if (startTime != null) {
-                //         return Padding(
-                //           padding: const EdgeInsets.only(left: 16, bottom: 8),
-                //           child: Text(
-                //             "Proposed time is: $startTime",
-                //             style: const TextStyle(
-                //               fontStyle: FontStyle.italic,
-                //               color: Colors.blue,
-                //             ),
-                //           ),
-                //         );
-                //       }
-                //     }
-
-                //     return const SizedBox.shrink();
-                //   },
-                // ),
                 Padding(
                   padding: const EdgeInsets.only(left: 15, top: 5),
                   child: Row(
@@ -128,6 +99,7 @@ class RequesterCard extends GetView<ScheduleController> {
                         item.data().location ?? "",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
+                        style: GoogleFonts.poppins()
                       ),
                     ],
                   ),
@@ -138,7 +110,7 @@ class RequesterCard extends GetView<ScheduleController> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        width: item.data().serviceName!.length * 11,
+                        width: item.data().serviceName!.length * 12,
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: const Color(0xffF2F2F2),
@@ -147,14 +119,14 @@ class RequesterCard extends GetView<ScheduleController> {
                         child: Center(
                           child: Text(
                             item.data().serviceName ?? "",
-                            style: const TextStyle(
+                            style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
                       ),
                       Container(
-                        width: item.data().status!.length * 12,
+                        width: item.data().status!.length * 13,
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: statusColor,
@@ -163,7 +135,7 @@ class RequesterCard extends GetView<ScheduleController> {
                         child: Center(
                           child: Text(
                             "${item.data().status}",
-                            style: const TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 15,
                               color: Colors.white,
                             ),

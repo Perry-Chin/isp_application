@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import '../../common/theme/custom/custom_theme.dart';
 import '../../common/values/values.dart';
 import '../../common/routes/routes.dart';
 import '../../common/storage/storage.dart';
@@ -89,30 +91,26 @@ class ConfirmPage extends GetView<DetailController> {
                             const SizedBox(height: 16),
                             const TopIndicator(),
                             const SizedBox(height: 8),
-                            const Center(
+                            Center(
                               child: Text(
                                 "Confirm your booking",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25,
-                                  fontFamily: 'Open Sans',
-                                ),
+                                style: CustomTextTheme.lightTheme.labelMedium?.copyWith(fontSize: 24)
                               ),
                             ),
                             const SizedBox(height: 15),
-                            const Text(
-                              "Once submitted, FurFriends will send a confirmation to both parties for service to be carried out.",
-                              style: TextStyle(
+                            Text(
+                              "Once submitted, we will send a confirmation to both parties for the service to be carried out.",
+                              style: GoogleFonts.poppins(
                                 fontSize: 16
                               ),
                             ),
                             const SizedBox(height: 15),
-                            const Row(
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
                                   "Date & Time",
-                                  style: TextStyle(
+                                  style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20,
                                   )
@@ -122,9 +120,9 @@ class ConfirmPage extends GetView<DetailController> {
                             const SizedBox(height: 10),
                             DatetimeField(controller: controller),
                             const SizedBox(height: 15),
-                            const Text(
+                            Text(
                               "Total fees",
-                              style: TextStyle(
+                              style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
                               ),

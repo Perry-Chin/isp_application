@@ -11,10 +11,7 @@ class UserProfilePage extends GetView<UserProfileController> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      elevation: 0,
-      centerTitle: true,
       title: const Text("User Profile"),
-      backgroundColor: AppColor.secondaryColor,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
         onPressed: () => Get.back(),

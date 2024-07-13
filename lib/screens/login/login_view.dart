@@ -12,10 +12,8 @@ class LoginPage extends GetView<LoginController> {
   const LoginPage({super.key});
 
   // Static text style for login text subheading
-  static TextStyle loginText = TextStyle(
-    fontSize: 16.sp,
-    color: AppColor.secondaryText
-  );
+  static TextStyle loginText =
+      TextStyle(fontSize: 16.sp, color: AppColor.secondaryText);
 
   @override
   Widget build(BuildContext context) {
@@ -31,66 +29,60 @@ class LoginPage extends GetView<LoginController> {
                 Text(
                   "Welcome Back!",
                   style: TextStyle(
-                    color: AppColor.secondaryColor,
-                    fontSize: 24.sp,
-                    fontFamily: "Sitka Display"
-                  ),
+                      color: AppColor.secondaryColor,
+                      fontSize: 24.sp,
+                      fontFamily: "Sitka Display"),
                 ),
                 const SizedBox(height: 25),
-                Column(
-                  children: [
-                    Row( 
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          AppText.loginSubtitle1, 
-                          style: loginText
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          AppText.loginSubtitle2,
-                          style: TextStyle(
+                Column(children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(AppText.loginSubtitle1, style: loginText),
+                      const SizedBox(width: 5),
+                      Text(
+                        AppText.loginSubtitle2,
+                        style: TextStyle(
                             color: AppColor.secondaryColor,
                             fontSize: 16.sp,
-                            fontFamily: "Sitka Display"
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          AppText.loginSubtitle3,
-                          style: loginText
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      AppText.loginSubtitle4,
-                      style: loginText
-                    ),
-                  ]
-                ),
+                            fontFamily: "Sitka Display"),
+                      ),
+                      const SizedBox(width: 5),
+                      Text(AppText.loginSubtitle3, style: loginText),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Text(AppText.loginSubtitle4, style: loginText),
+                ]),
                 const SizedBox(height: 40),
                 MyTextField(
-                  hinttext: 'Your email', 
-                  labeltext: 'Email', 
-                  prefixicon: Icons.mail,
-                  obscuretext: false, 
-                  textController: controller.emailController
-                ),
+                    hinttext: 'Your email',
+                    labeltext: 'Email',
+                    prefixicon: Icons.mail,
+                    obscuretext: false,
+                    textController: controller.emailController),
                 const SizedBox(height: 30),
-                MyTextField(
-                  hinttext: 'Your password', 
-                  labeltext: 'Password', 
-                  prefixicon: Icons.key,
-                  obscuretext: true, 
-                  textController: controller.pwdController
-                ),
+                Obx(() => MyTextField(
+                      hinttext: 'Your password',
+                      labeltext: 'Password',
+                      prefixicon: Icons.key,
+                      obscuretext: controller.isPasswordHidden.value,
+                      textController: controller.pwdController,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          controller.isPasswordHidden.value
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () => controller.togglePasswordVisibility(),
+                      ),
+                    )),
                 const SizedBox(height: 40),
-                ApplyButton( 
+                ApplyButton(
                   onPressed: () {
                     controller.handleSignIn(context);
-                  }, 
-                  buttonText: "Login", 
+                  },
+                  buttonText: "Login",
                   buttonWidth: double.infinity,
                   textAlignment: Alignment.center,
                 ),
@@ -105,16 +97,14 @@ class LoginPage extends GetView<LoginController> {
                         fontWeight: FontWeight.bold,
                         color: Colors.grey.shade600,
                       ),
-                    ),  
+                    ),
                     TextButton(
                       onPressed: () {
                         // Navigate to the register screen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return const RegisterPage();
-                            },
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return const RegisterPage();
+                          },
                         ));
                       },
                       child: const Text(
@@ -125,7 +115,7 @@ class LoginPage extends GetView<LoginController> {
                           color: AppColor.secondaryColor,
                         ),
                       ),
-                    ),                   
+                    ),
                   ],
                 ),
               ],

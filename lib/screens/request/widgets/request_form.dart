@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../common/values/values.dart';
 import '../request_index.dart';
@@ -34,7 +35,15 @@ Widget requestForm(RequestController controller, BuildContext context) {
                           child: Obx(
                             () => ElevatedButton(
                               onPressed: controller.isProcessing.value ? null : controls.onStepContinue,
-                              child: Text(controller.isLastStep ? 'CONFIRM' : 'NEXT'),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text(
+                                  controller.isLastStep ? 'CONFIRM' : 'NEXT',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -47,7 +56,15 @@ Widget requestForm(RequestController controller, BuildContext context) {
                           child: Expanded(
                             child: ElevatedButton(
                               onPressed: controls.onStepCancel,
-                              child: const Text('BACK'),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text(
+                                  'BACK',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),

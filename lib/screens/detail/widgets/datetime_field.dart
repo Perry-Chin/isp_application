@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../common/values/values.dart';
 import '../detail_index.dart';
@@ -34,14 +35,14 @@ class DatetimeField extends StatelessWidget {
               controller.state.serviceList.isNotEmpty
                 ? controller.state.serviceList.first.data().date ?? "date"
                 : "date",
-              style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w400),
+              style: GoogleFonts.poppins(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w400),
             ),
             const SizedBox(width: 10),
             Text(
               controller.state.serviceList.isNotEmpty
                 ? controller.state.serviceList.first.data().starttime ?? "time"
                 : "time",
-              style: const TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w400),
+              style: GoogleFonts.poppins(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w400),
             ),
             const SizedBox(width: 15),
           ],

@@ -9,13 +9,17 @@ import '../../common/storage/storage.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'login_index.dart';
-class LoginController extends GetxController {
 
+class LoginController extends GetxController {
   // Variables
   final state = LoginState();
   final emailController = TextEditingController();
   final pwdController = TextEditingController();
   final db = FirebaseFirestore.instance;
+
+  final isPasswordHidden = true.obs;
+
+  void togglePasswordVisibility() => isPasswordHidden.toggle();
 
   Future<void> handleSignIn(BuildContext context) async {
     appLoading(context);
@@ -25,11 +29,13 @@ class LoginController extends GetxController {
         throw 'Please fill in all fields.';
       }
 
-      if (!RegExp(r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+').hasMatch(emailController.text)) {
+      if (!RegExp(r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+')
+          .hasMatch(emailController.text)) {
         throw 'Please enter a valid email address.';
       }
 
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
         password: pwdController.text,
       );

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import '../../../common/theme/custom/custom_theme.dart';
 import '../../../common/routes/routes.dart';
 import '../../../common/values/values.dart';
 import 'settingsx_index.dart';
@@ -10,7 +12,17 @@ class SettingsxPage extends GetView<SettingsxController> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      title: const Text("Settings"),
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
+          const SizedBox(width: 8),
+          Text(
+            "Settings",
+            style: CustomTextTheme.darkTheme.labelMedium
+          ),
+        ],
+      ),
     );
   }
 
@@ -44,7 +56,7 @@ class SettingsxPage extends GetView<SettingsxController> {
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(color: Colors.black, fontSize: 18),
+                  style: GoogleFonts.poppins(fontSize: 16)
                 ),
               ),
               const Icon(Icons.arrow_forward_ios, color: Colors.grey),

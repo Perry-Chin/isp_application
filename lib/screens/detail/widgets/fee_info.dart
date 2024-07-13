@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../common/data/data.dart';
 import '../detail_index.dart';
@@ -29,13 +30,13 @@ class FeeInfo extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 5, top: 5, bottom: 10),
+            Padding(
+              padding: const EdgeInsets.only(left: 5, top: 5, bottom: 10),
               child: Text(
                 "Total Fees",
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
-                  fontSize: 20,
+                  fontSize: 18,
                 ),
               ),
             ),
@@ -49,21 +50,27 @@ class FeeInfo extends StatelessWidget {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [const Text("Subtotal"), Text("\$$subtotal")],
-                    ),
-                    const SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [const Text("Tax Fee"), Text("\$$taxFee")],
+                      children: [
+                        Text("Subtotal", style: GoogleFonts.poppins()), 
+                        Text("\$$subtotal", style: GoogleFonts.poppins())
+                      ],
                     ),
                     const SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Total"),
+                        Text("Tax Fee", style: GoogleFonts.poppins()), 
+                        Text("\$$taxFee", style: GoogleFonts.poppins())
+                      ],
+                    ),
+                    const SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Total", style: GoogleFonts.poppins()),
                         Text(
                           "\$$totalCost",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.bold,),
                         )
                       ],
                     ),
@@ -80,9 +87,9 @@ class FeeInfo extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               "Payment Method",
-                              style: TextStyle(
+                              style: GoogleFonts.poppins(
                                   fontWeight: FontWeight.bold, fontSize: 16),
                             ),
                             const SizedBox(height: 5),
@@ -97,9 +104,9 @@ class FeeInfo extends StatelessWidget {
                                     height: 24.w,
                                   ),
                                   const SizedBox(width: 10),
-                                  const Text(
+                                  Text(
                                     "PayNow",
-                                    style: TextStyle(
+                                    style: GoogleFonts.poppins(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14),
                                   ),

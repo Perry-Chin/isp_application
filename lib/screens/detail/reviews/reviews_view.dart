@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../../common/theme/custom/custom_theme.dart';
 import '../../../common/values/values.dart';
 import 'reviews_controller.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -11,9 +14,17 @@ class DetailReviewView extends GetView<DetailReviewController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reviews & Ratings'),
-        backgroundColor: AppColor.secondaryColor,
-        elevation: 0,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
+            const SizedBox(width: 8),
+            Text(
+              "Reviews",
+              style: CustomTextTheme.darkTheme.labelMedium
+            ),
+          ],
+        ),
         // Add rating button
         actions: [
           IconButton(
@@ -75,8 +86,8 @@ class DetailReviewView extends GetView<DetailReviewController> {
               children: [
                 Text(
                   controller.averageRating.value.toStringAsFixed(1),
-                  style: const TextStyle(
-                      fontSize: 48, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.poppins(
+                      fontSize: 44, fontWeight: FontWeight.bold),
                 ),
                 Row(
                   children: List.generate(
@@ -86,11 +97,14 @@ class DetailReviewView extends GetView<DetailReviewController> {
                       color: index < controller.averageRating.value.floor()
                           ? AppColor.secondaryColor
                           : Colors.grey,
-                      size: 24,
+                      size: 22,
                     ),
                   ),
                 ),
-                Text('${controller.totalReviews.value} ratings'),
+                Text(
+                  '${controller.totalReviews.value} ratings',
+                  style: GoogleFonts.poppins(),
+                ),
               ],
             ),
           ),
@@ -115,7 +129,7 @@ class DetailReviewView extends GetView<DetailReviewController> {
           padding: const EdgeInsets.symmetric(vertical: 2),
           child: Row(
             children: [
-              Text('$starCount'),
+              Text('$starCount', style: GoogleFonts.poppins(fontSize: 12)),
               const SizedBox(width: 8),
               Expanded(
                 child: ClipRRect(
@@ -177,10 +191,10 @@ class DetailReviewView extends GetView<DetailReviewController> {
             ),
             title: Row(
               children: [
-                Text(review.username ?? 'Anonymous'),
+                Text(review.username ?? 'Anonymous', style: GoogleFonts.poppins()),
                 const Spacer(),
                 Text(controller.formatDate(review.timestamp),
-                    style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                  style: GoogleFonts.poppins(color: Colors.grey[600], fontSize: 12)),
               ],
             ),
             subtitle: Column(
@@ -199,7 +213,7 @@ class DetailReviewView extends GetView<DetailReviewController> {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(review.reviewText),
+                Text(review.reviewText, style: GoogleFonts.poppins()),
               ],
             ),
           ),

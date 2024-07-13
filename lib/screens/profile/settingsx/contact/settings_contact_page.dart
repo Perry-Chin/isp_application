@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../../common/values/values.dart';
 
 Future contctpg(BuildContext context) {
   return showModalBottomSheet(
@@ -52,16 +55,19 @@ class ContactPage extends StatelessWidget {
     return SizedBox(
       height: 250, // Set the desired height of the container
       child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF2C448A), // Background color of the container
-          borderRadius: BorderRadius.circular(30), // Rounded corners
+        decoration: const BoxDecoration(
+          color: AppColor.secondaryColor,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ), // Rounded corners
         ),
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Column(
@@ -69,18 +75,16 @@ class ContactPage extends StatelessWidget {
                     children: [
                       Text(
                         "Contact Us",
-                        style: TextStyle(
-                          fontFamily: "Open Sans",
+                        style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
                           fontSize: 27,
                           color: Colors.white,
                         ),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                         "Don't worry, we're here to assist you!",
-                        style: TextStyle(
-                          fontFamily: "Open Sans",
+                        style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w300,
                           fontSize: 15,
                           color: Colors.white,
@@ -88,8 +92,8 @@ class ContactPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(width: 10),
-                  RotatingImage(), // Rotating image widget
+                  const SizedBox(width: 10),
+                  const RotatingImage(), // Rotating image widget
                 ],
               ),
               const SizedBox(height: 3), // Added space between the image and options
@@ -106,14 +110,17 @@ class ContactPage extends StatelessWidget {
                           color: const Color(0xFFC6A799), 
                           borderRadius: BorderRadius.circular(20), // Rounded corners
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.email, color: Colors.white), // Email icon
-                            SizedBox(width: 5), // Add spacing between icon and text
+                            const Icon(Icons.email, color: Colors.white), // Email icon
+                            const SizedBox(width: 5), // Add spacing between icon and text
                             Text(
                               'Email',
-                              style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'Open Sans'),
+                              style: GoogleFonts.poppins(
+                                color: Colors.white, 
+                                fontSize: 16, 
+                              ),
                             ), // Text 'Email'
                           ],
                         ),
@@ -131,14 +138,17 @@ class ContactPage extends StatelessWidget {
                           color: const Color(0xFFC6A799), // Container background color
                           borderRadius: BorderRadius.circular(20), // Rounded corners
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.phone, color: Colors.white), // Phone icon
-                            SizedBox(width: 5), // Add spacing between icon and text
+                            const Icon(Icons.phone, color: Colors.white), // Phone icon
+                            const SizedBox(width: 5), // Add spacing between icon and text
                             Text(
                               'Call Us',
-                              style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'Open Sans'),
+                              style: GoogleFonts.poppins(
+                                color: Colors.white, 
+                                fontSize: 16, 
+                              ),
                             ), // Text 'Call Us'
                           ],
                         ),

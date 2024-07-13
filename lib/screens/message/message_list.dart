@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import '../../common/data/data.dart';
+import '../../common/theme/custom/custom_theme.dart';
 import '../../common/utils/utils.dart';
 import '../../common/values/values.dart';
 import 'message_index.dart';
@@ -43,7 +45,7 @@ class MessageList extends GetView<MessageController> {
         child: ListTile(
           leading: ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: 50.w
+              maxWidth: 45.w
             ),
             child: ClipOval(
               child: userData?.photourl != null && userData!.photourl!.isNotEmpty ?
@@ -52,28 +54,36 @@ class MessageList extends GetView<MessageController> {
                 image: userData.photourl ?? "",
                 fadeInDuration: const Duration(milliseconds: 100),
                 fit: BoxFit.cover,
-                width: 54.w,
-                height: 54.w,
+                width: 45.w,
+                height: 45.w,
               ) :
-              Image.asset(AppImage.profile),
+              Image.asset(
+                AppImage.profile,
+                fit: BoxFit.cover,
+                width: 45.w,
+                height: 45.w,
+              ),
             ),
           ),
           title: Text(
             userData?.username ?? "",
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          subtitle: Text(
-            item.data().lastMsg ?? "",
             maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: CustomTextTheme.lightTheme.labelSmall
+          ),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 2.0),
+            child: Text(
+              item.data().lastMsg ?? "",
+              maxLines: 1,
+              style: GoogleFonts.poppins(),
+            ),
           ),
           trailing: Text(
             duTimeLineFormat(
               (item.data().lastTime as Timestamp).toDate()
             ),
-            style: const TextStyle(
+            style: GoogleFonts.poppins(
               color: Colors.black54
             ),
           ),

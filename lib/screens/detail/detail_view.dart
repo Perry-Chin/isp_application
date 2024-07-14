@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../common/data/data.dart';
 import '../../common/middlewares/middlewares.dart';
@@ -145,8 +146,8 @@ class DetailPage extends GetView<DetailController> {
                 flex: 6,
                 child: CancelButton(
                   onPressed: () => controller.updateServiceStatus(controller.doc_id, "Requested", 3),
-                  buttonText: "Deny Request",
-                  buttonWidth: 130)
+                  buttonText: "Deny Req",
+                  buttonWidth: 100)
                 ),
             ],
           ]
@@ -161,8 +162,8 @@ class DetailPage extends GetView<DetailController> {
       return ApplyButton(
         onPressed: () =>
             controller.updateServiceStatus(controller.doc_id, "Booked", 2),
-        buttonText: "Accept Request",
-        buttonWidth: 145,
+        buttonText: "Accept Req",
+        buttonWidth: 120,
       );
     } else if (status == "Booked" && requested == "true") {
       return ApplyButton(
@@ -206,17 +207,17 @@ class ServiceDescription extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             "Description",
-            style: TextStyle(
+            style: GoogleFonts.poppins(
               fontWeight: FontWeight.bold,
-              fontSize: 20,
+              fontSize: 18,
             ),
           ),
           const SizedBox(height: 15),
           Text(
             description ?? "Description",
-            style: const TextStyle(
+            style: GoogleFonts.poppins(
               fontSize: 16,
             ),
           ),

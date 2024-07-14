@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import '../../../common/theme/custom/custom_theme.dart';
 import '../../../common/values/values.dart';
 import '../../../common/utils/utils.dart';
 import '../../../common/widgets/widgets.dart';
@@ -11,10 +13,17 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      elevation: 0,
-      centerTitle: true,
-      title: const Text("Filter"),
-      backgroundColor: AppColor.secondaryColor,
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
+          const SizedBox(width: 8),
+          Text(
+            "Filter",
+            style: CustomTextTheme.darkTheme.labelMedium
+          ),
+        ],
+      ),
       leading: IconButton(
         icon: const Icon(Icons.close),
         onPressed: () {
@@ -27,7 +36,12 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
       ),
       actions: [
         TextButton(
-          child: const Text("Reset", style: TextStyle(color: Colors.white)),
+          child: Text(
+            "Reset", 
+            style: GoogleFonts.poppins(
+              color: AppColor.darkColor
+            )
+          ),
           onPressed: () {
             controller.resetSelection();
           },
@@ -80,23 +94,17 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 "Status",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: CustomTextTheme.lightTheme.labelMedium
               ),
               const SizedBox(height: 20),
               // Add the status filter
               customStatusFilter(FilterStatus.filters),
               const SizedBox(height: 20),
-              const Text(
+              Text(
                 "Rating",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: CustomTextTheme.lightTheme.labelMedium
               ),
               const SizedBox(height: 20),
               // Add the Star Rating
@@ -153,7 +161,7 @@ class FilterSchedulePage extends GetView<FilterScheduleController> {
                   const SizedBox(width: 8),
                   Text(
                     filter.status,
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: isSelected ? Colors.white : Colors.black,
                     ),
                   ),

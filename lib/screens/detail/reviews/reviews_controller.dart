@@ -194,15 +194,15 @@ class DetailReviewController extends GetxController {
   // Helper functions for add review
   void addReview(BuildContext context) {
     showModalBottomSheet(
-      context: context, 
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: const DetailAddReviewPage(),
-      )
-    );
+        context: context,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (context) => Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: const DetailAddReviewPage(),
+            ));
   }
 }

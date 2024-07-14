@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import '../../common/values/values.dart';
 import '../profile/profile_controller.dart';
@@ -52,28 +53,28 @@ class _ReviewsListState extends State<ReviewsList> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: const Text('Newest'),
+                title: Text('Newest', style: GoogleFonts.poppins()),
                 onTap: () {
                   profileController.sortReviews('Newest');
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: const Text('Oldest'),
+                title: Text('Oldest', style: GoogleFonts.poppins()),
                 onTap: () {
                   profileController.sortReviews('Oldest');
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: const Text('Highest Rating'),
+                title: Text('Highest Rating', style: GoogleFonts.poppins()),
                 onTap: () {
                   profileController.sortReviews('Highest Rating');
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: const Text('Lowest Rating'),
+                title: Text('Lowest Rating', style: GoogleFonts.poppins()),
                 onTap: () {
                   profileController.sortReviews('Lowest Rating');
                   Navigator.pop(context);
@@ -90,10 +91,10 @@ class _ReviewsListState extends State<ReviewsList> {
   Widget build(BuildContext context) {
     return Obx(() {
       if (profileController.filteredReviews.isEmpty) {
-        return const Center(
+        return Center(
           child: Text(
             'No Reviews',
-            style: TextStyle(fontSize: 18),
+            style: GoogleFonts.poppins(fontSize: 18),
           ),
         );
       } else {
@@ -110,7 +111,10 @@ class _ReviewsListState extends State<ReviewsList> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: Text(profileController.currentSortType.value),
+                  child: Text(
+                    profileController.currentSortType.value,
+                    style: GoogleFonts.poppins()
+                  ),
                 ),
               ],
             ),
@@ -166,8 +170,7 @@ class _ReviewsListState extends State<ReviewsList> {
                               children: [
                                 Text(
                                   review.username ?? 'Anonymous',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
+                                  style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
                                 ),
                                 Row(
                                   children: List.generate(
@@ -182,7 +185,7 @@ class _ReviewsListState extends State<ReviewsList> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                Text(review.reviewText),
+                                Text(review.reviewText, style: GoogleFonts.poppins()),
                                 // const SizedBox(height: 8),
                                 // Text(
                                 //   'Service Type: ${review.serviceType.capitalize}',

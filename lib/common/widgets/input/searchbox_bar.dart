@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../values/values.dart';
 
@@ -28,7 +29,7 @@ class SearchBoxBar extends StatelessWidget {
             offset: Offset(1.6, 1.6)
           )
         ],
-        color: Colors.white,
+        color: AppColor.backgroundColor,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: AppColor.secondaryColor,
@@ -37,6 +38,7 @@ class SearchBoxBar extends StatelessWidget {
       ),
       child: Center(
         child: TextField(
+          style: GoogleFonts.poppins(),
           decoration: InputDecoration(
             hintText: 'Search',
             border: InputBorder.none,
@@ -44,6 +46,8 @@ class SearchBoxBar extends StatelessWidget {
               Icons.search,
               color: AppColor.secondaryColor
             ),
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
             // Filter search results
             suffixIcon: showSuffixIcon
               ? IconButton(

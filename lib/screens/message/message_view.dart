@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../common/theme/custom/custom_theme.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'message_index.dart';
@@ -12,7 +13,17 @@ class MessagePage extends GetView<MessageController> {
 
   AppBar _buildAppBar(context) {
     return AppBar(
-      title: const Text("Message"),
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
+          const SizedBox(width: 8),
+          Text(
+            "Message",
+            style: CustomTextTheme.darkTheme.labelMedium
+          ),
+        ],
+      ),
     );
   }
   
@@ -27,8 +38,9 @@ class MessagePage extends GetView<MessageController> {
       body: SafeArea(
         child: Column(
           children: [
+            const SizedBox(height: 3),
             Padding(
-              padding: const EdgeInsets.only(left: 25, right: 25),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: SearchBoxBar(
                 controller: controller.searchController, 
                 onChanged: (value) {

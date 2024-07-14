@@ -37,10 +37,13 @@ class _StarRatingFilterState extends State<StarRatingFilter> {
               widget.onChanged(_selectedRating);
             });
           },
-          child: Icon(
-            Icons.star,
-            size: 30,
-            color: starValue <= (widget.rating) ? Colors.orange : Colors.grey[400],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: Icon(
+              Icons.star,
+              size: 35,
+              color: starValue <= (widget.rating) ? Colors.orange : Colors.grey[400],
+            ),
           ),
         );
       }),

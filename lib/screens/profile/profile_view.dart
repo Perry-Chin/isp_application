@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import '../../../common/theme/custom/custom_theme.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'settingsx/settingsx_index.dart';
@@ -14,15 +16,23 @@ class ProfilePage extends GetView<ProfileController> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      elevation: 0,
-      title: const Text("Profile"),
-      backgroundColor: AppColor.secondaryColor,
-      leading: userId != null
-          ? IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => Get.back(),
-            )
-          : null,
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
+          const SizedBox(width: 8),
+          Text(
+            "Profile",
+            style: CustomTextTheme.darkTheme.titleMedium
+          ),
+        ],
+      ),
+      // leading: userId != null
+      //     ? IconButton(
+      //         icon: const Icon(Icons.arrow_back),
+      //         onPressed: () => Get.back(),
+      //       )
+      //     : null,
     );
   }
 
@@ -126,7 +136,11 @@ class ProfilePage extends GetView<ProfileController> {
                         Obx(() {
                           return Text(
                             controller.user.value?.username ?? 'Username',
-                            style: const TextStyle(fontSize: 18),
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black
+                            )
                           );
                         }),
                         const SizedBox(width: 8),
@@ -158,7 +172,7 @@ class ProfilePage extends GetView<ProfileController> {
           children: [
             Text(
               controller.user.value?.rating?.toStringAsFixed(1) ?? '4.6',
-              style: const TextStyle(
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
@@ -185,9 +199,9 @@ class ProfilePage extends GetView<ProfileController> {
             padding: const EdgeInsets.only(left: 16.0, top: 16.0, right: 16.0),
             child: Row(
               children: [
-                const Text(
+                Text(
                   'Reviews',
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -245,6 +259,7 @@ class ProfilePage extends GetView<ProfileController> {
             child: TabBar(
               labelColor: Colors.white,
               unselectedLabelColor: Colors.grey,
+              labelStyle: GoogleFonts.poppins(),
               indicator: BoxDecoration(
                 color: AppColor.secondaryColor,
                 borderRadius: BorderRadius.circular(25.0),

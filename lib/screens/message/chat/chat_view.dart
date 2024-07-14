@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../common/values/values.dart';
 import 'chat_index.dart';
@@ -13,13 +14,18 @@ class ChatPage extends GetView<ChatController> {
 
   AppBar _appBar() {
     return AppBar(
-      backgroundColor: AppColor.secondaryColor,
-      elevation: 0,
+      automaticallyImplyLeading: false,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            onPressed: () => Get.back(), 
+            icon: const Icon(Icons.arrow_back),
+          ),
           Container(
-            padding: EdgeInsets.only(top: 0.w, bottom: 0.w, right: 10.w),
+            padding: EdgeInsets.only(right: 10.w, left: 15.w),
             child: InkWell(
               child: SizedBox(
                 width: 40.w,
@@ -31,8 +37,8 @@ class ChatPage extends GetView<ChatController> {
                       image: controller.state.toAvatar.value,
                       fadeInDuration: const Duration(milliseconds: 100),
                       fit: BoxFit.cover,
-                      width: 50.w,
-                      height: 50.w,
+                      width: 40.w,
+                      height: 40.w,
                       imageErrorBuilder: (context, error, stackTrace) {
                         print("Error loading image: $error");
                         return Image.asset(AppImage.profile);
@@ -52,13 +58,16 @@ class ChatPage extends GetView<ChatController> {
                   controller.state.toName.value,
                   overflow: TextOverflow.clip,
                   maxLines: 1,
-                  style: const TextStyle(
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
-          )
+          ),
+          const Spacer(),
+          const Icon(Icons.more_vert),
         ],
       ),
     );
@@ -98,17 +107,25 @@ class ChatPage extends GetView<ChatController> {
                                 ),
                               ),
                               Expanded(
-                                child: TextField(
-                                  keyboardType: TextInputType.multiline,
-                                  minLines: 1,
-                                  maxLines: 3,
-                                  controller: controller.textController,
-                                  autofocus: false,
-                                  focusNode: controller.contentNode,
-                                  decoration: const InputDecoration(
-                                    hintText: "Type a message",
-                                    border: InputBorder.none,
-                                    hintStyle: TextStyle(color: AppColor.secondaryColor)
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: TextField(
+                                    keyboardType: TextInputType.multiline,
+                                    minLines: 1,
+                                    maxLines: 3,
+                                    controller: controller.textController,
+                                    autofocus: false,
+                                    focusNode: controller.contentNode,
+                                    style: GoogleFonts.poppins(),
+                                    decoration: InputDecoration(
+                                      hintText: "Type a message",
+                                      border: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                      hintStyle: GoogleFonts.poppins(
+                                        color: AppColor.secondaryColor
+                                      )
+                                    ),
                                   ),
                                 )
                               ),

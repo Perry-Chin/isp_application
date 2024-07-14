@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class DetailTitle extends StatelessWidget {
   const DetailTitle({
@@ -15,7 +16,7 @@ class DetailTitle extends StatelessWidget {
       padding: const EdgeInsets.only(left: 16, bottom: 5),
       child: Text(
         name ?? "Service Name",
-        style: const TextStyle(
+        style: GoogleFonts.poppins(
           fontWeight: FontWeight.bold,
           fontSize: 27,
         ),

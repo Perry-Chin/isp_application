@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../common/data/data.dart';
 import '../../../common/routes/routes.dart';
@@ -26,13 +27,13 @@ class RequesterInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 16, bottom: 5),
+        Padding(
+          padding: const EdgeInsets.only(left: 16, bottom: 5),
           child: Text(
             "Meet the Requester",
-            style: TextStyle(
+            style: GoogleFonts.poppins(
               fontWeight: FontWeight.bold,
-              fontSize: 20,
+              fontSize: 18,
             ),
           ),
         ),
@@ -61,7 +62,7 @@ class RequesterInfo extends StatelessWidget {
               children: [
                 Text(
                   userData?.username ?? "Username",
-                  style: const TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -74,7 +75,10 @@ class RequesterInfo extends StatelessWidget {
               ],
             ),
           ),
-          subtitle: Text(userData?.email ?? ""),
+          subtitle: Text(
+            userData?.email ?? "",
+            style: GoogleFonts.poppins(),
+          ),
           trailing: ReportUserMenu(
             userId: userData?.id ?? "",
             currentUserId: controller.token,
@@ -117,9 +121,9 @@ class RequesterInfo extends StatelessWidget {
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(vertical: 15), // Set padding
-                child: const Text(
+                child: Text(
                   "View reviews",
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     color: Colors.black,
                   ),
                 ),
@@ -142,9 +146,9 @@ class RequesterInfo extends StatelessWidget {
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(vertical: 15), // Set padding
-                child: const Text(
+                child: Text(
                   "Chat",
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     color: Colors.black,
                   ),
                 ),

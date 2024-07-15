@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'request_map.dart';
+
 // Local Dependencies
 import '../../../common/middlewares/middlewares.dart';
 import '../../../common/widgets/widgets.dart';
@@ -97,6 +99,9 @@ List<Step> getSteps(int currentStep) {
             prefixicon: Icons.add_location_alt_outlined,
             textController: controller.locationController,
             //onTap: () => selectLocation(Get.context!, controller.locationController),
+            onTap: () {
+              Get.to(MapScreen);
+            },
             validator: (value) => RouteValidateServiceMiddleware.validateLocation(value)
           ),
           const SizedBox(height: 20),

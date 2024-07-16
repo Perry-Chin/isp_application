@@ -93,17 +93,20 @@ List<Step> getSteps(int currentStep) {
         children: [
           const SizedBox(height: 5),
           // Location Name
-          MyTextField(
-            hinttext: 'Your location',
-            labeltext: 'Location',
-            prefixicon: Icons.add_location_alt_outlined,
-            textController: controller.locationController,
-            //onTap: () => selectLocation(Get.context!, controller.locationController),
-            onTap: () {
-              Get.to(MapScreen);
-            },
-            validator: (value) => RouteValidateServiceMiddleware.validateLocation(value)
-          ),
+            // onTap: () {
+            //     Get.to(RequestMap());
+            //   },
+            MyTextField(
+              hinttext: 'Your location',
+              labeltext: 'Location',
+              prefixicon: Icons.add_location_alt_outlined,
+              textController: controller.locationController,
+              //onTap: () => selectLocation(Get.context!, controller.locationController),
+              onTap: () {
+                  Get.to(RequestMap());
+              },
+              validator: (value) => RouteValidateServiceMiddleware.validateLocation(value)
+            ),
           const SizedBox(height: 20),
           //Date (YYYY-MM-DD)
           MyTextField( 

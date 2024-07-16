@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../common/theme/custom/custom_theme.dart';
+// import '../../../common/values/values.dart';
+// import '../../../common/widgets/widgets.dart';
+// import '../../../common/theme/custom/appbar_theme.dart';
+import '../../../common/theme/custom/text_theme.dart';
+
+
 
 class RequestMap extends StatelessWidget {
   @override
@@ -21,7 +28,7 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   static const _initialCameraPosition = CameraPosition(
     target: LatLng(1.3521, 103.8198),
-    zoom: 11.5,
+    zoom: 15.75,
   );
 
   late GoogleMapController _googleMapController;
@@ -32,9 +39,26 @@ class _MapScreenState extends State<MapScreen> {
     super.dispose();
   }
 
+  AppBar _buildAppBar(context) {
+    return AppBar(
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          //const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
+          const SizedBox(width: 8),
+          Text(
+            "Choose Request Location",
+            style: CustomTextTheme.darkTheme.labelMedium
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: _buildAppBar(context),
       body: GoogleMap(
         myLocationButtonEnabled: false,
         zoomControlsEnabled: false,

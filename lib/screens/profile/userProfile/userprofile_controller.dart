@@ -5,8 +5,8 @@ import '../../../common/data/data.dart';
 class UserProfileController extends GetxController {
   final db = FirebaseFirestore.instance;
   final user = Rx<UserData?>(null);
-  final allReviews = <Review>[].obs;
-  final filteredReviews = <Review>[].obs;
+  final allReviews = <ReviewData>[].obs;
+  final filteredReviews = <ReviewData>[].obs;
   final Rx<String> currentTab = 'All'.obs;
   final Rx<String> currentSortType = 'Newest'.obs;
 
@@ -53,9 +53,9 @@ class UserProfileController extends GetxController {
     }
   }
 
-  Future<Review> _processReview(
+  Future<ReviewData> _processReview(
       DocumentSnapshot<Map<String, dynamic>> doc) async {
-    Review review = Review.fromFirestore(doc);
+    ReviewData review = ReviewData.fromFirestore(doc, null);
 
     if (review.fromUid.isEmpty) {
       print('Error: User ID who gave the review is empty');
@@ -66,8 +66,8 @@ class UserProfileController extends GetxController {
       DocumentSnapshot<Map<String, dynamic>> userDoc =
           await db.collection('users').doc(review.fromUid).get();
       if (userDoc.exists) {
-        review.username = userDoc.data()?['username'];
-        review.photoUrl = userDoc.data()?['photourl'];
+        // review.username = userDoc.data()?['username'];
+        // review.photoUrl = userDoc.data()?['photourl'];
       }
     } catch (e) {
       print('Error fetching user data for review: $e');

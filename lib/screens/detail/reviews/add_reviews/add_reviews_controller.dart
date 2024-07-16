@@ -1,12 +1,13 @@
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../../../common/storage/storage.dart';
 import '../reviews_index.dart';
 
 class DetailAddReviewController extends GetxController {
+  
+  final userToken = UserStore.to.token;
   final db = FirebaseFirestore.instance;
-  final auth = FirebaseAuth.instance;
 
   final selectedRating = 0.obs;
   final reviewText = ''.obs;
@@ -19,22 +20,25 @@ class DetailAddReviewController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    serviceId = Get.parameters['doc_id'] ?? '';
-    toUid = Get.parameters['to_uid'] ?? '';
-    serviceType =
-        Get.parameters['requested'] == 'true' ? 'provider' : 'requester';
+    var data = Get.parameters;
+    print('data: $data');
+    serviceId = data['doc_id'] ?? '';
+    toUid = data['requester_id'] ?? '';
+    serviceType = data['requested'] == 'true' ? 'provider' : 'requester';
+    print('serviceId: $serviceId, toUid: $toUid, serviceType: $serviceType');
     checkExistingReview();
+    // print('serviceId: $serviceId, toUid: $toUid, serviceType: $serviceType');
   }
 
   Future<void> checkExistingReview() async {
-    final currentUser = auth.currentUser;
-    if (currentUser == null) return;
 
     final querySnapshot = await db
         .collection('reviews')
-        .where('from_uid', isEqualTo: currentUser.uid)
+        .where('from_uid', isEqualTo: userToken)
         .where('service_id', isEqualTo: serviceId)
         .get();
+
+    print('Query snapshot: ${querySnapshot.docs}');
 
     hasAlreadyReviewed.value = querySnapshot.docs.isNotEmpty;
   }
@@ -59,30 +63,23 @@ class DetailAddReviewController extends GetxController {
     }
 
     try {
-      final currentUser = auth.currentUser;
-      if (currentUser == null) {
-        print('current user is empty');
-        return;
-      }
-
+      
       final newReview = {
-        'from_uid': currentUser.uid,
+        'from_uid': userToken,
         'to_uid': toUid,
         'rating': selectedRating.value,
-        'review_text': reviewText.value,
+        'review': reviewText.value,
         'service_id': serviceId,
         'service_type': serviceType,
         'timestamp': FieldValue.serverTimestamp(),
       };
 
-      DocumentReference docRef = await db.collection('reviews').add(newReview);
-
-      // Update the document with its own ID
-      await docRef.update({'review_id': docRef.id});
+      await db.collection('reviews').add(newReview);
 
       Get.back(); // Close the review modal
       // Refresh the reviews list
       Get.find<DetailReviewController>().fetchUserReviews();
+      update();
 
       // Set hasAlreadyReviewed to true to prevent multiple submissions
       hasAlreadyReviewed.value = true;

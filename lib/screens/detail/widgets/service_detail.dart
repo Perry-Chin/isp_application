@@ -128,7 +128,7 @@ class ServiceDetail extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             "Unavailable at this time?",
-            style: GoogleFonts.poppins(fontSize: 15, color: Color(0xFFCE761D)),
+            style: GoogleFonts.poppins(fontSize: 15, color: const Color(0xFFCE761D)),
           ),
           const SizedBox(height: 8),
           proposeNewTimeButton(),

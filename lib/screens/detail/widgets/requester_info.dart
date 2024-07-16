@@ -108,7 +108,8 @@ class RequesterInfo extends StatelessWidget {
                 // View reviews action
                 Get.toNamed(AppRoutes.detailReview, parameters: {
                   "doc_id": controller.doc_id,
-                  'requested': Get.parameters['requested'] ?? 'false'
+                  'requested': 'requester',
+                  'requester_id': userData.id ?? "",
                 });
               },
               style: ElevatedButton.styleFrom(
@@ -122,7 +123,7 @@ class RequesterInfo extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(vertical: 15), // Set padding
                 child: Text(
-                  "View reviews",
+                  "View reviews ${userData.id}",
                   style: GoogleFonts.poppins(
                     color: Colors.black,
                   ),

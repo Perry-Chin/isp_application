@@ -137,7 +137,7 @@ class DetailPage extends GetView<DetailController> {
                 child: CancelButton(
                   onPressed: () => controller.updateServiceStatus(controller.doc_id, "Cancelled", 5),
                   buttonText: "Cancel Service",
-                  buttonWidth: 135
+                  buttonWidth: 130
                 )
               ),
             ],
@@ -147,7 +147,7 @@ class DetailPage extends GetView<DetailController> {
                 child: CancelButton(
                   onPressed: () => controller.updateServiceStatus(controller.doc_id, "Requested", 3),
                   buttonText: "Deny Req",
-                  buttonWidth: 100)
+                  buttonWidth: 85)
                 ),
             ],
           ]
@@ -163,14 +163,14 @@ class DetailPage extends GetView<DetailController> {
         onPressed: () =>
             controller.updateServiceStatus(controller.doc_id, "Booked", 2),
         buttonText: "Accept Req",
-        buttonWidth: 120,
+        buttonWidth: 100,
       );
     } else if (status == "Booked" && requested == "true") {
       return ApplyButton(
         onPressed: () =>
             controller.updateServiceStatus(controller.doc_id, "Started", 0),
         buttonText: "Start Service",
-        buttonWidth: 120,
+        buttonWidth: 115,
       );
     } else if (status == "Started" && requested == "true") {
       return ApplyButton(

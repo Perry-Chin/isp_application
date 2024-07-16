@@ -206,13 +206,6 @@ class ProfilePage extends GetView<ProfileController> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.rate_review),
-                  onPressed: () {
-                    Get.toNamed('/addReviews');
-                  },
-                ),
               ],
             ),
           ),

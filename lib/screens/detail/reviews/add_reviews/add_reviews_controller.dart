@@ -68,7 +68,7 @@ class DetailAddReviewController extends GetxController {
         'from_uid': userToken,
         'to_uid': toUid,
         'rating': selectedRating.value,
-        'review': reviewText.value,
+        'review': reviewText.value.trim(),
         'service_id': serviceId,
         'service_type': serviceType,
         'timestamp': FieldValue.serverTimestamp(),

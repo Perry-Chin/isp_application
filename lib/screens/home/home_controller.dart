@@ -87,6 +87,13 @@ class HomeController extends GetxController {
     });
   }
 
+  void searchAndNavigate(String username) {
+    // Only navigate if we're not already on the SearchResultsPage
+    if (!(Get.currentRoute.startsWith('/searchresults'))) {
+      Get.toNamed('/searchresults', arguments: username);
+    }
+  }
+
   // Combine the streams to get user data for each service item
   Stream<Map<String, UserData?>> getCombinedStream(String token) {
     return getServiceStream(token).switchMap((serviceDocs) {

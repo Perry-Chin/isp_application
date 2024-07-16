@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
   String desc = '';
   String definition = '';
   final TextEditingController _searchController = TextEditingController();
-  late HomeController controller; // Declare controller variable
+  late HomeController controller;
 
   static const List<String> serviceImages = [
     'assets/images/groomingdog.png',
@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    controller = Get.put(HomeController()); // Initialize controller
+    controller = Get.put(HomeController());
   }
 
   void _onServiceImagePressed(int index) {
@@ -105,7 +105,6 @@ class _HomePageState extends State<HomePage> {
           selectedServicePronun = '/ˈɡruːmɪŋ/';
           desc = 'noun';
           definition = 'hygienic care for your precious furfriend';
-          showHomeList = false; // Reset showHomeList when a service is selected
           break;
         case 1:
           selectedService = 'Walking';
@@ -113,14 +112,12 @@ class _HomePageState extends State<HomePage> {
           desc = 'verb';
           definition =
               "a tail-wagging exploration through your furfriend's neighbourhood";
-          showHomeList = false; // Reset showHomeList when a service is selected
           break;
         case 2:
           selectedService = 'Sitting';
           selectedServicePronun = '/ˈsɪtɪŋ/';
           desc = 'noun';
           definition = 'temporary care and companionship for your furry friend';
-          showHomeList = false; // Reset showHomeList when a service is selected
           break;
         case 3:
           selectedService = 'Training';
@@ -128,22 +125,20 @@ class _HomePageState extends State<HomePage> {
           desc = 'noun';
           definition =
               'the fine art of turning chaos into harmony, one pawshake at a time.';
-          showHomeList = false; // Reset showHomeList when a service is selected
           break;
         case 4:
           Get.to(const RequestPage());
-          break;
+          return;
         default:
           selectedService = '';
       }
-    });
-  }
 
-  bool showHomeList = false;
-
-  void _onForYouPressed() {
-    setState(() {
-      showHomeList = true;
+      if (controller.state.serviceList.isEmpty) {
+        selectedService = '';
+        selectedServicePronun = '';
+        desc = '';
+        definition = 'no services available';
+      }
     });
   }
 
@@ -173,7 +168,6 @@ class _HomePageState extends State<HomePage> {
                   SearchBoxBar(
                     controller: _searchController,
                     onChanged: (value) {
-                      // Call controller function to filter service list based on username
                       controller.filterServiceList(value);
                     },
                     showSuffixIcon: true,
@@ -260,51 +254,10 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          Row(
-                            children: [
-                              InkWell(
-                                onTap: _onForYouPressed,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    color: AppColor.secondaryColor,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: const Text(
-                                    'For you',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontFamily: 'Quicksand',
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: AppColor.secondaryColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: const Text(
-                                  'All',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontFamily: 'Quicksand',
-                                  ),
-                                ),
-                              ),
-                            ],
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            child: HomeList(selectedService: selectedService),
                           ),
-                          const SizedBox(height: 10),
-                          if (showHomeList)
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.3,
-                              child: HomeList(selectedService: selectedService),
-                            ),
                         ],
                       ),
                     ),

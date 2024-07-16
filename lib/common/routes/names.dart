@@ -20,4 +20,5 @@ class AppRoutes {
   static const detailReview = '/reviews'; // Add this line
   static const detailAddReview = '/add_reviews';
   static const payment = '/payment';
+  static const searchresults = '/searchresults';
 }

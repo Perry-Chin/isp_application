@@ -60,7 +60,7 @@ class DetailReviewView extends GetView<DetailReviewController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  controller.averageRating.value.toStringAsFixed(1),
+                  controller.averageRating.value.toStringAsFixed(2),
                   style: GoogleFonts.poppins(
                       fontSize: 44, fontWeight: FontWeight.bold),
                 ),
@@ -136,83 +136,85 @@ class DetailReviewView extends GetView<DetailReviewController> {
             onRefresh: controller.onRefresh,
             onLoading: controller.onLoading,
             controller: controller.refreshController,
-            child: CustomScrollView(
-              slivers: [
-                SliverPadding(
-                  padding: const EdgeInsets.all(16.0),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        var review = controller.reviewList[index].data();
-                        var userData = snapshot.data?[review.toUid];
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                spreadRadius: 0,
-                                blurRadius: 6,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.all(16),
-                            leading: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: AppColor.secondaryColor,
-                                  width: 2.0,
+            child: Obx(
+              () => CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.all(16.0),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          var review = controller.reviewList[index].data();
+                          var userData = snapshot.data?[review.toUid];
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  spreadRadius: 0,
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 3),
                                 ),
-                              ),
-                              child: CircleAvatar(
-                                backgroundImage: userData!.photourl != null
-                                    ? NetworkImage(userData.photourl!)
-                                    : null,
-                                child: userData.photourl == null
-                                    ? Text(userData.username?[0] ?? 'A')
-                                    : null,
-                              ),
-                            ),
-                            title: Row(
-                              children: [
-                                Text(userData.username ?? "", style: GoogleFonts.poppins()),
-                                const Spacer(),
-                                Text(controller.formatDate(review.timestamp),
-                                  style: GoogleFonts.poppins(color: Colors.grey[600], fontSize: 12)),
                               ],
                             ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: List.generate(
-                                    5,
-                                    (starIndex) => Icon(
-                                      Icons.star,
-                                      color: starIndex < review.rating
-                                          ? AppColor.secondaryColor
-                                          : Colors.grey,
-                                      size: 16,
-                                    ),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.all(16),
+                              leading: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: AppColor.secondaryColor,
+                                    width: 2.0,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(review.review, style: GoogleFonts.poppins()),
-                              ],
+                                child: CircleAvatar(
+                                  backgroundImage: userData!.photourl != null
+                                      ? NetworkImage(userData.photourl!)
+                                      : null,
+                                  child: userData.photourl == null
+                                      ? Text(userData.username?[0] ?? 'A')
+                                      : null,
+                                ),
+                              ),
+                              title: Row(
+                                children: [
+                                  Text(userData.username ?? "", style: GoogleFonts.poppins()),
+                                  const Spacer(),
+                                  Text(controller.formatDate(review.timestamp),
+                                    style: GoogleFonts.poppins(color: Colors.grey[600], fontSize: 12)),
+                                ],
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: List.generate(
+                                      5,
+                                      (starIndex) => Icon(
+                                        Icons.star,
+                                        color: starIndex < review.rating
+                                            ? AppColor.secondaryColor
+                                            : Colors.grey,
+                                        size: 16,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(review.review, style: GoogleFonts.poppins()),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      childCount: controller.reviewList.length
-                    )
-                  ),
-                )
-              ],
+                          );
+                        },
+                        childCount: controller.reviewList.length
+                      )
+                    ),
+                  )
+                ],
+              ),
             ),
           );
         }

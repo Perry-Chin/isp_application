@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../common/data/data.dart';
+
 import 'home_controller.dart';
 
 class SearchResultsPage extends StatelessWidget {

@@ -33,6 +33,18 @@ class HomeList extends StatelessWidget {
                 serviceItem.data().serviceName == selectedService)
             .toList();
 
+        if (filteredServiceList.isEmpty) {
+          return const Center(
+            child: Text(
+              'No services available',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+              ),
+            ),
+          );
+        }
+
         return SmartRefresher(
           enablePullDown: true,
           enablePullUp: true,

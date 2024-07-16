@@ -145,31 +145,31 @@ class _ReviewsListState extends State<ReviewsList> {
                       ),
                       child: Row(
                         children: [
-                          CircleAvatar(
-                            radius: 28.0,
-                            backgroundColor: Colors.transparent,
-                            child: ClipOval(
-                              child: review.photoUrl != null &&
-                                      review.photoUrl!.isNotEmpty
-                                  ? FadeInImage.assetNetwork(
-                                      placeholder: AppImage.profile,
-                                      image: review.photoUrl!,
-                                      fadeInDuration:
-                                          const Duration(milliseconds: 100),
-                                      fit: BoxFit.cover,
-                                      width: 54.0,
-                                      height: 54.0,
-                                    )
-                                  : Image.asset(AppImage.profile),
-                            ),
-                          ),
+                          // CircleAvatar(
+                          //   radius: 28.0,
+                          //   backgroundColor: Colors.transparent,
+                          //   child: ClipOval(
+                          //     child: review.photoUrl != null &&
+                          //             review.photoUrl!.isNotEmpty
+                          //         ? FadeInImage.assetNetwork(
+                          //             placeholder: AppImage.profile,
+                          //             image: review.photoUrl!,
+                          //             fadeInDuration:
+                          //                 const Duration(milliseconds: 100),
+                          //             fit: BoxFit.cover,
+                          //             width: 54.0,
+                          //             height: 54.0,
+                          //           )
+                          //         : Image.asset(AppImage.profile),
+                          //   ),
+                          // ),
                           const SizedBox(width: 16),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  review.username ?? 'Anonymous',
+                                  'Anonymous',
                                   style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
                                 ),
                                 Row(
@@ -185,7 +185,7 @@ class _ReviewsListState extends State<ReviewsList> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                Text(review.reviewText, style: GoogleFonts.poppins()),
+                                Text(review.review, style: GoogleFonts.poppins()),
                                 // const SizedBox(height: 8),
                                 // Text(
                                 //   'Service Type: ${review.serviceType.capitalize}',

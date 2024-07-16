@@ -1,146 +1,116 @@
+// ignore_for_file: prefer_typing_uninitialized_variables, non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
-import 'package:rxdart/rxdart.dart';
 
 import '../../../common/data/data.dart';
+import '../../../common/middlewares/middlewares.dart';
 import 'add_reviews/add_reviews_index.dart';
 
 class DetailReviewController extends GetxController {
-  final String docId = Get.parameters['doc_id'] ?? '';
-  final String requested = Get.parameters['requested'] ?? 'false';
+
+  var doc_id;
+  var requested;
+  var requested_id;
+  
   final db = FirebaseFirestore.instance;
-  final reviews = <Review>[].obs;
+  final reviews = <ReviewData>[].obs;
   final isLoading = true.obs;
   final averageRating = 0.0.obs;
   final totalReviews = 0.obs;
   final ratingCounts = <int, int>{}.obs;
   final sortType = 'Newest'.obs;
-  final RefreshController refreshController =
-      RefreshController(initialRefresh: false);
+  final reviewList = <QueryDocumentSnapshot<ReviewData>>[].obs;
+  final RefreshController refreshController = RefreshController(initialRefresh: false);
 
-  late Stream<Map<String, UserData?>> combinedStream;
+  void onRefresh() => refreshData(refreshController, fetchUserReviews);
+  void onLoading() => loadData(refreshController, fetchUserReviews);
 
   @override
   void onInit() {
     super.onInit();
-    if (docId.isNotEmpty) {
-      combinedStream = getCombinedStream();
-      fetchUserReviews();
-    } else {
-      print('Error: Document ID is empty');
-      isLoading(false);
-    }
+    var data = Get.parameters;
+    doc_id = data['doc_id'];
+    requested = data['requested'];
+    requested_id = data['requester_id'];
+    fetchUserReviews();
   }
 
-  Stream<Map<String, UserData?>> getCombinedStream() {
+  Stream<List<QueryDocumentSnapshot<ReviewData>>> getReviewStream() {
     return db
-        .collection('service')
-        .doc(docId)
-        .snapshots()
-        .switchMap((serviceDoc) {
-      var serviceData = ServiceData.fromFirestore(serviceDoc, null);
-      var userIds = [
-        if (serviceData.reqUserid != null) serviceData.reqUserid!,
-        if (serviceData.provUserid != null) serviceData.provUserid!,
-      ];
-
-      print('Combined Stream User IDs: $userIds');
-
-      return db
-          .collection('users')
-          .where(FieldPath.documentId, whereIn: userIds)
-          .snapshots()
-          .map((userSnapshot) {
-        return Map.fromEntries(userSnapshot.docs
-            .map((doc) => MapEntry(doc.id, UserData.fromFirestore(doc, null))));
-      });
-    });
+      .collection('reviews')
+      .where('to_uid', isEqualTo: requested_id)
+      .where('service_type', isEqualTo: requested)
+      .withConverter<ReviewData>(
+        fromFirestore: ReviewData.fromFirestore,
+        toFirestore: (ReviewData reviewData, _) => reviewData.toFirestore(),
+      )
+      .snapshots()
+      .map((snapshot) => snapshot.docs);
   }
+
+  Stream<List<DocumentSnapshot<UserData>>> getUserStream(List<String> userIds) {
+    return db
+      .collection('users')
+      .where(FieldPath.documentId, whereIn: userIds)
+      .withConverter<UserData>(
+        fromFirestore: UserData.fromFirestore,
+        toFirestore: (UserData userData, _) => userData.toFirestore(),
+      )
+      .snapshots()
+      .map((snapshot) => snapshot.docs);
+  }
+
+  // Combine the streams to get user data for each payment
+  Stream<Map<String, UserData?>> getCombinedStream() {
+    return RouteFirestoreMiddleware.getCombinedStream<ReviewData, UserData>(
+      primaryStream: () => getReviewStream(),
+      secondaryStream: (userIds) => getUserStream(userIds),
+      getSecondaryId: (review) => review.toUid,
+    );
+  }
+
+  Stream<Map<String, UserData?>> get combinedStream => getCombinedStream();
 
   Future<void> fetchUserReviews() async {
-    try {
-      isLoading(true);
-      await combinedStream.first.then((userDataMap) async {
-        var serviceDoc = await db.collection('service').doc(docId).get();
-        var serviceData = serviceDoc.data();
-
-        if (serviceData == null) {
-          print('Error: Service data is null');
-          return;
-        }
-
-        // print('Service Data: $serviceData');
-
-        // Determine which user's reviews to fetch based on 'requested' parameter
-        String? userId;
-        if (requested == 'true') {
-          // Current user is the requester, so fetch provider's reviews
-          userId = serviceData['provider_uid'] as String?;
-        } else {
-          // Current user is the provider or potential provider, so fetch requester's reviews
-          userId = serviceData['requester_uid'] as String?;
-        }
-
-        if (userId == null) {
-          print('Error: User ID is null');
-          return;
-        }
-        // print('Requested parameter: $requested');
-        // print(
-        //     'Fetching reviews for role: ${requested == 'true' ? 'Provider' : 'Requester'}');
-        // print('User ID to fetch reviews for: $userId');
-
-        // print('Fetching reviews for User ID: $userId');
-
-        QuerySnapshot<Map<String, dynamic>> snapshot = await db
-            .collection('reviews')
-            .where('to_uid', isEqualTo: userId)
-            .get();
-
-        reviews.value = await Future.wait(
-          snapshot.docs.map((doc) => _processReview(doc, userDataMap)),
-        );
-
-        _calculateStats();
-        _sortReviews();
-      });
-    } catch (e) {
-      print('Error fetching user reviews: $e');
-    } finally {
-      isLoading(false);
-      refreshController.refreshCompleted();
-    }
-  }
-
-  Future<Review> _processReview(DocumentSnapshot<Map<String, dynamic>> doc,
-      Map<String, UserData?> userDataMap) async {
-    Review review = Review.fromFirestore(doc);
-    String reviewerUserId = review.fromUid;
-
-    print('Processing review from Reviewer User ID: $reviewerUserId');
-
-    if (userDataMap.containsKey(reviewerUserId)) {
-      UserData? userData = userDataMap[reviewerUserId];
-      review.username = userData?.username;
-      review.photoUrl = userData?.photourl;
-    }
-
-    return review;
+    var reviews = await db
+      .collection('reviews')
+      .where('to_uid', isEqualTo: requested_id)
+      .where('service_type', isEqualTo: requested)
+      .withConverter<ReviewData>(
+        fromFirestore: ReviewData.fromFirestore,
+        toFirestore: (ReviewData reviewData, _) => reviewData.toFirestore(),
+      ).get();
+    
+    reviewList.assignAll(reviews.docs);
+    _calculateStats();
+    update(); 
   }
 
   void _calculateStats() {
-    totalReviews.value = reviews.length;
-    ratingCounts.clear();
+    // Calculate total number of reviews
+    totalReviews.value = reviewList.length;
+
+    // Calculate average rating
     double totalRating = 0;
-    for (var review in reviews) {
-      ratingCounts[review.rating] = (ratingCounts[review.rating] ?? 0) + 1;
+    ratingCounts.clear();
+
+    // Iterate through reviews to calculate total rating and count for each rating
+    for (var reviewSnapshot in reviewList) {
+      var review = reviewSnapshot.data(); // Assuming ReviewData is obtained from reviewSnapshot
       totalRating += review.rating;
+
+      // Count occurrences of each rating
+      ratingCounts[review.rating] = (ratingCounts[review.rating] ?? 0) + 1;
     }
-    averageRating.value =
-        totalReviews.value > 0 ? totalRating / totalReviews.value : 0.0;
+
+    // Calculate average rating if there are reviews
+    averageRating.value = totalReviews.value > 0 ? totalRating / totalReviews.value : 0.0;
+  
+    update();
   }
 
   void _sortReviews() {
@@ -169,40 +139,18 @@ class DetailReviewController extends GetxController {
     return DateFormat('MMM d, yyyy').format(date);
   }
 
-  void onRefresh() => _refreshData(refreshController, fetchUserReviews);
-  void onLoading() => _loadData(refreshController, fetchUserReviews);
-
-  // Helper functions for refresh and load
-  void _refreshData(
-      RefreshController controller, Future<void> Function() loadData) {
-    loadData().then((_) {
-      controller.refreshCompleted(resetFooterState: true);
-    }).catchError((_) {
-      controller.refreshFailed();
-    });
-  }
-
-  void _loadData(
-      RefreshController controller, Future<void> Function() loadData) {
-    loadData().then((_) {
-      controller.loadComplete();
-    }).catchError((_) {
-      controller.loadFailed();
-    });
-  }
-
   // Helper functions for add review
   void addReview(BuildContext context) {
     showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        builder: (context) => Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: const DetailAddReviewPage(),
-            ));
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: const DetailAddReviewPage(),
+      )
+    );
   }
 }

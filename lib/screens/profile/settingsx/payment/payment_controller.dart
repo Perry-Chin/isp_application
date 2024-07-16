@@ -10,7 +10,6 @@ import '../../../../common/storage/storage.dart';
 class PaymentController extends GetxController {
 
   // Variables
-  RxMap userMap = {}.obs;
   final user = Rx<UserData?>(null);
   final userToken = UserStore.to.token;
   final db = FirebaseFirestore.instance;

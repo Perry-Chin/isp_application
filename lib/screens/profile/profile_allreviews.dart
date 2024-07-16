@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import '../../common/data/data.dart';
 import '../../common/values/values.dart';
 import '../profile/profile_controller.dart';
 
@@ -32,7 +33,7 @@ class _ReviewsListState extends State<ReviewsList> {
 
   Future<void> _onRefresh() async {
     try {
-      await profileController.fetchUserReviews();
+      await profileController.fetchUserReviews(widget.userId);
     } catch (e) {
       print('Error refreshing reviews: $e');
     } finally {
@@ -111,10 +112,8 @@ class _ReviewsListState extends State<ReviewsList> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: Text(
-                    profileController.currentSortType.value,
-                    style: GoogleFonts.poppins()
-                  ),
+                  child: Text(profileController.currentSortType.value,
+                      style: GoogleFonts.poppins()),
                 ),
               ],
             ),
@@ -123,86 +122,90 @@ class _ReviewsListState extends State<ReviewsList> {
                 controller: _refreshController,
                 onRefresh: _onRefresh,
                 header: const WaterDropHeader(),
-                child: ListView.builder(
-                  itemCount: profileController.filteredReviews.length,
-                  itemBuilder: (context, index) {
-                    final review = profileController.filteredReviews[index];
-                    return Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            spreadRadius: 0,
-                            blurRadius: 6,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          // CircleAvatar(
-                          //   radius: 28.0,
-                          //   backgroundColor: Colors.transparent,
-                          //   child: ClipOval(
-                          //     child: review.photoUrl != null &&
-                          //             review.photoUrl!.isNotEmpty
-                          //         ? FadeInImage.assetNetwork(
-                          //             placeholder: AppImage.profile,
-                          //             image: review.photoUrl!,
-                          //             fadeInDuration:
-                          //                 const Duration(milliseconds: 100),
-                          //             fit: BoxFit.cover,
-                          //             width: 54.0,
-                          //             height: 54.0,
-                          //           )
-                          //         : Image.asset(AppImage.profile),
-                          //   ),
-                          // ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Anonymous',
-                                  style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                child: StreamBuilder<Map<String, UserData?>>(
+                  stream: profileController.combinedStream,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else {
+                      return ListView.builder(
+                        itemCount: profileController.filteredReviews.length,
+                        itemBuilder: (context, index) {
+                          final review =
+                              profileController.filteredReviews[index];
+                          var userData = snapshot.data?[review.fromUid];
+
+                          return Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  spreadRadius: 0,
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 3),
                                 ),
-                                Row(
-                                  children: List.generate(
-                                    5,
-                                    (starIndex) => Icon(
-                                      Icons.star,
-                                      color: starIndex < review.rating
-                                          ? AppColor.secondaryColor
-                                          : Colors.grey.shade300,
-                                      size: 16,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(review.review, style: GoogleFonts.poppins()),
-                                // const SizedBox(height: 8),
-                                // Text(
-                                //   'Service Type: ${review.serviceType.capitalize}',
-                                //   style: TextStyle(
-                                //     color: review.serviceType.toLowerCase() ==
-                                //             'provider'
-                                //         ? Colors.blue
-                                //         : Colors.green,
-                                //     fontWeight: FontWeight.bold,
-                                //   ),
-                                // ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
-                    );
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 28.0,
+                                  backgroundColor: Colors.transparent,
+                                  child: ClipOval(
+                                    child: userData!.photourl != null &&
+                                            userData.photourl!.isNotEmpty
+                                        ? FadeInImage.assetNetwork(
+                                            placeholder: AppImage.profile,
+                                            image: userData.photourl!,
+                                            fadeInDuration: const Duration(
+                                                milliseconds: 100),
+                                            fit: BoxFit.cover,
+                                            width: 54.0,
+                                            height: 54.0,
+                                          )
+                                        : Image.asset(AppImage.profile),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        userData.username ?? 'Anonymous',
+                                        style: GoogleFonts.poppins(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Row(
+                                        children: List.generate(
+                                          5,
+                                          (starIndex) => Icon(
+                                            Icons.star,
+                                            color: starIndex < review.rating
+                                                ? AppColor.secondaryColor
+                                                : Colors.grey.shade300,
+                                            size: 16,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(review.review,
+                                          style: GoogleFonts.poppins()),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }
                   },
                 ),
               ),

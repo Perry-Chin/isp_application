@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import '../../common/data/data.dart';
 import '../../common/storage/storage.dart';
+import '../../common/middlewares/middlewares.dart';
 
 class ProfileController extends GetxController {
   final token = UserStore.to.token;
@@ -11,6 +12,8 @@ class ProfileController extends GetxController {
   final filteredReviews = <ReviewData>[].obs;
   final Rx<String> currentTab = 'All'.obs;
   final Rx<String> currentSortType = 'Newest'.obs;
+  final usernames = <String, String>{}.obs;
+  final photoUrls = <String, String>{}.obs;
 
   @override
   void onInit() {
@@ -42,6 +45,44 @@ class ProfileController extends GetxController {
     }
   }
 
+  Stream<List<QueryDocumentSnapshot<ReviewData>>> getReviewStream(
+      [String? userId]) {
+    final String fetchUserId = userId ?? token;
+
+    return db
+        .collection('reviews')
+        .where('to_uid', isEqualTo: fetchUserId)
+        .orderBy('timestamp', descending: true)
+        .withConverter<ReviewData>(
+          fromFirestore: ReviewData.fromFirestore,
+          toFirestore: (ReviewData reviewData, _) => reviewData.toFirestore(),
+        )
+        .snapshots()
+        .map((snapshot) => snapshot.docs);
+  }
+
+  Stream<List<DocumentSnapshot<UserData>>> getUserStream(List<String> userIds) {
+    return db
+        .collection('users')
+        .where(FieldPath.documentId, whereIn: userIds)
+        .withConverter<UserData>(
+          fromFirestore: UserData.fromFirestore,
+          toFirestore: (UserData userData, _) => userData.toFirestore(),
+        )
+        .snapshots()
+        .map((snapshot) => snapshot.docs);
+  }
+
+  Stream<Map<String, UserData?>> getCombinedStream([String? userId]) {
+    return RouteFirestoreMiddleware.getCombinedStream<ReviewData, UserData>(
+      primaryStream: () => getReviewStream(userId),
+      secondaryStream: (userIds) => getUserStream(userIds),
+      getSecondaryId: (review) => review.fromUid,
+    );
+  }
+
+  Stream<Map<String, UserData?>> get combinedStream => getCombinedStream();
+
   Future<void> fetchUserReviews([String? userId]) async {
     final String fetchUserId = userId ?? token;
 
@@ -54,39 +95,18 @@ class ProfileController extends GetxController {
       QuerySnapshot<Map<String, dynamic>> reviewsSnapshot = await db
           .collection('reviews')
           .where('to_uid', isEqualTo: fetchUserId)
+          // .orderBy('timestamp', descending: true)
           .get();
 
-      final fetchedReviews = await Future.wait(
-          reviewsSnapshot.docs.map((doc) => _processReview(doc)));
+      final fetchedReviews = reviewsSnapshot.docs
+          .map((doc) => ReviewData.fromFirestore(doc, null))
+          .toList();
 
       allReviews.assignAll(fetchedReviews);
       filterReviews(currentTab.value);
     } catch (e) {
       print('Error fetching reviews: $e');
     }
-  }
-
-  Future<ReviewData> _processReview(
-      DocumentSnapshot<Map<String, dynamic>> doc) async {
-    ReviewData review = ReviewData.fromFirestore(doc, null);
-
-    if (review.fromUid.isEmpty) {
-      print('Error: User ID who gave the review is empty');
-      return review;
-    }
-
-    try {
-      DocumentSnapshot<Map<String, dynamic>> userDoc =
-          await db.collection('users').doc(review.fromUid).get();
-      if (userDoc.exists) {
-        // review.username = userDoc.data()?['username'];
-        // review.photoUrl = userDoc.data()?['photourl'];
-      }
-    } catch (e) {
-      print('Error fetching user data for review: $e');
-    }
-
-    return review;
   }
 
   void filterReviews(String type) {

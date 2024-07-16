@@ -123,7 +123,7 @@ class RequesterInfo extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(vertical: 15), // Set padding
                 child: Text(
-                  "View reviews ${userData.id}",
+                  "View reviews",
                   style: GoogleFonts.poppins(
                     color: Colors.black,
                   ),

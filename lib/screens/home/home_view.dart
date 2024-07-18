@@ -5,7 +5,7 @@ import 'package:isp_application/screens/request/request_index.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/input/searchbox_bar.dart';
 import '../../screens/home/home_list.dart';
-import 'home_controller.dart'; // Import your HomeController
+import 'home_controller.dart';
 
 class CurvedBackgroundPainter extends StatelessWidget {
   const CurvedBackgroundPainter({super.key});
@@ -148,122 +148,139 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         children: [
           const CurvedBackgroundPainter(),
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const SizedBox(height: 35),
-                  const Text(
-                    "FurFriends",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 33,
-                      fontFamily: 'Silence Rocken',
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  SearchBoxBar(
-                    controller: _searchController,
-                    onChanged: (value) {
-                      controller.filterServiceList(value);
-                    },
-                    showSuffixIcon: true,
-                  ),
-                  const SizedBox(height: 80),
-                  const Text(
-                    "Choose",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: "Quicksand",
-                      fontSize: 30,
-                    ),
-                  ),
-                  const Text(
-                    "your service!",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: "Quicksand",
-                      fontSize: 30,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(
-                      serviceImages.length,
-                      (index) => GestureDetector(
-                        onTap: () => _onServiceImagePressed(index),
-                        child: Image.asset(
-                          serviceImages[index],
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.cover,
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 15),
+                      const Text(
+                        "FurFriends",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 33,
+                          fontFamily: 'Silence Rocken',
                         ),
                       ),
-                    ),
+                      const SizedBox(height: 20),
+                      SearchBoxBar(
+                        controller: _searchController,
+                        onChanged: (value) {
+                          controller.filterServiceList(value);
+                        },
+                        showSuffixIcon: true,
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 28),
-                  if (selectedService.isNotEmpty) ...[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                ),
+                const SizedBox(height: 60),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                selectedService,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: "Safety",
-                                  fontSize: 22,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                selectedServicePronun,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: "Doulos SIL",
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            desc,
-                            style: const TextStyle(
-                              fontFamily: 'Times New Roman',
-                              fontStyle: FontStyle.italic,
+                        children: <Widget>[
+                          const Text(
+                            "Choose",
+                            style: TextStyle(
                               color: Colors.black,
-                              fontSize: 18,
+                              fontFamily: "Quicksand",
+                              fontSize: 30,
                             ),
                           ),
-                          const SizedBox(height: 5),
-                          Text(
-                            definition,
-                            style: const TextStyle(
-                              fontFamily: 'Times New Roman',
+                          const Text(
+                            "your service!",
+                            style: TextStyle(
                               color: Colors.black,
-                              fontSize: 18,
+                              fontFamily: "Quicksand",
+                              fontSize: 30,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           const SizedBox(height: 20),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.3,
-                            child: HomeList(selectedService: selectedService),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: List.generate(
+                              serviceImages.length,
+                              (index) => GestureDetector(
+                                onTap: () => _onServiceImagePressed(index),
+                                child: Image.asset(
+                                  serviceImages[index],
+                                  width: 60,
+                                  height: 60,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
                           ),
+                          const SizedBox(height: 28),
+                          if (selectedService.isNotEmpty) ...[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        selectedService,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontFamily: "Safety",
+                                          fontSize: 22,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        selectedServicePronun,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontFamily: "Doulos SIL",
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    desc,
+                                    style: const TextStyle(
+                                      fontFamily: 'Times New Roman',
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    definition,
+                                    style: const TextStyle(
+                                      fontFamily: 'Times New Roman',
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height * 0.3,
+                                    child: HomeList(selectedService: selectedService),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),
-                  ],
-                ],
-              ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

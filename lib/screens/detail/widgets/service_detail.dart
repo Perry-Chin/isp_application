@@ -150,11 +150,11 @@ class ServiceDetail extends StatelessWidget {
   Widget proposeNewTimeButton() {
     return ElevatedButton(
       onPressed: () {
-        proposeNewPage(Get.context!); // Make sure to pass the context
+        proposeNewPage(Get.context!);
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
-        elevation: 4, // Small shadow
+        elevation: 4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -162,16 +162,18 @@ class ServiceDetail extends StatelessWidget {
       ),
       child: Container(
         width: 171,
-        padding: const EdgeInsets.symmetric(vertical: 10), // Set padding
+        padding: const EdgeInsets.symmetric(vertical: 10),
         child: Row(
           children: [
             const Icon(Icons.alarm, color: Colors.black),
             const SizedBox(width: 8),
-            Text(
-              "Propose a new time",
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                color: Colors.black,
+            Flexible(  // Wrapped in Flexible
+              child: Text(
+                "Propose a new time",
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
               ),
             ),
           ],

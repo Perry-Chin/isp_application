@@ -28,10 +28,6 @@ class ReportUserMenu extends StatelessWidget {
       content: 'Please select a reason for reporting this user:',
       actions: <Widget>[
         TextButton(
-          child: const Text('Cancel'),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        TextButton(
           child: const Text('Inappropriate Content'),
           onPressed: () {
             Navigator.of(context).pop();
@@ -51,6 +47,10 @@ class ReportUserMenu extends StatelessWidget {
             Navigator.of(context).pop();
             _reportUser(context, 'Spam');
           },
+        ),
+        TextButton(
+          child: const Text('Cancel'),
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ],
     );

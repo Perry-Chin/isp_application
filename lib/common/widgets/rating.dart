@@ -21,7 +21,7 @@ class Rating extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            '$rating',
+            rating != 0 ? rating.toStringAsFixed(2) : '0',
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,

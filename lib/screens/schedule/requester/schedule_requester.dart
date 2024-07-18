@@ -11,12 +11,10 @@ import '../schedule_index.dart';
 
 class RequesterCard extends GetView<ScheduleController> {
   final List<String> selectedStatus;
-  final int selectedRating;
 
   const RequesterCard({
     Key? key,
     required this.selectedStatus,
-    required this.selectedRating,
   }) : super(key: key);
 
   Widget requesterListItem(

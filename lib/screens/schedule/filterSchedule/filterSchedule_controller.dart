@@ -87,7 +87,7 @@ class FilterScheduleController extends GetxController {
     // Pass selected filters to ScheduleController
     Get.find<ScheduleController>().filterServices(
       selectedStatus: selectedStatusValue,
-      selectedRating: selectedRating.value,
+      selectedRating: selectedRating.value + 0,
     );
 
     Get.back();

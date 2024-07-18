@@ -35,7 +35,7 @@ void updateFiltersAndNavigateBack() {
   // Pass selected status and rating to ScheduleController
   Get.find<ScheduleController>().filterServices(
     selectedStatus: selectedStatusValue,
-    selectedRating: selectedRating,
+    selectedRating: selectedRating + 0,
   );
 
   // Navigate back after updating

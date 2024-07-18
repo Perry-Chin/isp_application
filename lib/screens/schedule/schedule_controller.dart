@@ -17,7 +17,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
   final token = UserStore.to.token;
   final db = FirebaseFirestore.instance;
   final List<String> selectedStatus = ['All'];
-  int selectedRating = 0;
+  double selectedRating = 0.0;
   final RefreshController refreshControllerReq = RefreshController(initialRefresh: false);
   final RefreshController refreshControllerProv = RefreshController(initialRefresh: false);
   RxInt currentTabIndex = 0.obs;
@@ -133,6 +133,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
       }
       
       var provServices = await query.get();
+      print('provServices: $provServices');
       state.providerList.assignAll(provServices.docs);
 
     } catch (e) {
@@ -142,7 +143,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
 
   void filterServices({
     required List<String> selectedStatus,
-    required int selectedRating,
+    required double selectedRating,
   }) {
     this.selectedStatus.clear();
     this.selectedStatus.addAll(selectedStatus);
@@ -154,7 +155,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
   void updateFilterFromStorage() {
     // Update filters based on stored values
     List<bool>? storedStatus = GetStorage().read('selectedStatus');
-    int? storedRating = GetStorage().read('selectedRating');
+    double? storedRating = GetStorage().read('selectedRating');
 
     if (storedStatus != null) {
       List<String> selectedStatus = FilterStatus.filters

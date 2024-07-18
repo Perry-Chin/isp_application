@@ -81,8 +81,7 @@ class SchedulePage extends GetView<ScheduleController> {
                 GetBuilder<ScheduleController>(
                   builder: (controller) {
                     return RequesterCard(
-                      selectedStatus: controller.selectedStatus,
-                      selectedRating: controller.selectedRating,
+                      selectedStatus: controller.selectedStatus
                     );
                   },
                 ),

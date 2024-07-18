@@ -13,7 +13,7 @@ import '../schedule_index.dart';
 
 class ProviderCard extends GetView<ScheduleController> {
   final List<String> selectedStatus;
-  final int selectedRating;
+  final double selectedRating;
   final token = UserStore.to.token;
 
   ProviderCard({
@@ -187,7 +187,8 @@ class ProviderCard extends GetView<ScheduleController> {
         // Filter providerList based on selected rating
         final filteredList = controller.state.providerList.where((item) {
           final userData = userDataMap[item.data().reqUserid];
-          return userData != null && userData.rating! >= selectedRating;
+          final rating = userDataMap[item.data().reqUserid]?.rating ?? 0;
+          return userData != null && rating >= controller.selectedRating;
         }).toList();
         return SmartRefresher(
           enablePullDown: true,

@@ -68,10 +68,7 @@ class RequesterInfo extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 6),
-                Obx(() => Rating(
-                    rating: Get.parameters['requested'] == "true"
-                        ? (controller.providerRating.value * 10).round() / 10
-                        : (controller.requesterRating.value * 10).round() / 10))
+                Rating(rating: userData?.rating ?? 0)
               ],
             ),
           ),

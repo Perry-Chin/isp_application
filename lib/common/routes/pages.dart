@@ -19,7 +19,6 @@ import '../../screens/welcome/welcome_index.dart';
 import '../../screens/profile/settingsx/settingsx_index.dart';
 import '../../screens/home/filterHome/filterHome_index.dart';
 import '../../screens/schedule/filterSchedule/filterSchedule_index.dart';
-import '../../screens/addreviews/addreviews_index.dart';
 
 //Basic structure for managing routes using the GetX package
 class AppPages {
@@ -89,10 +88,6 @@ class AppPages {
         name: AppRoutes.filterSchedule,
         page: () => const FilterSchedulePage(),
         binding: FilterScheduleBinding()),
-    GetPage(
-        name: AppRoutes.addReviews,
-        page: () => const AddReviewPage(),
-        binding: AddReviewsBinding()),
     GetPage(
       name: AppRoutes.detailReview,
       page: () => const DetailReviewView(),

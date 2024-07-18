@@ -68,13 +68,35 @@ class DetailAddReviewController extends GetxController {
         'from_uid': userToken,
         'to_uid': toUid,
         'rating': selectedRating.value,
-        'review': reviewText.value,
+        'review': reviewText.value.trim(),
         'service_id': serviceId,
         'service_type': serviceType,
         'timestamp': FieldValue.serverTimestamp(),
       };
 
       await db.collection('reviews').add(newReview);
+
+      // Calculate new average rating for the user
+      final userReviewsSnapshot = await db
+          .collection('reviews')
+          .where('to_uid', isEqualTo: toUid)
+          .get();
+
+      double totalRating = 0;
+      int totalReviews = userReviewsSnapshot.docs.length;
+
+      // Calculate total rating
+      for (var doc in userReviewsSnapshot.docs) {
+        totalRating += doc.data()['rating'];
+      }
+
+      // Calculate new average rating
+      double newRating = totalRating / totalReviews;
+
+      // Update user's rating in 'users' collection
+      await db.collection('users').doc(toUid).update({
+        'rating': newRating,
+      });
 
       Get.back(); // Close the review modal
       // Refresh the reviews list

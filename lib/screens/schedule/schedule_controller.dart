@@ -87,7 +87,6 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
   // Load all data for requester
   Future<void> asyncLoadAllDataForRequester() async {
     try {
-      print("Reload Req");
       Query<ServiceData> query = db
           .collection("service")
           .withConverter<ServiceData>(
@@ -116,7 +115,6 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
     yield* providerController.getCombinedProvStream(UserStore.to.token);
   }
 
-  // Load all data for provider
   Future<void> asyncLoadAllDataForProvider() async {
     try {
       Query<ServiceData> query = db
@@ -133,16 +131,14 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
       if (!selectedStatus.contains('All') && selectedStatus.isNotEmpty) {
         query = query.where("status", whereIn: selectedStatus);
       }
-
+      
       var provServices = await query.get();
       state.providerList.assignAll(provServices.docs);
+
     } catch (e) {
       print("Error fetching: $e");
     }
   }
-
-
-
 
   void filterServices({
     required List<String> selectedStatus,

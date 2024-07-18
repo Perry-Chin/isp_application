@@ -8,6 +8,7 @@ import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import '../../../common/data/data.dart';
 import '../../../common/storage/storage.dart';
 import '../../../common/values/values.dart';
+import '../../../common/widgets/widgets.dart';
 import '../schedule_index.dart';
 
 class ProviderCard extends GetView<ScheduleController> {
@@ -79,6 +80,7 @@ class ProviderCard extends GetView<ScheduleController> {
                           )
                         ),
                         const SizedBox(width: 6),
+                        Rating(rating: userData?.rating ?? 0)
                         // Rating(rating: userData?.rating ?? 0),
                       ],
                     ),
@@ -185,7 +187,7 @@ class ProviderCard extends GetView<ScheduleController> {
         // Filter providerList based on selected rating
         final filteredList = controller.state.providerList.where((item) {
           final userData = userDataMap[item.data().reqUserid];
-          return userData != null;
+          return userData != null && userData.rating! >= selectedRating;
         }).toList();
         return SmartRefresher(
           enablePullDown: true,

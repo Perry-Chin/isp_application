@@ -7,15 +7,11 @@ import '../../../common/theme/custom/custom_theme.dart';
 // import '../../../common/theme/custom/appbar_theme.dart';
 import '../../../common/theme/custom/text_theme.dart';
 
-
-
 class RequestMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       home: MapScreen(),
-      
     );
   }
 }
@@ -46,10 +42,8 @@ class _MapScreenState extends State<MapScreen> {
         children: [
           //const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
           const SizedBox(width: 8),
-          Text(
-            "Choose Request Location",
-            style: CustomTextTheme.darkTheme.labelMedium
-          ),
+          Text("Choose Request Location",
+              style: CustomTextTheme.darkTheme.labelMedium),
         ],
       ),
     );
@@ -62,7 +56,6 @@ class _MapScreenState extends State<MapScreen> {
       body: GoogleMap(
         myLocationButtonEnabled: false,
         zoomControlsEnabled: false,
-
         initialCameraPosition: _initialCameraPosition,
         onMapCreated: (controller) => _googleMapController = controller,
       ),
@@ -70,7 +63,7 @@ class _MapScreenState extends State<MapScreen> {
         onPressed: () => _googleMapController.animateCamera(
           CameraUpdate.newCameraPosition(_initialCameraPosition),
         ),
-        child: Icon(Icons.center_focus_strong),
+        child: const Icon(Icons.center_focus_strong),
       ),
     );
   }

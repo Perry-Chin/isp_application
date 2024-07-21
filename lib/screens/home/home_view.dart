@@ -1,71 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:isp_application/screens/home/searchresults.dart';
 import 'package:isp_application/screens/request/request_index.dart';
 
 import '../../common/values/values.dart';
-import '../../common/widgets/input/searchbox_bar.dart';
 import '../../screens/home/home_list.dart';
 import 'home_controller.dart';
 
-class CurvedBackgroundPainter extends StatelessWidget {
-  const CurvedBackgroundPainter({super.key});
+class SearchBox extends StatelessWidget {
+  final TextEditingController controller;
+  final Function(String) onChanged;
+  final Function(String) onSubmitted;
+  final bool showSuffixIcon;
+
+  const SearchBox({
+    required this.controller,
+    required this.onChanged,
+    required this.onSubmitted,
+    required this.showSuffixIcon,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _CurvedBackgroundPainter(),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+    return Container(
+      height: 50,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black45,
+            blurRadius: 1,
+            offset: Offset(1.6, 1.6),
+          ),
+        ],
+        color: AppColor.backgroundColor,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: AppColor.secondaryColor,
+          width: 1,
+        ),
+      ),
+      child: Center(
+        child: TextField(
+          style: GoogleFonts.poppins(),
+          decoration: InputDecoration(
+            hintText: 'Search',
+            border: InputBorder.none,
+            prefixIcon: const Icon(
+              Icons.search,
+              color: AppColor.secondaryColor,
+            ),
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            suffixIcon: showSuffixIcon
+                ? IconButton(
+                    icon: const Icon(
+                      Icons.filter_list,
+                      color: AppColor.secondaryColor,
+                    ),
+                    onPressed: () {
+                      Get.toNamed('/filterHome');
+                    },
+                  )
+                : null,
+            contentPadding: const EdgeInsets.symmetric(vertical: 14),
+          ),
+          controller: controller,
+          onChanged: onChanged,
+          onSubmitted: onSubmitted,
+        ),
       ),
     );
   }
-}
-
-class _CurvedBackgroundPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final Paint paint = Paint();
-
-    // Blue background paint
-    final Path bluePath = Path();
-    bluePath.moveTo(0, 0);
-    bluePath.lineTo(0, size.height * 0.35);
-    bluePath.quadraticBezierTo(
-      size.width / 2,
-      size.height * 0.25,
-      size.width,
-      size.height * 0.35,
-    );
-    bluePath.lineTo(size.width, 0);
-    bluePath.close();
-    paint.color = AppColor.secondaryColor;
-    canvas.drawPath(bluePath, paint);
-
-    // Beige background paint
-    paint.color = const Color(0xFFF3E9E9);
-    canvas.drawRect(
-      Rect.fromLTRB(0, size.height * 0.35, size.width, size.height),
-      paint,
-    );
-
-    // Filling the gap
-    final Path beigePath = Path();
-    beigePath.moveTo(0, size.height * 0.35);
-    beigePath.quadraticBezierTo(
-      size.width / 2,
-      size.height * 0.25,
-      size.width,
-      size.height * 0.35,
-    );
-    beigePath.lineTo(size.width, size.height);
-    beigePath.lineTo(0, size.height);
-    beigePath.close();
-    canvas.drawPath(beigePath, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
 class HomePage extends StatefulWidget {
@@ -142,15 +150,21 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _onSearchSubmitted(String value) {
+    if (value.isNotEmpty) {
+      Get.to(() => SearchedService(selectedService: value));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           const CurvedBackgroundPainter(),
           SafeArea(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -168,11 +182,12 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      SearchBoxBar(
+                      SearchBox(
                         controller: _searchController,
                         onChanged: (value) {
-                          controller.filterServiceList(value);
+                          selectedService = value;
                         },
+                        onSubmitted: _onSearchSubmitted,
                         showSuffixIcon: true,
                       ),
                     ],
@@ -268,7 +283,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   const SizedBox(height: 20),
                                   SizedBox(
-                                    height: MediaQuery.of(context).size.height * 0.3,
+                                    height: 200, // Fixed height
                                     child: HomeList(selectedService: selectedService),
                                   ),
                                 ],
@@ -287,4 +302,62 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+class CurvedBackgroundPainter extends StatelessWidget {
+  const CurvedBackgroundPainter({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: _CurvedBackgroundPainter(),
+      size: Size.infinite,
+    );
+  }
+}
+
+class _CurvedBackgroundPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint();
+
+    // Blue background paint
+    final Path bluePath = Path();
+    bluePath.moveTo(0, 0);
+    bluePath.lineTo(0, size.height * 0.35);
+    bluePath.quadraticBezierTo(
+      size.width / 2,
+      size.height * 0.25,
+      size.width,
+      size.height * 0.35,
+    );
+    bluePath.lineTo(size.width, 0);
+    bluePath.close();
+    paint.color = AppColor.secondaryColor;
+    canvas.drawPath(bluePath, paint);
+
+    // Beige background paint
+    paint.color = const Color(0xFFF3E9E9);
+    canvas.drawRect(
+      Rect.fromLTRB(0, size.height * 0.35, size.width, size.height),
+      paint,
+    );
+
+    // Filling the gap
+    final Path beigePath = Path();
+    beigePath.moveTo(0, size.height * 0.35);
+    beigePath.quadraticBezierTo(
+      size.width / 2,
+      size.height * 0.25,
+      size.width,
+      size.height * 0.35,
+    );
+    beigePath.lineTo(size.width, size.height);
+    beigePath.lineTo(0, size.height);
+    beigePath.close();
+    canvas.drawPath(beigePath, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

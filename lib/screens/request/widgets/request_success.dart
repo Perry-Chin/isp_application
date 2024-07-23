@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../common/values/values.dart';
@@ -17,7 +18,7 @@ Widget requestSuccess(RequestController controller, BuildContext context) {
             children: [
               Text(
                 "Request submitted!",
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   color: AppColor.secondaryColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 24.sp

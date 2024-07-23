@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
 class RouteValidateServiceMiddleware extends GetMiddleware {
-  static String? validateServiceName(String? value) {
+  static String? validateService(String? value) {
     if (value == null || value.isEmpty) {
       return 'Service name is required.';
     }

@@ -114,16 +114,22 @@ class RequestController extends GetxController {
   Future<void> confirmRequest(BuildContext context) async {
     appLoading(context);
     try {
+
       isProcessing.value = true;
-      // if (!requestFormKey.currentState!.validate()) {
-      //   throw Exception("Please fill all required fields");
-      // }
+      if (!requestFormKey.currentState!.validate()) {
+        throw Exception("Please fill all required fields");
+      }
 
       validateTimeInputs();
       final duration = calculateDuration(starttimeController.text, endtimeController.text);
       final amount = (double.parse(rateController.text) * duration * 100).toInt().toString();
+    
+      await PaymentService.initPaymentSheet(
+        context, 
+        email: UserStore.to.profile.email ?? '',
+        amount: int.parse(amount)
+      );
 
-      await PaymentService.makePayment(context, amount);
       await createServiceDocument(context);
     } catch (error) {
       Navigator.pop(context);

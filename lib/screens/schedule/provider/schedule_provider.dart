@@ -130,7 +130,7 @@ class ProviderCard extends GetView<ScheduleController> {
                         ),
                       ),
                       Container(
-                        width: item.data().status!.length * 12,
+                        width: item.data().status!.length * 13,
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: statusColor,

@@ -11,6 +11,7 @@ import '../request_index.dart';
 
 List<Step> getSteps(int currentStep) {
   final controller = Get.put(RequestController());
+  String? selectedService;
   return [
     Step(
       state: currentStep > 0 ? StepState.complete : StepState.indexed, 
@@ -26,18 +27,21 @@ List<Step> getSteps(int currentStep) {
         children: [
           const SizedBox(height: 5),
           // Service Name
-          MySearchField(
-            hinttext: 'Your Service', 
-            labeltext: 'Service', 
-            prefixicon: Icons.room_service,
-            suggestions: const [
+          MyDropdownField(
+            hintText: 'Your Service',
+            labelText: 'Service',
+            prefixIcon: Icons.room_service,
+            items: const [
               "Sitting",
               "Walking",
               "Training",
               "Grooming"
-            ], 
-            focusNode: FocusNode(), 
-            controller: controller.serviceController,
+            ],
+            value: selectedService,
+            onChanged: (newValue) {
+              selectedService = newValue;
+            },
+            validator: (value) => RouteValidateServiceMiddleware.validateService(value)
           ),
           const SizedBox(height: 20),
           // Description
@@ -105,7 +109,7 @@ List<Step> getSteps(int currentStep) {
               onTap: () {
                   Get.to(RequestMap());
               },
-              validator: (value) => RouteValidateServiceMiddleware.validateLocation(value)
+              // validator: (value) => RouteValidateServiceMiddleware.validateLocation(value)
             ),
           const SizedBox(height: 20),
           //Date (YYYY-MM-DD)

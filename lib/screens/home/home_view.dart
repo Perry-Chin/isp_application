@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:isp_application/screens/home/allservices.dart';
 import 'package:isp_application/screens/home/searchresults.dart';
 import 'package:isp_application/screens/request/request_index.dart';
 
@@ -242,22 +243,45 @@ class _HomePageState extends State<HomePage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        selectedService,
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontFamily: "Safety",
-                                          fontSize: 22,
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              selectedService,
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontFamily: "Safety",
+                                                fontSize: 22,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 5),
+                                            Text(
+                                              selectedServicePronun,
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontFamily: "Doulos SIL",
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      const SizedBox(width: 10),
-                                      Text(
-                                        selectedServicePronun,
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontFamily: "Doulos SIL",
-                                          fontSize: 18,
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Get.to(() => AllServicesPage(selectedService: selectedService));
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColor.secondaryColor,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(20),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          "Show All",
+                                          style: TextStyle(color: Colors.white),
                                         ),
                                       ),
                                     ],
@@ -283,8 +307,11 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   const SizedBox(height: 20),
                                   SizedBox(
-                                    height: 200, // Fixed height
-                                    child: HomeList(selectedService: selectedService),
+                                    height: 200,
+                                    child: HomeList(
+                                      selectedService: selectedService,
+                                      maxItems: 2,
+                                    ),
                                   ),
                                 ],
                               ),

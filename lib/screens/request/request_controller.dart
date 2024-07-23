@@ -15,6 +15,7 @@ import '../../common/data/service.dart';
 import '../../common/middlewares/middlewares.dart';
 import '../../common/storage/storage.dart';
 import '../../common/utils/utils.dart';
+import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'request_index.dart';
 
@@ -142,9 +143,22 @@ class RequestController extends GetxController {
 
       await createServiceDocument(context);
     } catch (error) {
-      CustomSnackbar.errorSnackbar(error.toString());
-    } finally {
-      Navigator.pop(context); // Dismiss loading dialog
+      Navigator.pop(context);
+      showDialog(
+        context: context, 
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text(AppText.error),
+          content: Text(error.toString()),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(AppText.confirmation),
+            ),
+          ],
+        )
+      );
       isProcessing.value = false;
     }
   }
@@ -202,5 +216,6 @@ class RequestController extends GetxController {
     await docRef.set(serviceData.toFirestore());
     await RoutePaymentMiddleware().createPaymentDocument(serviceDoc, amount, token, token, false);
     requestCompleted.value = true;
+    Navigator.pop(context);
   }
 }

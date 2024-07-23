@@ -1,5 +1,6 @@
 library widget;
 
+export 'snackbar.dart';
 export 'input/button.dart';
 export 'loading.dart';
 export './top_indicator.dart';

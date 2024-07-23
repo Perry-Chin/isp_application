@@ -15,7 +15,6 @@ import '../../common/data/service.dart';
 import '../../common/middlewares/middlewares.dart';
 import '../../common/storage/storage.dart';
 import '../../common/utils/utils.dart';
-import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'request_index.dart';
 
@@ -118,9 +117,20 @@ class RequestController extends GetxController {
       isProcessing.value = true;
       if (!requestFormKey.currentState!.validate()) {
         throw Exception("Please fill all required fields");
+      } else if (starttimeController.text == endtimeController.text) {
+        throw Exception("Start time cannot be the same as end time");
       }
 
-      validateTimeInputs();
+      final startDateTimeString = '2000-01-01 ${starttimeController.text}';
+      final endDateTimeString = '2000-01-01 ${endtimeController.text}';
+      final start = DateFormat('yyyy-MM-dd h:mm a').parse(startDateTimeString);
+      final end = DateFormat('yyyy-MM-dd h:mm a').parse(endDateTimeString);
+
+      if (start.isAfter(end)) {
+        print("Start time cannot be after end time");
+        throw Exception("Start time cannot be after end time");
+      }
+
       final duration = calculateDuration(starttimeController.text, endtimeController.text);
       final amount = (double.parse(rateController.text) * duration * 100).toInt().toString();
     
@@ -132,20 +142,7 @@ class RequestController extends GetxController {
 
       await createServiceDocument(context);
     } catch (error) {
-      Navigator.pop(context);
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text(AppText.error),
-          content: Text(error.toString()),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text(AppText.confirmation),
-            ),
-          ],
-        ),
-      );
+      CustomSnackbar.errorSnackbar(error.toString());
     } finally {
       Navigator.pop(context); // Dismiss loading dialog
       isProcessing.value = false;
@@ -153,6 +150,7 @@ class RequestController extends GetxController {
   }
 
   void validateTimeInputs() {
+    print("Validating time inputs");
     if (starttimeController.text == endtimeController.text) {
       throw Exception("Start time cannot be the same as end time");
     }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../common/middlewares/middlewares.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import '../login/login_index.dart';
@@ -38,7 +39,7 @@ class RegisterPage extends GetView<RegisterController> {
                   prefixicon: Icons.person,
                   obscuretext: false,
                   textController: controller.usernameController,
-                  validator: controller.validateUsername,
+                  validator: (value) => RouteValidateMiddleware.validateUsername(value)
                 ),
                 const SizedBox(height: 10),
                 // Text field for email input
@@ -48,7 +49,7 @@ class RegisterPage extends GetView<RegisterController> {
                   prefixicon: Icons.email,
                   obscuretext: false,
                   textController: controller.emailController,
-                  validator: controller.validateEmail,
+                  validator: (value) => RouteValidateMiddleware.validateEmail(value)
                 ),
                 const SizedBox(height: 10),
                 // Text field for phone number input
@@ -58,7 +59,7 @@ class RegisterPage extends GetView<RegisterController> {
                   prefixicon: Icons.phone,
                   obscuretext: false,
                   textController: controller.phoneNoController,
-                  validator: controller.validatePhoneNumber,
+                  validator: (value) => RouteValidateMiddleware.validatePhoneNumber(value)
                 ),
                 const SizedBox(height: 10),
                 // Password field
@@ -76,7 +77,7 @@ class RegisterPage extends GetView<RegisterController> {
                         ),
                         onPressed: () => controller.togglePasswordVisibility(),
                       ),
-                      validator: controller.validatePassword,
+                      validator: (value) => RouteValidateMiddleware.validatePassword(value)
                     )),
                 const SizedBox(height: 10),
                 // Confirm password field
@@ -94,7 +95,7 @@ class RegisterPage extends GetView<RegisterController> {
                         ),
                         onPressed: () => controller.togglePasswordVisibility(),
                       ),
-                      validator: controller.validateConfirmPassword,
+                      validator: (value) => RouteValidateMiddleware.validateConfirmPassword(value, controller.confirmpwdController.text)
                     )),
                 const SizedBox(height: 30),
                 // Button to create account

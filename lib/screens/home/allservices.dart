@@ -10,9 +10,7 @@ import '../../common/values/values.dart';
 import 'home_controller.dart';
 
 class AllServicesPage extends StatefulWidget {
-  final String selectedService;
-
-  const AllServicesPage({Key? key, required this.selectedService}) : super(key: key);
+  const AllServicesPage({Key? key}) : super(key: key);
 
   @override
   _AllServicesPageState createState() => _AllServicesPageState();
@@ -48,7 +46,7 @@ class _AllServicesPageState extends State<AllServicesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('All ${widget.selectedService} Services'),
+        title: const Text('All Services'),
         backgroundColor: AppColor.secondaryColor,
       ),
       body: StreamBuilder<Map<String, UserData?>>(
@@ -59,8 +57,11 @@ class _AllServicesPageState extends State<AllServicesPage> {
           }
 
           final userDataMap = snapshot.data ?? {};
-          final filteredServiceList = controller.state.serviceList
-              .where((serviceItem) => serviceItem.data().serviceName == widget.selectedService)
+          final serviceList = controller.state.serviceList;
+
+          final currentUserId = controller.currentUserId;
+          final filteredServiceList = serviceList
+              .where((service) => service.data().reqUserid != currentUserId)
               .toList();
 
           if (filteredServiceList.isEmpty) {
@@ -192,11 +193,10 @@ class _AllServicesPageState extends State<AllServicesPage> {
                         "\$${serviceItem.data().rate?.toString() ?? "0"}/h",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 16),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                 ],
               ),
             ),

@@ -7,12 +7,18 @@ import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import '../../common/data/data.dart';
 import '../../common/values/image.dart';
+import '../../common/values/values.dart';
 import 'home_controller.dart';
 
 class HomeList extends StatelessWidget {
   final String selectedService;
+  final int? maxItems;
 
-  const HomeList({Key? key, required this.selectedService}) : super(key: key);
+  const HomeList({
+    Key? key,
+    required this.selectedService,
+    this.maxItems,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +51,11 @@ class HomeList extends StatelessWidget {
           );
         }
 
+        // Limit the number of items if maxItems is specified
+        final displayedItems = maxItems != null
+            ? filteredServiceList.take(maxItems!).toList()
+            : filteredServiceList;
+
         return SmartRefresher(
           enablePullDown: true,
           enablePullUp: true,
@@ -61,20 +72,19 @@ class HomeList extends StatelessWidget {
                     crossAxisCount: 2,
                     crossAxisSpacing: 10.w,
                     mainAxisSpacing: 10.w,
-                    childAspectRatio: 0.7, // Adjust as needed
+                    childAspectRatio: 0.7,
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      var serviceItem = filteredServiceList[index];
+                      var serviceItem = displayedItems[index];
                       var userData = userDataMap[serviceItem.data().reqUserid];
 
                       return _buildHomeListItem(serviceItem, userData);
                     },
-                    childCount: filteredServiceList.length,
-                    // Add key to preserve widget state and order
+                    childCount: displayedItems.length,
                     findChildIndexCallback: (Key key) {
                       final serviceId = (key as ValueKey<String>).value;
-                      return filteredServiceList
+                      return displayedItems
                           .indexWhere((service) => service.id == serviceId);
                     },
                   ),
@@ -114,7 +124,7 @@ class HomeList extends StatelessWidget {
             color: Colors.grey.withOpacity(0.3),
             spreadRadius: 1,
             blurRadius: 2,
-            offset: const Offset(0, 2), // changes position of shadow
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -145,18 +155,20 @@ class HomeList extends StatelessWidget {
                       : Image.asset(AppImage.profile),
             ),
             Padding(
-              padding: const EdgeInsets.all(3.0),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     userData!.username ?? "",
                     style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 15),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(
-                    height: 3,
-                  ),
+                  const SizedBox(height: 4),
                   Text(
                     dateDisplay,
                     style: const TextStyle(color: Colors.grey, fontSize: 12),
@@ -167,17 +179,24 @@ class HomeList extends StatelessWidget {
                       const Icon(Icons.location_on,
                           color: Colors.grey, size: 16),
                       const SizedBox(width: 2),
-                      Text(serviceItem.data().location ?? "",
-                          style: const TextStyle(fontSize: 12)),
-                      const Spacer(),
-                      Text(
-                        "\$${serviceItem.data().rate?.toString() ?? "0"}/h",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                      Expanded(
+                        child: Text(
+                          serviceItem.data().location ?? "",
+                          style: const TextStyle(fontSize: 12),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "\$${serviceItem.data().rate?.toString() ?? "0"}/h",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: AppColor.secondaryColor,
+                    ),
                   ),
                 ],
               ),

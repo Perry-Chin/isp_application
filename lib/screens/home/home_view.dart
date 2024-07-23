@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:isp_application/screens/home/searchresults.dart';
+import 'package:isp_application/screens/home/allservices.dart';
+import 'package:isp_application/screens/home/filteredallservices.dart';
 import 'package:isp_application/screens/request/request_index.dart';
 
 import '../../common/values/values.dart';
@@ -9,67 +10,66 @@ import '../../screens/home/home_list.dart';
 import 'home_controller.dart';
 
 class SearchBox extends StatelessWidget {
-  final TextEditingController controller;
-  final Function(String) onChanged;
-  final Function(String) onSubmitted;
+  final VoidCallback onTap;
   final bool showSuffixIcon;
 
   const SearchBox({
-    required this.controller,
-    required this.onChanged,
-    required this.onSubmitted,
+    required this.onTap,
     required this.showSuffixIcon,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black45,
-            blurRadius: 1,
-            offset: Offset(1.6, 1.6),
-          ),
-        ],
-        color: AppColor.backgroundColor,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: AppColor.secondaryColor,
-          width: 1,
-        ),
-      ),
-      child: Center(
-        child: TextField(
-          style: GoogleFonts.poppins(),
-          decoration: InputDecoration(
-            hintText: 'Search',
-            border: InputBorder.none,
-            prefixIcon: const Icon(
-              Icons.search,
-              color: AppColor.secondaryColor,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 50,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black45,
+              blurRadius: 1,
+              offset: Offset(1.6, 1.6),
             ),
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            suffixIcon: showSuffixIcon
-                ? IconButton(
-                    icon: const Icon(
-                      Icons.filter_list,
-                      color: AppColor.secondaryColor,
-                    ),
-                    onPressed: () {
-                      Get.toNamed('/filterHome');
-                    },
-                  )
-                : null,
-            contentPadding: const EdgeInsets.symmetric(vertical: 14),
+          ],
+          color: AppColor.backgroundColor,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: AppColor.secondaryColor,
+            width: 1,
           ),
-          controller: controller,
-          onChanged: onChanged,
-          onSubmitted: onSubmitted,
+        ),
+        child: Row(
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Icon(
+                Icons.search,
+                color: AppColor.secondaryColor,
+              ),
+            ),
+            Expanded(
+              child: Text(
+                'Search',
+                style: GoogleFonts.poppins(
+                  color: Colors.grey,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            if (showSuffixIcon)
+              IconButton(
+                icon: const Icon(
+                  Icons.filter_list,
+                  color: AppColor.secondaryColor,
+                ),
+                onPressed: () {
+                  Get.toNamed('/filterHome');
+                },
+              ),
+          ],
         ),
       ),
     );
@@ -150,10 +150,12 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _onSearchSubmitted(String value) {
-    if (value.isNotEmpty) {
-      Get.to(() => SearchedService(selectedService: value));
-    }
+  void _onSearchSubmitted() {
+      Get.to(() => const AllServicesPage());
+  }
+
+  void _onSearchTap() {
+    Get.to(() => filteredAllServicesPage(selectedService: selectedService));
   }
 
   @override
@@ -183,11 +185,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const SizedBox(height: 20),
                       SearchBox(
-                        controller: _searchController,
-                        onChanged: (value) {
-                          selectedService = value;
-                        },
-                        onSubmitted: _onSearchSubmitted,
+                        onTap: _onSearchSubmitted,
                         showSuffixIcon: true,
                       ),
                     ],
@@ -237,27 +235,57 @@ class _HomePageState extends State<HomePage> {
                           const SizedBox(height: 28),
                           if (selectedService.isNotEmpty) ...[
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        selectedService,
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontFamily: "Safety",
-                                          fontSize: 22,
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              selectedService,
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontFamily: "Safety",
+                                                fontSize: 22,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 5),
+                                            Text(
+                                              selectedServicePronun,
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontFamily: "Doulos SIL",
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      const SizedBox(width: 10),
-                                      Text(
-                                        selectedServicePronun,
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontFamily: "Doulos SIL",
-                                          fontSize: 18,
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Get.to(() => filteredAllServicesPage(
+                                              selectedService:
+                                                  selectedService));
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              AppColor.secondaryColor,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          "Show All",
+                                          style: TextStyle(color: Colors.white),
                                         ),
                                       ),
                                     ],
@@ -283,8 +311,11 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   const SizedBox(height: 20),
                                   SizedBox(
-                                    height: 200, // Fixed height
-                                    child: HomeList(selectedService: selectedService),
+                                    height: 200,
+                                    child: HomeList(
+                                      selectedService: selectedService,
+                                      maxItems: 2,
+                                    ),
                                   ),
                                 ],
                               ),

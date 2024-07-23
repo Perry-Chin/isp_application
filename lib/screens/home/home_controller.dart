@@ -216,4 +216,7 @@ class HomeController extends GetxController {
 
     return randomServices;
   }
+
+  // Define the getter for the current user ID
+  String get currentUserId => UserStore.to.token; // or whatever method gets the user ID from UserStore
 }

@@ -11,7 +11,6 @@ import '../request_index.dart';
 
 List<Step> getSteps(int currentStep) {
   final controller = Get.put(RequestController());
-  String? selectedService;
   return [
     Step(
       state: currentStep > 0 ? StepState.complete : StepState.indexed, 
@@ -25,7 +24,7 @@ List<Step> getSteps(int currentStep) {
       ), 
       content: Column(
         children: [
-          const SizedBox(height: 5),
+          const SizedBox(height: 7),
           // Service Name
           MyDropdownField(
             hintText: 'Your Service',
@@ -37,9 +36,10 @@ List<Step> getSteps(int currentStep) {
               "Training",
               "Grooming"
             ],
-            value: selectedService,
+            value: controller.selectedService,
             onChanged: (newValue) {
-              selectedService = newValue;
+              controller.selectedService = newValue;
+              controller.update();
             },
             validator: (value) => RouteValidateServiceMiddleware.validateService(value)
           ),

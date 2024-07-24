@@ -24,6 +24,7 @@ class RequestController extends GetxController {
   // Variables
   File? photo;
   String? docId;
+  String? selectedService;
   final currentStep = 0.obs;
   final token = UserStore.to.token;
   final isProcessing = false.obs;
@@ -196,7 +197,7 @@ class RequestController extends GetxController {
 
     final serviceData = ServiceData(
       serviceid: serviceDoc,
-      serviceName: serviceController.text,
+      serviceName: selectedService,
       description: descriptionController.text,
       rate: int.tryParse(rateController.text),
       image: imgUrl ?? "",

@@ -198,8 +198,8 @@ class _RotatingImageState extends State<RotatingImage>
       child: ClipOval(
         child: Image.asset(
           'assets/images/logo_bg.png',
-          width: 110,
-          height: 110,
+          width: 100,
+          height: 100,
         ),
       ),
       builder: (context, child) {

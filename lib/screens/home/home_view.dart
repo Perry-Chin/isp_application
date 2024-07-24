@@ -96,7 +96,6 @@ class _HomePageState extends State<HomePage> {
     'assets/images/walking.png',
     'assets/images/sitting.png',
     'assets/images/training.png',
-    'assets/images/add.png',
   ];
 
   @override
@@ -134,9 +133,6 @@ class _HomePageState extends State<HomePage> {
           definition =
               'the fine art of turning chaos into harmony, one pawshake at a time.';
           break;
-        case 4:
-          Get.to(const RequestPage());
-          return;
         default:
           selectedService = '';
       }
@@ -236,7 +232,8 @@ class _HomePageState extends State<HomePage> {
                                   height: 60,
                                   fit: BoxFit.cover,
                                 ),
-                              ),
+                           ),
+              
                             ),
                           ),
                           const SizedBox(height: 28),

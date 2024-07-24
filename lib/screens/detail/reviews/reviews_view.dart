@@ -1,8 +1,7 @@
-
-import 'package:google_fonts/google_fonts.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import '../../../common/data/data.dart';
 import '../../../common/theme/custom/custom_theme.dart';
@@ -19,27 +18,24 @@ class DetailReviewView extends GetView<DetailReviewController> {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
+            const Image(
+                image: AssetImage(AppImage.logo), width: 35, height: 35),
             const SizedBox(width: 8),
             Text(
               "Reviews",
-              style: CustomTextTheme.darkTheme.labelMedium
+              style: CustomTextTheme.darkTheme.labelMedium,
             ),
           ],
         ),
-        // Add rating button
         actions: [
           Obx(
-            () {
-              if(controller.hasAlreadyReviewed.value == true || controller.status != 'Completed') {
-                return const SizedBox();
-              } else {
-                return IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () => controller.addReview(context)
-                );
-              }
-            }
+            () => (controller.hasAlreadyReviewed.value ||
+                    controller.status != 'Completed')
+                ? const SizedBox()
+                : IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () => controller.addReview(context),
+                  ),
           ),
         ],
       ),
@@ -47,12 +43,13 @@ class DetailReviewView extends GetView<DetailReviewController> {
         child: Column(
           children: [
             Obx(() => _buildRatingSummary()),
+            _buildReviewsTab(),
             const Expanded(
-              child: ReviewList(),
+              child: ReviewList(), // Correct instance of reviews list
             ),
           ],
         ),
-      )
+      ),
     );
   }
 
@@ -130,6 +127,47 @@ class DetailReviewView extends GetView<DetailReviewController> {
           ),
         );
       }),
+    );
+  }
+
+  Widget _buildReviewsTab() {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(25.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 0,
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: TabBar(
+        controller: controller.tabController,
+        labelColor: Colors.white,
+        unselectedLabelColor: Colors.grey,
+        labelStyle: GoogleFonts.poppins(),
+        indicator: BoxDecoration(
+          color: AppColor.secondaryColor,
+          borderRadius: BorderRadius.circular(25.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 0,
+              blurRadius: 14,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        tabs: const [
+          Tab(text: 'All'),
+          Tab(text: 'Provider'),
+          Tab(text: 'Requester'),
+        ],
+      ),
     );
   }
 }

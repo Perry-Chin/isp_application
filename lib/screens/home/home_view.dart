@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:isp_application/common/widgets/custom_container.dart';
+
 import 'package:isp_application/screens/home/allservices.dart';
 import 'package:isp_application/screens/home/filteredallservices.dart';
 import 'package:isp_application/screens/request/request_index.dart';
@@ -89,7 +89,6 @@ class _HomePageState extends State<HomePage> {
   String selectedServicePronun = '';
   String desc = '';
   String definition = '';
-  final TextEditingController _searchController = TextEditingController();
   late HomeController controller;
 
   static const List<String> serviceImages = [
@@ -190,138 +189,147 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            const SizedBox(height: 60),
+            const SizedBox(height: 20),
             Expanded(
               child: ClipRRect(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        const Text(
-                          "Choose",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: "Quicksand",
-                            fontSize: 30,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.elliptical(
+                    MediaQuery.of(context).size.width * 0.6, 50.0
+                  )
+                ),
+                child: Container(
+                  color: Colors.white,
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          const SizedBox(height: 40),
+                          const Text(
+                            "Choose",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: "Quicksand",
+                              fontSize: 30,
+                            ),
                           ),
-                        ),
-                        const Text(
-                          "your service!",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: "Quicksand",
-                            fontSize: 30,
-                            fontWeight: FontWeight.w500,
+                          const Text(
+                            "your service!",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: "Quicksand",
+                              fontSize: 30,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: List.generate(
-                            serviceImages.length,
-                            (index) => GestureDetector(
-                              onTap: () => _onServiceImagePressed(index),
-                              child: Image.asset(
-                                serviceImages[index],
-                                width: 60,
-                                height: 60,
-                                fit: BoxFit.cover,
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: List.generate(
+                              serviceImages.length,
+                              (index) => GestureDetector(
+                                onTap: () => _onServiceImagePressed(index),
+                                child: Image.asset(
+                                  serviceImages[index],
+                                  width: 60,
+                                  height: 60,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 28),
-                        if (selectedService.isNotEmpty) ...[
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            selectedService,
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                              fontFamily: "Safety",
-                                              fontSize: 22,
+                          const SizedBox(height: 28),
+                          if (selectedService.isNotEmpty) ...[
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              selectedService,
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontFamily: "Safety",
+                                                fontSize: 22,
+                                              ),
                                             ),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          Text(
-                                            selectedServicePronun,
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                              fontFamily: "Doulos SIL",
-                                              fontSize: 18,
+                                            const SizedBox(height: 5),
+                                            Text(
+                                              selectedServicePronun,
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontFamily: "Doulos SIL",
+                                                fontSize: 18,
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        Get.to(() => filteredAllServicesPage(
-                                            selectedService:
-                                                selectedService));
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            AppColor.secondaryColor,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
+                                          ],
                                         ),
                                       ),
-                                      child: const Text(
-                                        "Show All",
-                                        style: TextStyle(color: Colors.white),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Get.to(() => filteredAllServicesPage(
+                                              selectedService:
+                                                  selectedService));
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              AppColor.secondaryColor,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          "Show All",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
                                       ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    desc,
+                                    style: const TextStyle(
+                                      fontFamily: 'Times New Roman',
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.black,
+                                      fontSize: 18,
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  desc,
-                                  style: const TextStyle(
-                                    fontFamily: 'Times New Roman',
-                                    fontStyle: FontStyle.italic,
-                                    color: Colors.black,
-                                    fontSize: 18,
                                   ),
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  definition,
-                                  style: const TextStyle(
-                                    fontFamily: 'Times New Roman',
-                                    color: Colors.black,
-                                    fontSize: 18,
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    definition,
+                                    style: const TextStyle(
+                                      fontFamily: 'Times New Roman',
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 20),
-                                SizedBox(
-                                  height: 200,
-                                  child: HomeList(
-                                    selectedService: selectedService,
-                                    maxItems: 2,
+                                  const SizedBox(height: 20),
+                                  SizedBox(
+                                    height: 200,
+                                    child: HomeList(
+                                      selectedService: selectedService,
+                                      maxItems: 2,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                 ),

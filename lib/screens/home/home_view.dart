@@ -97,7 +97,6 @@ class _HomePageState extends State<HomePage> {
     'assets/images/walking.png',
     'assets/images/sitting.png',
     'assets/images/training.png',
-    'assets/images/add.png',
   ];
 
   @override
@@ -135,9 +134,6 @@ class _HomePageState extends State<HomePage> {
           definition =
               'the fine art of turning chaos into harmony, one pawshake at a time.';
           break;
-        case 4:
-          Get.to(const RequestPage());
-          return;
         default:
           selectedService = '';
       }
@@ -225,8 +221,8 @@ class _HomePageState extends State<HomePage> {
                               onTap: () => _onServiceImagePressed(index),
                               child: Image.asset(
                                 serviceImages[index],
-                                width: 60,
-                                height: 60,
+                                width: 70,
+                                height: 70,
                                 fit: BoxFit.cover,
                               ),
                             ),

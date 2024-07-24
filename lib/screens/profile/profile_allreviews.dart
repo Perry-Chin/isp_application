@@ -177,10 +177,22 @@ class _ReviewsListState extends State<ReviewsList> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        userData.username ?? 'Anonymous',
-                                        style: GoogleFonts.poppins(
-                                            fontWeight: FontWeight.bold),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            userData.username ?? 'Anonymous',
+                                            style: GoogleFonts.poppins(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                              profileController
+                                                  .formatDate(review.timestamp),
+                                              style: GoogleFonts.poppins(
+                                                  color: Colors.grey[600],
+                                                  fontSize: 12)),
+                                        ],
                                       ),
                                       Row(
                                         children: List.generate(

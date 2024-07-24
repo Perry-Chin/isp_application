@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../../common/data/data.dart';
 import '../../common/storage/storage.dart';
 import '../../common/middlewares/middlewares.dart';
@@ -143,6 +144,10 @@ class ProfileController extends GetxController {
         filteredReviews.sort((a, b) => a.rating.compareTo(b.rating));
         break;
     }
+  }
+
+  String formatDate(DateTime date) {
+    return DateFormat('MMM d, yyyy').format(date);
   }
 
   Future<void> updateAverageRating() async {

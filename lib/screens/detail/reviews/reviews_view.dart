@@ -44,8 +44,15 @@ class DetailReviewView extends GetView<DetailReviewController> {
           children: [
             Obx(() => _buildRatingSummary()),
             _buildReviewsTab(),
-            const Expanded(
-              child: ReviewList(), // Correct instance of reviews list
+            Expanded(
+              child: TabBarView(
+                controller: controller.tabController,
+                children: [
+                  ReviewList(tabType: 'All'),
+                  ReviewList(tabType: 'Provider'),
+                  ReviewList(tabType: 'Requester'),
+                ],
+              ),
             ),
           ],
         ),
@@ -147,6 +154,9 @@ class DetailReviewView extends GetView<DetailReviewController> {
       ),
       child: TabBar(
         controller: controller.tabController,
+        onTap: (index) {
+          controller.updateSelectedTab(['All', 'Provider', 'Requester'][index]);
+        },
         labelColor: Colors.white,
         unselectedLabelColor: Colors.grey,
         labelStyle: GoogleFonts.poppins(),

@@ -12,6 +12,7 @@ import 'add_reviews/add_reviews_index.dart';
 
 class DetailReviewController extends GetxController
     with GetSingleTickerProviderStateMixin {
+  // Variables
   var doc_id;
   var serviceType;
   var requested_id;
@@ -28,8 +29,13 @@ class DetailReviewController extends GetxController
   final sortType = 'Newest'.obs;
   final userToken = UserStore.to.token;
   final reviewList = <QueryDocumentSnapshot<ReviewData>>[].obs;
-  final RefreshController refreshController =
-      RefreshController(initialRefresh: false);
+  final selectedTab = 'All'.obs;
+
+  final Map<String, RefreshController> refreshControllers = {
+    'All': RefreshController(initialRefresh: false),
+    'Provider': RefreshController(initialRefresh: false),
+    'Requester': RefreshController(initialRefresh: false),
+  };
 
   late TabController tabController;
 
@@ -50,17 +56,28 @@ class DetailReviewController extends GetxController
   @override
   void onClose() {
     tabController.dispose();
+    refreshControllers.forEach((_, controller) => controller.dispose());
     super.onClose();
   }
 
-  void onRefresh() => refreshData(refreshController, fetchUserReviews);
-  void onLoading() => loadData(refreshController, fetchUserReviews);
+  void onRefresh(String tabType) {
+    fetchUserReviews().then((_) {
+      refreshControllers[tabType]?.refreshCompleted();
+      update();
+    });
+  }
+
+  void onLoading(String tabType) {
+    fetchUserReviews().then((_) {
+      refreshControllers[tabType]?.loadComplete();
+      update();
+    });
+  }
 
   Stream<List<QueryDocumentSnapshot<ReviewData>>> getReviewStream() {
     return db
         .collection('reviews')
         .where(data_uid, isEqualTo: requested_id)
-        .where('service_type', isEqualTo: serviceType)
         .withConverter<ReviewData>(
           fromFirestore: ReviewData.fromFirestore,
           toFirestore: (ReviewData reviewData, _) => reviewData.toFirestore(),
@@ -84,9 +101,7 @@ class DetailReviewController extends GetxController
   Stream<Map<String, UserData?>> getCombinedStream() {
     return getReviewStream().switchMap((reviewDocs) {
       List<String> userIds = reviewDocs
-          .expand((doc) {
-            return [doc.data().fromUid, doc.data().toUid];
-          })
+          .expand((doc) => [doc.data().fromUid, doc.data().toUid])
           .whereType<String>()
           .toSet()
           .toList();
@@ -94,9 +109,8 @@ class DetailReviewController extends GetxController
         return Stream.value({});
       }
       return getUserStream(userIds).map((userDocs) {
-        var userDataMap = Map.fromEntries(userDocs.map((doc) {
-          return MapEntry(doc.id, doc.data());
-        }));
+        var userDataMap = Map.fromEntries(
+            userDocs.map((doc) => MapEntry(doc.id, doc.data())));
         return userDataMap;
       });
     });
@@ -108,7 +122,6 @@ class DetailReviewController extends GetxController
     var reviewsQuery = await db
         .collection('reviews')
         .where('to_uid', isEqualTo: requested_id)
-        .where('service_type', isEqualTo: serviceType)
         .withConverter<ReviewData>(
           fromFirestore: ReviewData.fromFirestore,
           toFirestore: (ReviewData reviewData, _) => reviewData.toFirestore(),
@@ -168,6 +181,36 @@ class DetailReviewController extends GetxController
   void updateSortType(String newSortType) {
     sortType.value = newSortType;
     _sortReviews();
+  }
+
+  void updateSelectedTab(String tab) {
+    selectedTab.value = tab;
+    int index = ['All', 'Provider', 'Requester'].indexOf(tab);
+    if (index != -1) {
+      tabController.animateTo(index);
+    }
+  }
+
+  void filterReviewsByTab() {
+    switch (selectedTab.value) {
+      case 'All':
+        reviews.assignAll(reviewList.map((doc) => doc.data()).toList());
+        break;
+      case 'Provider':
+        reviews.assignAll(reviewList
+            .map((doc) => doc.data())
+            .where((review) => review.serviceType.toLowerCase() == 'provider')
+            .toList());
+        break;
+      case 'Requester':
+        reviews.assignAll(reviewList
+            .map((doc) => doc.data())
+            .where((review) => review.serviceType.toLowerCase() == 'requester')
+            .toList());
+        break;
+    }
+    _sortReviews();
+    update();
   }
 
   List<ReviewData> getFilteredReviews(String type) {

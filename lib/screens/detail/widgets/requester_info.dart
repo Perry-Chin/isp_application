@@ -107,6 +107,8 @@ class RequesterInfo extends StatelessWidget {
                   "doc_id": controller.doc_id,
                   'requested': 'requester',
                   'requester_id': userData.id ?? "",
+                  'data_uid': 'from_uid',
+                  'status': controller.status ?? "",
                 });
               },
               style: ElevatedButton.styleFrom(

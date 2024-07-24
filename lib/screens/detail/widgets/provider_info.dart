@@ -104,7 +104,10 @@ class ProviderInfo extends StatelessWidget {
                 // View reviews actions
                 Get.toNamed(AppRoutes.detailReview, parameters: {
                   "doc_id": controller.doc_id,
-                  'requested': Get.parameters['requested'] ?? 'false'
+                  'requested': Get.parameters['requested'] ?? 'false',
+                  'requester_id': userData.id ?? "",
+                  'data_uid': 'to_uid',
+                  'status': controller.status ?? "",
                 });
               },
               style: ElevatedButton.styleFrom(

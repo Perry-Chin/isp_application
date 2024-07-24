@@ -14,6 +14,7 @@ import 'detail_index.dart';
 
 class DetailController extends GetxController {
   var doc_id;
+  var status;
   final token = UserStore.to.token;
   final DetailState state = DetailState();
   final db = FirebaseFirestore.instance;
@@ -93,6 +94,7 @@ class DetailController extends GetxController {
     super.onInit();
     var data = Get.parameters;
     doc_id = data['doc_id'];
+    status = data['status'];
 
     asyncLoadAllData().then((_) {
       combinedStream.listen((userDataMap) {

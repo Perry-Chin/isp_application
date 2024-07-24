@@ -6,6 +6,10 @@ import '../reviews_index.dart';
 
 class DetailAddReviewController extends GetxController {
   
+  var doc_id;
+  var serviceType;
+  var requested_id;
+  
   final userToken = UserStore.to.token;
   final db = FirebaseFirestore.instance;
 
@@ -13,19 +17,15 @@ class DetailAddReviewController extends GetxController {
   final reviewText = ''.obs;
   final hasAlreadyReviewed = false.obs;
 
-  late final String serviceId;
-  late final String toUid;
-  late final String serviceType;
-
   @override
   void onInit() {
     super.onInit();
     var data = Get.parameters;
     print('data: $data');
-    serviceId = data['doc_id'] ?? '';
-    toUid = data['requester_id'] ?? '';
+    doc_id = data['doc_id'] ?? '';
+    requested_id = data['requester_id'] ?? '';
     serviceType = data['requested'] == 'true' ? 'provider' : 'requester';
-    print('serviceId: $serviceId, toUid: $toUid, serviceType: $serviceType');
+    print('serviceId: $doc_id, toUid: $requested_id, serviceType: $serviceType');
     checkExistingReview();
     // print('serviceId: $serviceId, toUid: $toUid, serviceType: $serviceType');
   }
@@ -35,7 +35,7 @@ class DetailAddReviewController extends GetxController {
     final querySnapshot = await db
         .collection('reviews')
         .where('from_uid', isEqualTo: userToken)
-        .where('service_id', isEqualTo: serviceId)
+        .where('service_id', isEqualTo: doc_id)
         .get();
 
     print('Query snapshot: ${querySnapshot.docs}');
@@ -66,20 +66,22 @@ class DetailAddReviewController extends GetxController {
       
       final newReview = {
         'from_uid': userToken,
-        'to_uid': toUid,
+        'to_uid': requested_id,
         'rating': selectedRating.value,
         'review': reviewText.value.trim(),
-        'service_id': serviceId,
+        'service_id': doc_id,
         'service_type': serviceType,
         'timestamp': FieldValue.serverTimestamp(),
       };
+
+      print(newReview);
 
       await db.collection('reviews').add(newReview);
 
       // Calculate new average rating for the user
       final userReviewsSnapshot = await db
           .collection('reviews')
-          .where('to_uid', isEqualTo: toUid)
+          .where('to_uid', isEqualTo: requested_id)
           .get();
 
       double totalRating = 0;
@@ -94,7 +96,7 @@ class DetailAddReviewController extends GetxController {
       double newRating = totalRating / totalReviews;
 
       // Update user's rating in 'users' collection
-      await db.collection('users').doc(toUid).update({
+      await db.collection('users').doc(requested_id).update({
         'rating': newRating,
       });
 

@@ -5,24 +5,30 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../../common/data/data.dart';
 import '../../../common/middlewares/middlewares.dart';
+import '../../../common/storage/storage.dart';
 import 'add_reviews/add_reviews_index.dart';
 
 class DetailReviewController extends GetxController {
 
   var doc_id;
-  var requested;
+  var serviceType;
   var requested_id;
+  var data_uid;
+  var status;
   
   final db = FirebaseFirestore.instance;
   final reviews = <ReviewData>[].obs;
   final isLoading = true.obs;
+  final hasAlreadyReviewed = false.obs;
   final averageRating = 0.0.obs;
   final totalReviews = 0.obs;
   final ratingCounts = <int, int>{}.obs;
   final sortType = 'Newest'.obs;
+  final userToken = UserStore.to.token;
   final reviewList = <QueryDocumentSnapshot<ReviewData>>[].obs;
   final RefreshController refreshController = RefreshController(initialRefresh: false);
 
@@ -34,16 +40,19 @@ class DetailReviewController extends GetxController {
     super.onInit();
     var data = Get.parameters;
     doc_id = data['doc_id'];
-    requested = data['requested'];
+    serviceType = data['requested'] == 'true' ? 'provider' : 'requester';
     requested_id = data['requester_id'];
+    data_uid = data['data_uid'];
+    status = data['status'];
+    checkExistingReview();
     fetchUserReviews();
   }
 
   Stream<List<QueryDocumentSnapshot<ReviewData>>> getReviewStream() {
     return db
       .collection('reviews')
-      .where('to_uid', isEqualTo: requested_id)
-      .where('service_type', isEqualTo: requested)
+      .where(data_uid, isEqualTo: requested_id)
+      .where('service_type', isEqualTo: serviceType)
       .withConverter<ReviewData>(
         fromFirestore: ReviewData.fromFirestore,
         toFirestore: (ReviewData reviewData, _) => reviewData.toFirestore(),
@@ -66,11 +75,20 @@ class DetailReviewController extends GetxController {
 
   // Combine the streams to get user data for each payment
   Stream<Map<String, UserData?>> getCombinedStream() {
-    return RouteFirestoreMiddleware.getCombinedStream<ReviewData, UserData>(
-      primaryStream: () => getReviewStream(),
-      secondaryStream: (userIds) => getUserStream(userIds),
-      getSecondaryId: (review) => review.toUid,
-    );
+    return getReviewStream().switchMap((reviewDocs) {
+      List<String> userIds = reviewDocs.expand((doc) {
+        return [doc.data().fromUid, doc.data().toUid];
+      }).whereType<String>().toSet().toList();
+      if (userIds.isEmpty) {
+        return Stream.value({});
+      }
+      return getUserStream(userIds).map((userDocs) {
+        var userDataMap = Map.fromEntries(userDocs.map((doc) {
+          return MapEntry(doc.id, doc.data());
+        }));
+        return userDataMap;
+      });
+    });
   }
 
   Stream<Map<String, UserData?>> get combinedStream => getCombinedStream();
@@ -79,15 +97,27 @@ class DetailReviewController extends GetxController {
     var reviews = await db
       .collection('reviews')
       .where('to_uid', isEqualTo: requested_id)
-      .where('service_type', isEqualTo: requested)
+      .where('service_type', isEqualTo: serviceType)
       .withConverter<ReviewData>(
         fromFirestore: ReviewData.fromFirestore,
         toFirestore: (ReviewData reviewData, _) => reviewData.toFirestore(),
       ).get();
     
     reviewList.assignAll(reviews.docs);
+    print('reviewList: ${reviewList.length}');
     _calculateStats();
     update(); 
+  }
+
+  Future<void> checkExistingReview() async {
+    
+    final querySnapshot = await db
+        .collection('reviews')
+        .where('from_uid', isEqualTo: userToken)
+        .where('service_id', isEqualTo: doc_id)
+        .get();
+
+    hasAlreadyReviewed.value = querySnapshot.docs.isNotEmpty;
   }
 
   void _calculateStats() {

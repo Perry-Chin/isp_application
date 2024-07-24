@@ -1,4 +1,4 @@
-package com.example.isp_application
+package com.furfriends.isp_application
 
 import android.os.Bundle
 import io.flutter.embedding.android.FlutterFragmentActivity

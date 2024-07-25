@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_typing_uninitialized_variables, non_constant_identifier_names
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,14 +10,15 @@ import '../../../common/middlewares/middlewares.dart';
 import '../../../common/storage/storage.dart';
 import 'add_reviews/add_reviews_index.dart';
 
-class DetailReviewController extends GetxController {
-
+class DetailReviewController extends GetxController
+    with GetSingleTickerProviderStateMixin {
+  // Variables
   var doc_id;
   var serviceType;
   var requested_id;
   var data_uid;
   var status;
-  
+
   final db = FirebaseFirestore.instance;
   final reviews = <ReviewData>[].obs;
   final isLoading = true.obs;
@@ -30,14 +29,20 @@ class DetailReviewController extends GetxController {
   final sortType = 'Newest'.obs;
   final userToken = UserStore.to.token;
   final reviewList = <QueryDocumentSnapshot<ReviewData>>[].obs;
-  final RefreshController refreshController = RefreshController(initialRefresh: false);
+  final selectedTab = 'All'.obs;
 
-  void onRefresh() => refreshData(refreshController, fetchUserReviews);
-  void onLoading() => loadData(refreshController, fetchUserReviews);
+  final Map<String, RefreshController> refreshControllers = {
+    'All': RefreshController(initialRefresh: false),
+    'Provider': RefreshController(initialRefresh: false),
+    'Requester': RefreshController(initialRefresh: false),
+  };
+
+  late TabController tabController;
 
   @override
   void onInit() {
     super.onInit();
+    tabController = TabController(length: 3, vsync: this);
     var data = Get.parameters;
     doc_id = data['doc_id'];
     serviceType = data['requested'] == 'true' ? 'provider' : 'requester';
@@ -48,44 +53,64 @@ class DetailReviewController extends GetxController {
     fetchUserReviews();
   }
 
+  @override
+  void onClose() {
+    tabController.dispose();
+    refreshControllers.forEach((_, controller) => controller.dispose());
+    super.onClose();
+  }
+
+  void onRefresh(String tabType) {
+    fetchUserReviews().then((_) {
+      refreshControllers[tabType]?.refreshCompleted();
+      update();
+    });
+  }
+
+  void onLoading(String tabType) {
+    fetchUserReviews().then((_) {
+      refreshControllers[tabType]?.loadComplete();
+      update();
+    });
+  }
+
   Stream<List<QueryDocumentSnapshot<ReviewData>>> getReviewStream() {
     return db
-      .collection('reviews')
-      .where(data_uid, isEqualTo: requested_id)
-      .where('service_type', isEqualTo: serviceType)
-      .withConverter<ReviewData>(
-        fromFirestore: ReviewData.fromFirestore,
-        toFirestore: (ReviewData reviewData, _) => reviewData.toFirestore(),
-      )
-      .snapshots()
-      .map((snapshot) => snapshot.docs);
+        .collection('reviews')
+        .where(data_uid, isEqualTo: requested_id)
+        .withConverter<ReviewData>(
+          fromFirestore: ReviewData.fromFirestore,
+          toFirestore: (ReviewData reviewData, _) => reviewData.toFirestore(),
+        )
+        .snapshots()
+        .map((snapshot) => snapshot.docs);
   }
 
   Stream<List<DocumentSnapshot<UserData>>> getUserStream(List<String> userIds) {
     return db
-      .collection('users')
-      .where(FieldPath.documentId, whereIn: userIds)
-      .withConverter<UserData>(
-        fromFirestore: UserData.fromFirestore,
-        toFirestore: (UserData userData, _) => userData.toFirestore(),
-      )
-      .snapshots()
-      .map((snapshot) => snapshot.docs);
+        .collection('users')
+        .where(FieldPath.documentId, whereIn: userIds)
+        .withConverter<UserData>(
+          fromFirestore: UserData.fromFirestore,
+          toFirestore: (UserData userData, _) => userData.toFirestore(),
+        )
+        .snapshots()
+        .map((snapshot) => snapshot.docs);
   }
 
-  // Combine the streams to get user data for each payment
   Stream<Map<String, UserData?>> getCombinedStream() {
     return getReviewStream().switchMap((reviewDocs) {
-      List<String> userIds = reviewDocs.expand((doc) {
-        return [doc.data().fromUid, doc.data().toUid];
-      }).whereType<String>().toSet().toList();
+      List<String> userIds = reviewDocs
+          .expand((doc) => [doc.data().fromUid, doc.data().toUid])
+          .whereType<String>()
+          .toSet()
+          .toList();
       if (userIds.isEmpty) {
         return Stream.value({});
       }
       return getUserStream(userIds).map((userDocs) {
-        var userDataMap = Map.fromEntries(userDocs.map((doc) {
-          return MapEntry(doc.id, doc.data());
-        }));
+        var userDataMap = Map.fromEntries(
+            userDocs.map((doc) => MapEntry(doc.id, doc.data())));
         return userDataMap;
       });
     });
@@ -94,23 +119,22 @@ class DetailReviewController extends GetxController {
   Stream<Map<String, UserData?>> get combinedStream => getCombinedStream();
 
   Future<void> fetchUserReviews() async {
-    var reviews = await db
-      .collection('reviews')
-      .where('to_uid', isEqualTo: requested_id)
-      .where('service_type', isEqualTo: serviceType)
-      .withConverter<ReviewData>(
-        fromFirestore: ReviewData.fromFirestore,
-        toFirestore: (ReviewData reviewData, _) => reviewData.toFirestore(),
-      ).get();
-    
-    reviewList.assignAll(reviews.docs);
-    print('reviewList: ${reviewList.length}');
+    var reviewsQuery = await db
+        .collection('reviews')
+        .where('to_uid', isEqualTo: requested_id)
+        .withConverter<ReviewData>(
+          fromFirestore: ReviewData.fromFirestore,
+          toFirestore: (ReviewData reviewData, _) => reviewData.toFirestore(),
+        )
+        .get();
+
+    reviewList.assignAll(reviewsQuery.docs);
+    reviews.assignAll(reviewList.map((doc) => doc.data()).toList());
     _calculateStats();
-    update(); 
+    update();
   }
 
   Future<void> checkExistingReview() async {
-    
     final querySnapshot = await db
         .collection('reviews')
         .where('from_uid', isEqualTo: userToken)
@@ -121,25 +145,19 @@ class DetailReviewController extends GetxController {
   }
 
   void _calculateStats() {
-    // Calculate total number of reviews
     totalReviews.value = reviewList.length;
-
-    // Calculate average rating
     double totalRating = 0;
     ratingCounts.clear();
 
-    // Iterate through reviews to calculate total rating and count for each rating
     for (var reviewSnapshot in reviewList) {
-      var review = reviewSnapshot.data(); // Assuming ReviewData is obtained from reviewSnapshot
+      var review = reviewSnapshot.data();
       totalRating += review.rating;
-
-      // Count occurrences of each rating
       ratingCounts[review.rating] = (ratingCounts[review.rating] ?? 0) + 1;
     }
 
-    // Calculate average rating if there are reviews
-    averageRating.value = totalReviews.value > 0 ? totalRating / totalReviews.value : 0.0;
-  
+    averageRating.value =
+        totalReviews.value > 0 ? totalRating / totalReviews.value : 0.0;
+
     update();
   }
 
@@ -165,22 +183,68 @@ class DetailReviewController extends GetxController {
     _sortReviews();
   }
 
+  void updateSelectedTab(String tab) {
+    selectedTab.value = tab;
+    int index = ['All', 'Provider', 'Requester'].indexOf(tab);
+    if (index != -1) {
+      tabController.animateTo(index);
+    }
+  }
+
+  void filterReviewsByTab() {
+    switch (selectedTab.value) {
+      case 'All':
+        reviews.assignAll(reviewList.map((doc) => doc.data()).toList());
+        break;
+      case 'Provider':
+        reviews.assignAll(reviewList
+            .map((doc) => doc.data())
+            .where((review) => review.serviceType.toLowerCase() == 'provider')
+            .toList());
+        break;
+      case 'Requester':
+        reviews.assignAll(reviewList
+            .map((doc) => doc.data())
+            .where((review) => review.serviceType.toLowerCase() == 'requester')
+            .toList());
+        break;
+    }
+    _sortReviews();
+    update();
+  }
+
+  List<ReviewData> getFilteredReviews(String type) {
+    switch (type) {
+      case 'All':
+        return reviews;
+      case 'Provider':
+        return reviews
+            .where((review) => review.serviceType.toLowerCase() == 'provider')
+            .toList();
+      case 'Requester':
+        return reviews
+            .where((review) => review.serviceType.toLowerCase() == 'requester')
+            .toList();
+      default:
+        return reviews;
+    }
+  }
+
   String formatDate(DateTime date) {
     return DateFormat('MMM d, yyyy').format(date);
   }
 
-  // Helper functions for add review
   void addReview(BuildContext context) {
     showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: const DetailAddReviewPage(),
-      )
-    );
+        context: context,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (context) => Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: const DetailAddReviewPage(),
+            ));
   }
 }

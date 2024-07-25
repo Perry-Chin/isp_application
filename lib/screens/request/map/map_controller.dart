@@ -7,8 +7,8 @@ class MapController extends GetxController {
   // Variables
   late GoogleMapController googleMapController;
   var markers = <Marker>{}.obs;
-  static const CameraPosition initialCameraPosition = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962), zoom: 14
+  static CameraPosition initialCameraPosition = const CameraPosition(
+    target: LatLng(0, 0), zoom: 14
   );
   var currentLocation = const LatLng(0, 0);
   var error = ''.obs;
@@ -43,9 +43,28 @@ class MapController extends GetxController {
       return Future.error('Location permissions are permanently denied');
     }
 
-    Position position = await Geolocator.getCurrentPosition();
+    // Fetch the current position
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high
+    );
+
+    // Update the initial camera position to the current position
+    initialCameraPosition = CameraPosition(
+      target: LatLng(position.latitude, position.longitude),
+      zoom: 14,
+    );
+
+    updateCameraPosition(LatLng(position.latitude, position.longitude));
+
     return position;
   }
+
+  void updateCameraPosition(LatLng target) {
+    print(target);
+    googleMapController.animateCamera(
+        CameraUpdate.newCameraPosition(CameraPosition(target: target, zoom: 14))
+    );
+}
 
   void setLocation() async {
     if (currentLocation == const LatLng(0, 0)) {

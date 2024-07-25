@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'request_map.dart';
+import '../map/map_index.dart';
 
 // Local Dependencies
 import '../../../common/middlewares/middlewares.dart';
@@ -106,8 +106,12 @@ List<Step> getSteps(int currentStep) {
               prefixicon: Icons.add_location_alt_outlined,
               textController: controller.locationController,
               //onTap: () => selectLocation(Get.context!, controller.locationController),
-              onTap: () {
-                  Get.to(RequestMap());
+              onTap: () async {
+                final selectedLocation = await Get.to(() => const MapPage());
+                if (selectedLocation != null) {
+                  controller.locationController.text =
+                      'Lat: ${selectedLocation.latitude}, Lng: ${selectedLocation.longitude}';
+                }
               },
               // validator: (value) => RouteValidateServiceMiddleware.validateLocation(value)
             ),

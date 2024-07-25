@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:animate_do/animate_do.dart';
 
-import '../../values/values.dart';
-
 class MyDropdownField extends StatefulWidget {
   final String hintText;
   final String labelText;

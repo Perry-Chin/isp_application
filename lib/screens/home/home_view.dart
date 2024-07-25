@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-<<<<<<< HEAD
-=======
-
->>>>>>> 9ec0926674746a6252ba5b18eaa37bcd96a968ce
 import 'package:isp_application/screens/home/allservices.dart';
 import 'package:isp_application/screens/home/filteredallservices.dart';
 

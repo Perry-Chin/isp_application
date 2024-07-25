@@ -2,21 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../common/theme/custom/custom_theme.dart';
-// import '../../../common/values/values.dart';
-// import '../../../common/widgets/widgets.dart';
-// import '../../../common/theme/custom/appbar_theme.dart';
 import '../../../common/theme/custom/text_theme.dart';
 
 class RequestMap extends StatelessWidget {
+  const RequestMap({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: MapScreen(),
     );
   }
 }
 
 class MapScreen extends StatefulWidget {
+  const MapScreen({super.key});
+
   @override
   _MapScreenState createState() => _MapScreenState();
 }

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
-import '../../../common/data/data.dart';
 import '../../../common/theme/custom/custom_theme.dart';
 import '../../../common/values/values.dart';
 import 'reviews_index.dart';
@@ -47,7 +45,7 @@ class DetailReviewView extends GetView<DetailReviewController> {
             Expanded(
               child: TabBarView(
                 controller: controller.tabController,
-                children: [
+                children: const [
                   ReviewList(tabType: 'All'),
                   ReviewList(tabType: 'Provider'),
                   ReviewList(tabType: 'Requester'),

@@ -101,6 +101,7 @@ List<Step> getSteps(int currentStep) {
             //     Get.to(RequestMap());
             //   },
             MyTextField(
+              readOnly: true,
               hinttext: 'Your location',
               labeltext: 'Location',
               prefixicon: Icons.add_location_alt_outlined,

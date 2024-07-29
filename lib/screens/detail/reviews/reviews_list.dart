@@ -55,12 +55,12 @@ class ReviewList extends StatelessWidget {
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(16),
                   leading: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColor.secondaryColor,
-                        width: 2.0,
-                      ),
+                      // border: Border.all(
+                      //   color: AppColor.secondaryColor,
+                      //   width: 2.0,
+                      // ),
                     ),
                     child: CircleAvatar(
                       backgroundImage: userData?.photourl != null

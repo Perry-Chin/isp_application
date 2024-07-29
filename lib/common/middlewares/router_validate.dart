@@ -22,7 +22,7 @@ class RouteValidateMiddleware extends GetMiddleware {
     if (value == null || value.isEmpty) {
       return 'Please enter a phone number';
     }
-    if (value.length != 8 || !RegExp(r'^[0-9]{8}$').hasMatch(value)) {
+    if (!RegExp(r'^[0-9]{8}$').hasMatch(value)) {
       return 'Phone number must have exactly 8 digits';
     }
     return null;

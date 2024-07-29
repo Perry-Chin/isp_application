@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables, non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,7 +8,6 @@ import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../../common/data/data.dart';
-import '../../../common/middlewares/middlewares.dart';
 import '../../../common/storage/storage.dart';
 import 'add_reviews/add_reviews_index.dart';
 

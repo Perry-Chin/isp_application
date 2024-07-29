@@ -2,6 +2,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../common/routes/routes.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/input/button.dart';
 import '../../common/widgets/input/textfield.dart';
@@ -101,11 +102,7 @@ class LoginPage extends GetView<LoginController> {
                     TextButton(
                       onPressed: () {
                         // Navigate to the register screen
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return const RegisterPage();
-                          },
-                        ));
+                        Get.toNamed(AppRoutes.register);
                       },
                       child: const Text(
                         "Sign Up!",

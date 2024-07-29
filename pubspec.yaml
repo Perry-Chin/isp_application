@@ -31,7 +31,6 @@ dependencies:
   flutter:
     sdk: flutter
   location:
-  google_maps_flutter:
   dio:
   flutter_polyline_points:
 
@@ -114,6 +113,10 @@ dependencies:
   flutter_credit_card: ^4.0.1
   flutter_slidable: ^3.1.0
   google_fonts: ^5.1.0 
+  geolocator: ^11.1.0
+  permission_handler: ^11.0.1
+  google_maps_flutter_android: ^2.6.2
+  google_maps_flutter: ^2.5.3
 
   # flutter_settings_screens: ^0.3.4
 

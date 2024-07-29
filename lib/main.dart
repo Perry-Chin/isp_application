@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 
 import 'common/routes/routes.dart';
 import 'common/storage/storage.dart';
@@ -28,7 +31,11 @@ Future<void> main() async {
 
   // Initialize Stripe
   Stripe.publishableKey = 'pk_test_51PW9k609OEdaNyd6cGvFdgCq7GX3ecDeHCWNHVHIZrpYpXQIWugLnetf8yhndG46JGhzCpIZp6DgeyiFxebz1g0400cB03RQdT';
-  
+
+  if (Platform.isAndroid) {
+    await GoogleMapsFlutterAndroid().initializeWithRenderer(AndroidMapRenderer.latest);
+  }
+
   runApp(const MyApp());
 }
 
@@ -40,7 +47,7 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       builder: (BuildContext context, Widget? child) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'FurFriends',
         initialRoute: AppPages.initial,
         getPages: AppPages.routes,
         themeMode: ThemeMode.system,

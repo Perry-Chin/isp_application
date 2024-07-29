@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-<<<<<<< HEAD
-=======
-
->>>>>>> 9ec0926674746a6252ba5b18eaa37bcd96a968ce
-import 'package:isp_application/screens/home/allservices.dart';
 import 'package:isp_application/screens/home/filteredallservices.dart';
-
+import 'package:isp_application/screens/home/allservices.dart'; // Import AllServicesPage
 import '../../common/values/values.dart';
-import '../../screens/home/home_list.dart';
 import 'home_controller.dart';
 
 class SearchBox extends StatelessWidget {
@@ -87,10 +81,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String selectedService = '';
-  String selectedServicePronun = '';
-  String desc = '';
-  String definition = '';
   late HomeController controller;
 
   static const List<String> serviceImages = [
@@ -107,236 +97,154 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onServiceImagePressed(int index) {
-    setState(() {
-      switch (index) {
-        case 0:
-          selectedService = 'Grooming';
-          selectedServicePronun = '/ˈɡruːmɪŋ/';
-          desc = 'noun';
-          definition = 'hygienic care for your precious furfriend';
-          break;
-        case 1:
-          selectedService = 'Walking';
-          selectedServicePronun = '/wɔːk/';
-          desc = 'verb';
-          definition =
-              "a tail-wagging exploration through your furfriend's neighbourhood";
-          break;
-        case 2:
-          selectedService = 'Sitting';
-          selectedServicePronun = '/ˈsɪtɪŋ/';
-          desc = 'noun';
-          definition = 'temporary care and companionship for your furry friend';
-          break;
-        case 3:
-          selectedService = 'Training';
-          selectedServicePronun = '/ˈtreɪnɪŋ/';
-          desc = 'noun';
-          definition =
-              'the fine art of turning chaos into harmony, one pawshake at a time.';
-          break;
-        default:
-          selectedService = '';
-      }
+    String selectedService;
+    String selectedServicePronoun;
+    String desc;
+    String definition;
 
-      if (controller.state.serviceList.isEmpty) {
-        selectedService = '';
-        selectedServicePronun = '';
-        desc = '';
-        definition = 'no services available';
-      }
-    });
+    switch (index) {
+      case 0:
+        selectedService = 'Grooming';
+        selectedServicePronoun = '/ˈɡruːmɪŋ/';
+        desc = 'noun';
+        definition = 'hygienic care for your precious furfriend';
+        break;
+      case 1:
+        selectedService = 'Walking';
+        selectedServicePronoun = '/wɔːk/';
+        desc = 'verb';
+        definition =
+            "a tail-wagging exploration through your furfriend's neighbourhood";
+        break;
+      case 2:
+        selectedService = 'Sitting';
+        selectedServicePronoun = '/ˈsɪtɪŋ/';
+        desc = 'noun';
+        definition = 'temporary care and companionship for your furry friend';
+        break;
+      case 3:
+        selectedService = 'Training';
+        selectedServicePronoun = '/ˈtreɪnɪŋ/';
+        desc = 'noun';
+        definition =
+            'the fine art of turning chaos into harmony, one pawshake at a time.';
+        break;
+      default:
+        return;
+    }
+
+    Get.to(() => FilteredAllServicesPage(
+        selectedService: selectedService,
+        selectedServicePronoun: selectedServicePronoun,
+        desc: desc,
+        definition: definition,
+    ));
   }
 
   void _onSearchSubmitted() {
-      Get.to(() => const AllServicesPage());
-  }
-
-  void _onSearchTap() {
-    Get.to(() => filteredAllServicesPage(selectedService: selectedService));
+    Get.toNamed('/allServices');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: AppColor.secondaryColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
+      body: Stack(
+        children: [
+          // Background
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _CurvedBackgroundPainter(),
+              size: Size.infinite,
+            ),
+          ),
+          // Content
+          SafeArea(
+            child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 15),
-                  const Text(
-                    "FurFriends",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 33,
-                      fontFamily: 'Silence Rocken',
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 15),
+                        const Text(
+                          "FurFriends",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 33,
+                            fontFamily: 'Silence Rocken',
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        SearchBox(
+                          onTap: _onSearchSubmitted,
+                          showSuffixIcon: true,
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 20),
-                  SearchBox(
-                    onTap: _onSearchTap,
-                    showSuffixIcon: true,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.elliptical(
-                    MediaQuery.of(context).size.width * 0.6, 50.0
-                  )
-                ),
-                child: Container(
-                  color: Colors.white,
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                  ClipRRect(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.elliptical(
+                        MediaQuery.of(context).size.width * 0.6,
+                        50.0,
+                      ),
+                    ),
+                    child: Container(
+                      color: Colors.white,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           const SizedBox(height: 40),
-                          const Text(
-                            "Choose",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontFamily: "Quicksand",
-                              fontSize: 30,
-                            ),
-                          ),
-                          const Text(
-                            "your service!",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontFamily: "Quicksand",
-                              fontSize: 30,
-                              fontWeight: FontWeight.w500,
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            child: Text(
+                              "Choose \nyour service!",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontFamily: "Quicksand",
+                                fontSize: 30,
+                              ),
                             ),
                           ),
                           const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: List.generate(
-                              serviceImages.length,
-                              (index) => GestureDetector(
-                                onTap: () => _onServiceImagePressed(index),
-                                child: Image.asset(
-                                  serviceImages[index],
-                                  width: 60,
-                                  height: 60,
-                                  fit: BoxFit.cover,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: List.generate(
+                                serviceImages.length,
+                                (index) => GestureDetector(
+                                  onTap: () => _onServiceImagePressed(index),
+                                  child: Image.asset(
+                                    serviceImages[index],
+                                    width: 60,
+                                    height: 60,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                           ),
-              
-                            ),
-                          ),
-                          const SizedBox(height: 28),
-                          if (selectedService.isNotEmpty) ...[
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              selectedService,
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontFamily: "Safety",
-                                                fontSize: 22,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 5),
-                                            Text(
-                                              selectedServicePronun,
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontFamily: "Doulos SIL",
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          Get.to(() => filteredAllServicesPage(
-                                              selectedService:
-                                                  selectedService));
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              AppColor.secondaryColor,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          ),
-                                        ),
-                                        child: const Text(
-                                          "Show All",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    desc,
-                                    style: const TextStyle(
-                                      fontFamily: 'Times New Roman',
-                                      fontStyle: FontStyle.italic,
-                                      color: Colors.black,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    definition,
-                                    style: const TextStyle(
-                                      fontFamily: 'Times New Roman',
-                                      color: Colors.black,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  SizedBox(
-                                    height: 200,
-                                    child: HomeList(
-                                      selectedService: selectedService,
-                                      maxItems: 2,
-                                    ),
-                                  ),
-                                ],
                               ),
                             ),
-                          ],
+                          ),
+                          const SizedBox(height: 20),
+                          SizedBox(
+                            height: 200, // Constrain the height of AllServicesPage
+                            child: AllServicesPage(),
+                          ),
                         ],
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
-          ],
-        ),
-      )
+          ),
+        ],
+      ),
     );
   }
 }

@@ -45,17 +45,17 @@ class _AllServicesPageState extends State<AllServicesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('All Services'),
-        backgroundColor: AppColor.secondaryColor,
-      ),
+      // appBar: AppBar(
+      //   title: const Text('All Services'),
+      //   backgroundColor: AppColor.secondaryColor,
+      // ),
       body: StreamBuilder<Map<String, UserData?>>(
         stream: controller.combinedStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
+          
           final userDataMap = snapshot.data ?? {};
           final serviceList = controller.state.serviceList;
 

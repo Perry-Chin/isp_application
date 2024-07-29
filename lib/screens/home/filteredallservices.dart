@@ -9,17 +9,25 @@ import '../../common/data/data.dart';
 import '../../common/values/values.dart';
 import 'home_controller.dart';
 
-class filteredAllServicesPage extends StatefulWidget {
+class FilteredAllServicesPage extends StatefulWidget {
   final String selectedService;
+  final String selectedServicePronoun;
+  final String desc;
+  final String definition;
 
-  const filteredAllServicesPage({Key? key, required this.selectedService}) : super(key: key);
+  const FilteredAllServicesPage({
+    Key? key,
+    required this.selectedService,
+    required this.selectedServicePronoun,
+    required this.desc,
+    required this.definition,
+  }) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _AllServicesPageState createState() => _AllServicesPageState();
+  _FilteredAllServicesPageState createState() => _FilteredAllServicesPageState();
 }
 
-class _AllServicesPageState extends State<filteredAllServicesPage> {
+class _FilteredAllServicesPageState extends State<FilteredAllServicesPage> {
   final HomeController controller = Get.find<HomeController>();
   late RefreshController _refreshController;
 
@@ -49,8 +57,13 @@ class _AllServicesPageState extends State<filteredAllServicesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('All ${widget.selectedService} Services'),
-        backgroundColor: AppColor.secondaryColor,
+        title: Text("${widget.selectedService} services"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Get.back();
+          }
+        )
       ),
       body: StreamBuilder<Map<String, UserData?>>(
         stream: controller.combinedStream,
@@ -61,7 +74,8 @@ class _AllServicesPageState extends State<filteredAllServicesPage> {
 
           final userDataMap = snapshot.data ?? {};
           final filteredServiceList = controller.state.serviceList
-              .where((serviceItem) => serviceItem.data().serviceName == widget.selectedService)
+              .where((serviceItem) =>
+                  serviceItem.data().serviceName == widget.selectedService)
               .toList();
 
           if (filteredServiceList.isEmpty) {
@@ -82,6 +96,53 @@ class _AllServicesPageState extends State<filteredAllServicesPage> {
             header: const WaterDropHeader(),
             child: CustomScrollView(
               slivers: [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.selectedService,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontFamily: "Safety",
+                            fontSize: 22,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          widget.selectedServicePronoun,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontFamily: "Doulos SIL",
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          widget.desc,
+                          style: const TextStyle(
+                            fontFamily: 'Times New Roman',
+                            fontStyle: FontStyle.italic,
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          widget.definition,
+                          style: const TextStyle(
+                            fontFamily: 'Times New Roman',
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ),
                 SliverPadding(
                   padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.w),
                   sliver: SliverGrid(
@@ -174,7 +235,8 @@ class _AllServicesPageState extends State<filteredAllServicesPage> {
                 children: [
                   Text(
                     userData?.username ?? "",
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                   const SizedBox(height: 3),
                   Text(
@@ -184,7 +246,8 @@ class _AllServicesPageState extends State<filteredAllServicesPage> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.location_on, color: Colors.grey, size: 16),
+                      const Icon(Icons.location_on,
+                          color: Colors.grey, size: 16),
                       const SizedBox(width: 2),
                       Text(serviceItem.data().location ?? "",
                           style: const TextStyle(fontSize: 12)),

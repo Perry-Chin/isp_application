@@ -21,4 +21,5 @@ class AppRoutes {
   static const detailAddReview = '/add_reviews';
   static const payment = '/payment';
   static const searchresults = '/searchresults';
+  static const allservices = '/allServices';
 }

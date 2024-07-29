@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:isp_application/screens/home/allservices.dart';
+import 'package:isp_application/screens/home/home_bindings.dart';
 
 import '../../screens/detail/reviews/add_reviews/add_reviews_index.dart';
 import '../../screens/detail/reviews/reviews_index.dart';
@@ -99,5 +101,10 @@ class AppPages {
         name: AppRoutes.payment,
         page: () => const PaymentPage(),
         binding: PaymentBinding()),
+    GetPage(
+        name: AppRoutes.allservices,
+        page: () => const AllServicesPage(),
+        binding: HomeBinding()
+    )
   ];
 }

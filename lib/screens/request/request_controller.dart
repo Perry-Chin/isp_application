@@ -7,7 +7,9 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:path/path.dart';
 import 'package:get/get.dart';
 
@@ -17,6 +19,7 @@ import '../../common/storage/storage.dart';
 import '../../common/utils/utils.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
+import 'map/map_index.dart';
 import 'request_index.dart';
 
 class RequestController extends GetxController {
@@ -29,7 +32,8 @@ class RequestController extends GetxController {
   final token = UserStore.to.token;
   final isProcessing = false.obs;
   final requestCompleted = false.obs;
-  
+  final latitude = 0.0.obs;
+  final longitude = 0.0.obs;
   final serviceController = TextEditingController();
   final descriptionController = TextEditingController();
   final rateController = TextEditingController();
@@ -177,6 +181,25 @@ class RequestController extends GetxController {
 
     if (start.isAfter(end)) {
       throw Exception("Start time cannot be after end time");
+    }
+  }
+
+  
+  // Open map
+  void openMap() async {
+    var result = await Get.to(() => const MapPage());
+    if (result != null && result is LatLng) {
+      locationController.text = "Loading...";
+      latitude.value = result.latitude;
+      longitude.value = result.longitude;
+      try {
+        List<Placemark> placemarks = await placemarkFromCoordinates(result.latitude, result.longitude);
+        Placemark place = placemarks[0];
+        locationController.text = place.street!;
+      } catch (e) {
+        print(e);
+        locationController.text = "Unknown Location";
+      }
     }
   }
 

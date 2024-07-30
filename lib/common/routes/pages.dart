@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:isp_application/screens/home/allservices.dart';
-import 'package:isp_application/screens/home/home_bindings.dart';
 
 import '../../screens/detail/reviews/add_reviews/add_reviews_index.dart';
 import '../../screens/detail/reviews/reviews_index.dart';
+import '../../screens/home/home_index.dart';
 import '../../screens/profile/settingsx/payment/payment_index.dart';
 import '../../screens/schedule/schedule_index.dart';
 import 'routes.dart';
@@ -53,6 +53,11 @@ class AppPages {
         name: AppRoutes.register,
         page: () => const RegisterPage(),
         binding: RegisterBinding()),
+
+    GetPage(
+        name: AppRoutes.home,
+        page: () => const HomePage(),
+        binding: HomeBinding()),
     // Setting Page
     GetPage(
         name: AppRoutes.settingsx,
@@ -104,7 +109,6 @@ class AppPages {
     GetPage(
         name: AppRoutes.allservices,
         page: () => const AllServicesPage(),
-        binding: HomeBinding()
-    )
+        binding: HomeBinding())
   ];
 }

@@ -3,9 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../common/data/data.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
-import '../login/login_index.dart';
+import '../../common/routes/routes.dart'; // Add this import for navigation
+import '../../common/storage/storage.dart'; // Add this import to save profile
+// import '../login/login_index.dart';
 
 class RegisterController extends GetxController {
   final registerFormKey = GlobalKey<FormState>();
@@ -44,15 +47,12 @@ class RegisterController extends GetxController {
           "User created successfully, creating user document"); // Debug statement
       await createUserDocument(userCredential);
 
-      print(
-          "Registration complete, navigating to login page"); // Debug statement
+      print("Registration complete, logging in user"); // Debug statement
+      await handleSignInAfterRegister(userCredential);
+
+      print("User logged in, navigating to home page"); // Debug statement
       if (context.mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const LoginPage(),
-          ),
-        );
+        Get.offAllNamed(AppRoutes.navbar); // Navigate to the home page
       }
     } catch (error) {
       print("Error during registration: $error"); // Debug statement
@@ -95,5 +95,14 @@ class RegisterController extends GetxController {
       'rating': 0,
       'isOnline': false,
     });
+  }
+
+  Future<void> handleSignInAfterRegister(UserCredential userCredential) async {
+    // Save user profile after registration
+    UserLoginResponseEntity userProfile = UserLoginResponseEntity(
+      email: emailController.text,
+      accessToken: userCredential.user?.uid,
+    );
+    await UserStore.to.saveProfile(userProfile);
   }
 }

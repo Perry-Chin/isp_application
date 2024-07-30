@@ -293,7 +293,7 @@ class _CurvedBackgroundPainter extends CustomPainter {
     canvas.drawPath(bluePath, paint);
 
     // Beige background paint
-    paint.color = const Color(0xFFF3E9E9);
+    paint.color = AppColor.secondaryColor;
     canvas.drawRect(
       Rect.fromLTRB(0, size.height * 0.35, size.width, size.height),
       paint,

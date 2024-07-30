@@ -21,10 +21,7 @@ class ProfilePage extends GetView<ProfileController> {
         children: [
           const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
           const SizedBox(width: 8),
-          Text(
-            "Profile",
-            style: CustomTextTheme.darkTheme.titleMedium
-          ),
+          Text("Profile", style: CustomTextTheme.darkTheme.titleMedium),
         ],
       ),
       // leading: userId != null
@@ -135,13 +132,11 @@ class ProfilePage extends GetView<ProfileController> {
                       children: [
                         Obx(() {
                           return Text(
-                            controller.user.value?.username ?? 'Username',
-                            style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black
-                            )
-                          );
+                              controller.user.value?.username ?? 'Username',
+                              style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black));
                         }),
                         const SizedBox(width: 8),
                         _buildRatingRectangle(controller),
@@ -171,7 +166,7 @@ class ProfilePage extends GetView<ProfileController> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              controller.user.value?.rating?.toStringAsFixed(1) ?? '4.6',
+              controller.user.value?.rating?.toStringAsFixed(1) ?? '0',
               style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,

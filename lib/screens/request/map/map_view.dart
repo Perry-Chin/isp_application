@@ -52,7 +52,7 @@ class MapPage extends StatelessWidget {
                 child: Column(
                   children: [
                     FloatingActionButton(
-                      backgroundColor: AppColor.primaryColor,
+                      backgroundColor: AppColor.secondaryColor,
                       heroTag: "currentLocation",
                       onPressed: () => controller.googleMapController.animateCamera(CameraUpdate.newCameraPosition(MapController.initialCameraPosition)),
                       mini: true,
@@ -60,7 +60,7 @@ class MapPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     FloatingActionButton(
-                      backgroundColor: AppColor.primaryColor,
+                      backgroundColor: AppColor.secondaryColor,
                       heroTag: "zoomIn",
                       onPressed: () => controller.googleMapController.animateCamera(CameraUpdate.zoomIn()),
                       mini: true,
@@ -68,7 +68,7 @@ class MapPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     FloatingActionButton(
-                      backgroundColor: AppColor.primaryColor,
+                      backgroundColor: AppColor.secondaryColor,
                       heroTag: "zoomOut",
                       onPressed: () => controller.googleMapController.animateCamera(CameraUpdate.zoomOut()),
                       mini: true,
@@ -82,7 +82,7 @@ class MapPage extends StatelessWidget {
         }
       }),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: AppColor.primaryColor,
+        backgroundColor: AppColor.secondaryColor,
         icon: const Icon(Icons.my_location, color: Colors.white),
         onPressed: () => controller.setLocation(),
         label: const Text('Set Location', style: TextStyle(color: Colors.white),),

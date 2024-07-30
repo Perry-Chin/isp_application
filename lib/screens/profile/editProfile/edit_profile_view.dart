@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../common/middlewares/middlewares.dart';
 import '../../../common/theme/custom/custom_theme.dart';
 import '../../../common/values/values.dart';
 import '../../../common/widgets/widgets.dart';
@@ -20,12 +21,10 @@ class EditProfilePage extends GetView<EditProfileController> {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
+            const Image(
+                image: AssetImage(AppImage.logo), width: 35, height: 35),
             const SizedBox(width: 8),
-            Text(
-              "Edit Profile",
-              style: CustomTextTheme.darkTheme.labelMedium
-            ),
+            Text("Edit Profile", style: CustomTextTheme.darkTheme.labelMedium),
           ],
         ),
       ),
@@ -75,20 +74,22 @@ class EditProfilePage extends GetView<EditProfileController> {
                 ),
                 const SizedBox(height: 10),
                 MyTextField(
-                  hinttext: 'Your username',
-                  labeltext: 'Name',
-                  prefixicon: Icons.person,
-                  obscuretext: false,
-                  textController: controller.usernameController,
-                ),
+                    hinttext: 'Your username',
+                    labeltext: 'Name',
+                    prefixicon: Icons.person,
+                    obscuretext: false,
+                    textController: controller.usernameController,
+                    validator: (value) =>
+                        RouteValidateMiddleware.validateUsername(value)),
                 const SizedBox(height: 10),
                 MyTextField(
-                  hinttext: 'Your email',
-                  labeltext: 'Email',
-                  prefixicon: Icons.email,
-                  obscuretext: false,
-                  textController: controller.emailController,
-                ),
+                    hinttext: 'Your email',
+                    labeltext: 'Email',
+                    prefixicon: Icons.email,
+                    obscuretext: false,
+                    textController: controller.emailController,
+                    validator: (value) =>
+                        RouteValidateMiddleware.validateEmail(value)),
                 const SizedBox(height: 10),
                 MyTextField(
                   hinttext: 'Your phone number',
@@ -103,20 +104,24 @@ class EditProfilePage extends GetView<EditProfileController> {
                       ? Column(
                           children: [
                             MyTextField(
-                              hinttext: 'Your password',
-                              labeltext: 'Password',
-                              prefixicon: Icons.key,
-                              obscuretext: true,
-                              textController: controller.pwdController,
-                            ),
+                                hinttext: 'Your password',
+                                labeltext: 'Password',
+                                prefixicon: Icons.key,
+                                obscuretext: true,
+                                textController: controller.pwdController,
+                                validator: (value) =>
+                                    RouteValidateMiddleware.validatePassword(
+                                        value)),
                             const SizedBox(height: 10),
                             MyTextField(
-                              hinttext: 'Confirm your password',
-                              labeltext: 'Confirm Password',
-                              prefixicon: Icons.key,
-                              obscuretext: true,
-                              textController: controller.confirmpwdController,
-                            ),
+                                hinttext: 'Confirm your password',
+                                labeltext: 'Confirm Password',
+                                prefixicon: Icons.key,
+                                obscuretext: true,
+                                textController: controller.confirmpwdController,
+                                validator: (value) => RouteValidateMiddleware
+                                    .validateConfirmPassword(value,
+                                        controller.confirmpwdController.text)),
                           ],
                         )
                       : MyTextField(

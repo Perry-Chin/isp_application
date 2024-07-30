@@ -36,69 +36,70 @@ class RegisterPage extends GetView<RegisterController> {
                   const SizedBox(height: 10),
                   // Text field for username input
                   MyTextField(
-                    hinttext: 'Your username',
-                    labeltext: 'Name',
-                    prefixicon: Icons.person,
-                    obscuretext: false,
-                    textController: controller.usernameController,
-                    validator: (value) => RouteValidateMiddleware.validateUsername(value)
-                  ),
+                      hinttext: 'Your username',
+                      labeltext: 'Name',
+                      prefixicon: Icons.person,
+                      obscuretext: false,
+                      textController: controller.usernameController,
+                      validator: (value) =>
+                          RouteValidateMiddleware.validateUsername(value)),
                   const SizedBox(height: 10),
                   // Text field for email input
                   MyTextField(
-                    hinttext: 'Your email',
-                    labeltext: 'Email',
-                    prefixicon: Icons.email,
-                    obscuretext: false,
-                    textController: controller.emailController,
-                    validator: (value) => RouteValidateMiddleware.validateEmail(value)
-                  ),
+                      hinttext: 'Your email',
+                      labeltext: 'Email',
+                      prefixicon: Icons.email,
+                      obscuretext: false,
+                      textController: controller.emailController,
+                      validator: (value) =>
+                          RouteValidateMiddleware.validateEmail(value)),
                   const SizedBox(height: 10),
                   // Text field for phone number input
                   MyTextField(
-                    hinttext: 'Your phone number',
-                    labeltext: 'Phone Number',
-                    prefixicon: Icons.phone,
-                    obscuretext: false,
-                    textController: controller.phoneNoController,
-                    validator: (value) => RouteValidateMiddleware.validatePhoneNumber(value)
-                  ),
+                      hinttext: 'Your phone number',
+                      labeltext: 'Phone Number',
+                      prefixicon: Icons.phone,
+                      obscuretext: false,
+                      textController: controller.phoneNoController,
+                      validator: (value) =>
+                          RouteValidateMiddleware.validatePhoneNumber(value)),
                   const SizedBox(height: 10),
                   // Password field
                   Obx(() => MyTextField(
-                        hinttext: 'Your password',
-                        labeltext: 'Password',
-                        prefixicon: Icons.key,
-                        obscuretext: controller.isPasswordHidden.value,
-                        textController: controller.pwdController,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            controller.isPasswordHidden.value
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                          ),
-                          onPressed: () => controller.togglePasswordVisibility(),
+                      hinttext: 'Your password',
+                      labeltext: 'Password',
+                      prefixicon: Icons.key,
+                      obscuretext: controller.isPasswordHidden.value,
+                      textController: controller.pwdController,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          controller.isPasswordHidden.value
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                         ),
-                        validator: (value) => RouteValidateMiddleware.validatePassword(value)
-                      )),
+                        onPressed: () => controller.togglePasswordVisibility(),
+                      ),
+                      validator: (value) =>
+                          RouteValidateMiddleware.validatePassword(value))),
                   const SizedBox(height: 10),
                   // Confirm password field
                   Obx(() => MyTextField(
-                        hinttext: 'Confirm your password',
-                        labeltext: 'Confirm Password',
-                        prefixicon: Icons.key,
-                        obscuretext: controller.isPasswordHidden.value,
-                        textController: controller.confirmpwdController,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            controller.isPasswordHidden.value
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                          ),
-                          onPressed: () => controller.togglePasswordVisibility(),
+                      hinttext: 'Confirm your password',
+                      labeltext: 'Confirm Password',
+                      prefixicon: Icons.key,
+                      obscuretext: controller.isPasswordHidden.value,
+                      textController: controller.confirmpwdController,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          controller.isPasswordHidden.value
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                         ),
-                        validator: (value) => RouteValidateMiddleware.validateConfirmPassword(value, controller.confirmpwdController.text)
-                      )),
+                        onPressed: () => controller.togglePasswordVisibility(),
+                      ),
+                      validator: (value) =>
+                          RouteValidateMiddleware.validateConfirmPassword(
+                              value, controller.confirmpwdController.text))),
                   const SizedBox(height: 30),
                   // Button to create account
                   ApplyButton(
@@ -125,15 +126,14 @@ class RegisterPage extends GetView<RegisterController> {
                       TextButton(
                         onPressed: () {
                           // Navigate to the login screen
-                          Get.offAndToNamed(AppRoutes.login);
+                          Get.offAndToNamed(AppRoutes.home);
                         },
                         child: const Text(
                           "Log In",
                           style: TextStyle(
-                            color: AppColor.secondaryColor,
-                            fontSize: 15,
-                            fontFamily: "Sitka Display"
-                          ),
+                              color: AppColor.secondaryColor,
+                              fontSize: 15,
+                              fontFamily: "Sitka Display"),
                         ),
                       ),
                     ],

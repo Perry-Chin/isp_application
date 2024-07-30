@@ -157,10 +157,12 @@ class ProfileController extends GetxController {
     }
 
     try {
-      if (allReviews.isEmpty) return;
+      double averageRating = 0;
 
-      double sum = allReviews.fold(0, (prev, review) => prev + review.rating);
-      double averageRating = sum / allReviews.length;
+      if (allReviews.isNotEmpty) {
+        double sum = allReviews.fold(0, (prev, review) => prev + review.rating);
+        averageRating = sum / allReviews.length;
+      }
 
       await db.collection('users').doc(token).update({'rating': averageRating});
 

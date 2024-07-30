@@ -32,8 +32,13 @@ Future<void> main() async {
   // Initialize Stripe
   Stripe.publishableKey = 'pk_test_51PW9k609OEdaNyd6cGvFdgCq7GX3ecDeHCWNHVHIZrpYpXQIWugLnetf8yhndG46JGhzCpIZp6DgeyiFxebz1g0400cB03RQdT';
 
-  if (Platform.isAndroid) {
-    await GoogleMapsFlutterAndroid().initializeWithRenderer(AndroidMapRenderer.latest);
+  // Google Maps
+  if(GetPlatform.isAndroid) {
+    try {
+      await GoogleMapsFlutterAndroid().initializeWithRenderer(AndroidMapRenderer.latest);
+    } catch (e) {
+      print(e);
+    }
   }
 
   runApp(const MyApp());

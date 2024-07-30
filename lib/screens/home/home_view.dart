@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-<<<<<<< HEAD
-=======
-import 'package:isp_application/screens/home/allservices.dart';
->>>>>>> b4c521bab7ac3a5c2f880ce9b6f51574bf5f5dab
 import 'package:isp_application/screens/home/filteredallservices.dart';
 import 'package:isp_application/screens/home/allservices.dart'; // Import AllServicesPage
 import '../../common/values/values.dart';

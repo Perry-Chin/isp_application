@@ -7,7 +7,6 @@ class UserData {
   String? email;
   String? phoneNo;
   String? photourl;
-  String? address;
   double? rating;
   String? account;
 
@@ -18,7 +17,6 @@ class UserData {
     this.email,
     this.phoneNo,
     this.photourl,
-    this.address,
     this.rating,
     this.account,
   });
@@ -35,7 +33,6 @@ class UserData {
       email: data?['email'],
       phoneNo: data?['phone_number'],
       photourl: data?['photourl'],
-      address: data?['address'],
       rating: data?['rating'],
       account: data?['account_type'],
     );
@@ -49,7 +46,6 @@ class UserData {
       if (email != null) "email": email,
       if (phoneNo != null) "phone_number": phoneNo,
       if (photourl != null) "photourl": photourl,
-      if (address != null) "address": address,
       if (rating != null) "rating": rating,
       if (account != null) "account_type": account,
     };

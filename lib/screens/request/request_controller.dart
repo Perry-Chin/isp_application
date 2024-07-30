@@ -19,6 +19,7 @@ import '../../common/storage/storage.dart';
 import '../../common/utils/utils.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
+import 'map/map_index.dart';
 import 'request_index.dart';
 
 class RequestController extends GetxController {
@@ -186,7 +187,7 @@ class RequestController extends GetxController {
   
   // Open map
   void openMap() async {
-    var result = await Get.toNamed('/map');
+    var result = await Get.to(() => const MapPage());
     if (result != null && result is LatLng) {
       locationController.text = "Loading...";
       latitude.value = result.latitude;

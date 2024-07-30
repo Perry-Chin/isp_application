@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:isp_application/screens/home/allservices.dart';
 import 'package:isp_application/screens/home/filteredallservices.dart';
+import 'package:isp_application/screens/home/limitedservices.dart';
 import '../../common/values/values.dart';
 import 'home_controller.dart';
 
@@ -83,11 +83,19 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late HomeController controller;
 
+  // Add titles for the services
   static const List<String> serviceImages = [
     'assets/images/groomingdog.png',
     'assets/images/walking.png',
     'assets/images/sitting.png',
     'assets/images/training.png',
+  ];
+
+  static const List<String> serviceTitles = [
+    'Grooming',
+    'Walking',
+    'Sitting',
+    'Training',
   ];
 
   @override
@@ -220,20 +228,35 @@ class _HomePageState extends State<HomePage> {
                                 serviceImages.length,
                                 (index) => GestureDetector(
                                   onTap: () => _onServiceImagePressed(index),
-                                  child: Image.asset(
-                                    serviceImages[index],
-                                    width: 60,
-                                    height: 60,
-                                    fit: BoxFit.cover,
+                                  child: Column(
+                                    children: [
+                                      Image.asset(
+                                        serviceImages[index],
+                                        width: 60,
+                                        height: 60,
+                                        fit: BoxFit.cover,
+                                      ),
+                                      const SizedBox(height: 5), // Space between image and title
+                                      Text(
+                                        serviceTitles[index],
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w300,
+                                          color: Colors.black,
+                                          fontFamily: "Open Sans"
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ),
                           ),
                           const SizedBox(height: 20),
+                          // No fixed height here
                           SizedBox(
-                            height: 200, // Constrain the height of AllServicesPage
-                            child: AllServicesPage(),
+                            height: MediaQuery.of(context).size.height * 0.5, // Or any other height you prefer
+                            child: const limitedservicespage(), // Use the new LimitedServicesPage widget
                           ),
                         ],
                       ),
@@ -245,18 +268,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class CurvedBackgroundPainter extends StatelessWidget {
-  const CurvedBackgroundPainter({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _CurvedBackgroundPainter(),
-      size: Size.infinite,
     );
   }
 }

@@ -19,4 +19,10 @@ class WelcomeController extends GetxController {
     await ConfigStore.to.saveAlreadyOpen();
     Get.offAndToNamed(AppRoutes.login);
   }
+
+  @override
+  void onInit(){
+    super.onInit();
+    print("object");
+  }
 }

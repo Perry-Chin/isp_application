@@ -9,14 +9,14 @@ import '../../common/data/data.dart';
 import '../../common/values/values.dart';
 import 'home_controller.dart';
 
-class AllServicesPage extends StatefulWidget {
-  const AllServicesPage({Key? key}) : super(key: key);
+class limitedservicespage extends StatefulWidget {
+  const limitedservicespage({Key? key}) : super(key: key);
 
   @override
-  _AllServicesPageState createState() => _AllServicesPageState();
+  _limitedservicespageState createState() => _limitedservicespageState();
 }
 
-class _AllServicesPageState extends State<AllServicesPage> {
+class _limitedservicespageState extends State<limitedservicespage> {
   final HomeController controller = Get.find<HomeController>();
   late RefreshController _refreshController;
 
@@ -45,10 +45,6 @@ class _AllServicesPageState extends State<AllServicesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('All Services'),
-        backgroundColor: AppColor.secondaryColor,
-      ),
       body: StreamBuilder<Map<String, UserData?>>(
         stream: controller.combinedStream,
         builder: (context, snapshot) {
@@ -64,7 +60,10 @@ class _AllServicesPageState extends State<AllServicesPage> {
               .where((service) => service.data().reqUserid != currentUserId)
               .toList();
 
-          if (filteredServiceList.isEmpty) {
+          // Limit the filteredServiceList to a maximum of 4 items
+          final limitedServiceList = filteredServiceList.take(5).toList();
+
+          if (limitedServiceList.isEmpty) {
             return const Center(
               child: Text(
                 'No services available',
@@ -93,14 +92,14 @@ class _AllServicesPageState extends State<AllServicesPage> {
                     ),
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        var serviceItem = filteredServiceList[index];
+                        var serviceItem = limitedServiceList[index];
                         var userData = userDataMap[serviceItem.data().reqUserid];
                         return _buildServiceListItem(serviceItem, userData);
                       },
-                      childCount: filteredServiceList.length,
+                      childCount: limitedServiceList.length,
                       findChildIndexCallback: (Key key) {
                         final serviceId = (key as ValueKey<String>).value;
-                        return filteredServiceList
+                        return limitedServiceList
                             .indexWhere((service) => service.id == serviceId);
                       },
                     ),

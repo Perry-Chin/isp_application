@@ -96,7 +96,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
           .where("requester_uid", isEqualTo: token)
           .where("statusid", isGreaterThanOrEqualTo: 0)
           .orderBy("statusid", descending: false)
-          .orderBy("date", descending: false);
+          .orderBy("date", descending: true);
 
       if (selectedStatus.isNotEmpty && !selectedStatus.contains('All')) {
         query = query.where("status", whereIn: selectedStatus);
@@ -126,7 +126,7 @@ class ScheduleController extends GetxController with GetSingleTickerProviderStat
           .where("provider_uid", isEqualTo: token)
           .where("statusid", isGreaterThanOrEqualTo: 0)
           .orderBy("statusid", descending: false)
-          .orderBy("date", descending: false);
+          .orderBy("date", descending: true);
 
       if (!selectedStatus.contains('All') && selectedStatus.isNotEmpty) {
         query = query.where("status", whereIn: selectedStatus);

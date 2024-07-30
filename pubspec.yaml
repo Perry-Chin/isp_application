@@ -112,6 +112,7 @@ dependencies:
   permission_handler: ^11.0.1
   google_maps_flutter_android: ^2.6.2
   google_maps_flutter: ^2.5.3
+  geocoding: ^3.0.0
 
   # flutter_settings_screens: ^0.3.4
 

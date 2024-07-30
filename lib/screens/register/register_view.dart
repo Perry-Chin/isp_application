@@ -5,7 +5,6 @@ import '../../common/middlewares/middlewares.dart';
 import '../../common/routes/routes.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
-import '../login/login_index.dart';
 import 'register_index.dart';
 
 class RegisterPage extends GetView<RegisterController> {

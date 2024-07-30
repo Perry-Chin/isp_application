@@ -107,13 +107,7 @@ List<Step> getSteps(int currentStep) {
               prefixicon: Icons.add_location_alt_outlined,
               textController: controller.locationController,
               //onTap: () => selectLocation(Get.context!, controller.locationController),
-              onTap: () async {
-                final selectedLocation = await Get.to(() => const MapPage());
-                if (selectedLocation != null) {
-                  controller.locationController.text =
-                      'Lat: ${selectedLocation.latitude}, Lng: ${selectedLocation.longitude}';
-                }
-              },
+              onTap: () => controller.openMap(),
               // validator: (value) => RouteValidateServiceMiddleware.validateLocation(value)
             ),
           const SizedBox(height: 20),

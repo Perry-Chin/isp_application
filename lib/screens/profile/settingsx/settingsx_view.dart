@@ -17,10 +17,7 @@ class SettingsxPage extends GetView<SettingsxController> {
         children: [
           const Image(image: AssetImage(AppImage.logo), width: 35, height: 35),
           const SizedBox(width: 8),
-          Text(
-            "Settings",
-            style: CustomTextTheme.darkTheme.labelMedium
-          ),
+          Text("Settings", style: CustomTextTheme.darkTheme.labelMedium),
         ],
       ),
     );
@@ -54,10 +51,7 @@ class SettingsxPage extends GetView<SettingsxController> {
           child: Row(
             children: [
               Expanded(
-                child: Text(
-                  title,
-                  style: GoogleFonts.poppins(fontSize: 16)
-                ),
+                child: Text(title, style: GoogleFonts.poppins(fontSize: 16)),
               ),
               const Icon(Icons.arrow_forward_ios, color: Colors.grey),
             ],
@@ -88,6 +82,10 @@ class SettingsxPage extends GetView<SettingsxController> {
             _buildSettingsOption(
               title: 'View Payment Details',
               onTap: () => Get.toNamed(AppRoutes.payment),
+            ),
+            _buildSettingsOption(
+              title: 'About Us',
+              onTap: () => Get.toNamed(AppRoutes.aboutus),
             ),
             _buildSettingsOption(
               title: 'Logout',

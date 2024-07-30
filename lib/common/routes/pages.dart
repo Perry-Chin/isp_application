@@ -109,6 +109,10 @@ class AppPages {
     GetPage(
         name: AppRoutes.allservices,
         page: () => const AllServicesPage(),
-        binding: HomeBinding())
+        binding: HomeBinding()),
+    GetPage(
+        name: AppRoutes.aboutus,
+        page: () => const AboutUsPage(),
+        binding: SettingsxBinding())
   ];
 }

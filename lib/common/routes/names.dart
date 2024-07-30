@@ -22,4 +22,5 @@ class AppRoutes {
   static const payment = '/payment';
   static const searchresults = '/searchresults';
   static const allservices = '/allServices';
+  static const aboutus = '/aboutus';
 }

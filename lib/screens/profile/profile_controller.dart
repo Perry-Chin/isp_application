@@ -8,7 +8,7 @@ import '../../common/middlewares/middlewares.dart';
 class ProfileController extends GetxController {
   final token = UserStore.to.token;
   final db = FirebaseFirestore.instance;
-  final user = Rx<UserData?>(null);
+  final user = Rxn<UserData>();
   final allReviews = <ReviewData>[].obs;
   final filteredReviews = <ReviewData>[].obs;
   final Rx<String> currentTab = 'All'.obs;
@@ -23,20 +23,19 @@ class ProfileController extends GetxController {
   }
 
   void fetchUserData([String? userId]) async {
-    final String fetchUserId = userId ?? token;
-
-    if (fetchUserId.isEmpty) {
-      print('Error: User ID is null or empty');
-      return;
-    }
-
     try {
-      DocumentSnapshot<Map<String, dynamic>> userDoc =
-          await db.collection('users').doc(fetchUserId).get();
+      final doc = await db.collection('users').doc(UserStore.to.token).get();
 
-      if (userDoc.exists) {
-        user.value = UserData.fromFirestore(userDoc, null);
-        await fetchUserReviews(fetchUserId);
+      if (doc.exists) {
+        final data = doc.data()!;
+        user.value = UserData(
+          id: doc.id,
+          username: data['username'],
+          email: data['email'],
+          photourl: data['photourl'],
+          rating: data['rating'],
+        );
+        await fetchUserReviews();
         await updateAverageRating();
       } else {
         print('User not found');

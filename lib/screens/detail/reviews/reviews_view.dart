@@ -152,9 +152,6 @@ class DetailReviewView extends GetView<DetailReviewController> {
       ),
       child: TabBar(
         controller: controller.tabController,
-        onTap: (index) {
-          controller.updateSelectedTab(['All', 'Provider', 'Requester'][index]);
-        },
         labelColor: Colors.white,
         unselectedLabelColor: Colors.grey,
         labelStyle: GoogleFonts.poppins(),

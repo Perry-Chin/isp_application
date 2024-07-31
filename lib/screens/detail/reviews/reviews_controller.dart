@@ -51,7 +51,14 @@ class DetailReviewController extends GetxController
     data_uid = data['data_uid'];
     status = data['status'];
     checkExistingReview();
-    fetchUserReviews();
+    fetchUserReviews().then((_) {
+      filterReviewsByTab(); // This will now set the initial "All" reviews
+    });
+
+    // Listen to tab changes
+    tabController.addListener(() {
+      updateSelectedTab(['All', 'Provider', 'Requester'][tabController.index]);
+    });
   }
 
   @override

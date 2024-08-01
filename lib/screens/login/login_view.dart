@@ -60,7 +60,6 @@ class LoginPage extends GetView<LoginController> {
                     hinttext: 'Your email',
                     labeltext: 'Email',
                     prefixicon: Icons.mail,
-                    obscuretext: false,
                     textController: controller.emailController),
                 const SizedBox(height: 30),
                 Obx(() => MyTextField(

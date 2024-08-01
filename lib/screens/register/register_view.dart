@@ -70,14 +70,6 @@ class RegisterPage extends GetView<RegisterController> {
                       prefixicon: Icons.key,
                       obscuretext: controller.isPasswordHidden.value,
                       textController: controller.pwdController,
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          controller.isPasswordHidden.value
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                        ),
-                        onPressed: () => controller.togglePasswordVisibility(),
-                      ),
                       validator: (value) =>
                           RouteValidateMiddleware.validatePassword(value))),
                   const SizedBox(height: 10),
@@ -88,14 +80,6 @@ class RegisterPage extends GetView<RegisterController> {
                       prefixicon: Icons.key,
                       obscuretext: controller.isPasswordHidden.value,
                       textController: controller.confirmpwdController,
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          controller.isPasswordHidden.value
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                        ),
-                        onPressed: () => controller.togglePasswordVisibility(),
-                      ),
                       validator: (value) =>
                           RouteValidateMiddleware.validateConfirmPassword(
                               value, controller.confirmpwdController.text))),

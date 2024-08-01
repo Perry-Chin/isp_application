@@ -9,6 +9,7 @@ class ProfileController extends GetxController {
   final token = UserStore.to.token;
   final db = FirebaseFirestore.instance;
   final user = Rxn<UserData>();
+  final rating = 0.0.obs;
   final allReviews = <ReviewData>[].obs;
   final filteredReviews = <ReviewData>[].obs;
   final Rx<String> currentTab = 'All'.obs;
@@ -24,16 +25,24 @@ class ProfileController extends GetxController {
 
   void fetchUserData([String? userId]) async {
     try {
-      final doc = await db.collection('users').doc(UserStore.to.token).get();
+      final doc = await db.collection('users').doc(token).get();
 
       if (doc.exists) {
         final data = doc.data()!;
+        if (data['rating'] != null) {
+          if (data['rating'] is int) {
+            rating.value = data['rating'];
+          } else {
+            rating.value = data['rating'];
+          }
+        } else {
+          rating.value = 0.0;
+        }
         user.value = UserData(
           id: doc.id,
           username: data['username'],
           email: data['email'],
           photourl: data['photourl'],
-          rating: data['rating'],
         );
         await fetchUserReviews();
         await updateAverageRating();

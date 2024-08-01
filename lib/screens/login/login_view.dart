@@ -68,15 +68,7 @@ class LoginPage extends GetView<LoginController> {
                       labeltext: 'Password',
                       prefixicon: Icons.key,
                       obscuretext: controller.isPasswordHidden.value,
-                      textController: controller.pwdController,
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          controller.isPasswordHidden.value
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                        ),
-                        onPressed: () => controller.togglePasswordVisibility(),
-                      ),
+                      textController: controller.pwdController
                     )),
                 const SizedBox(height: 40),
                 ApplyButton(

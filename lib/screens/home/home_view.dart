@@ -56,16 +56,6 @@ class SearchBox extends StatelessWidget {
                 ),
               ),
             ),
-            if (showSuffixIcon)
-              IconButton(
-                icon: const Icon(
-                  Icons.filter_list,
-                  color: AppColor.secondaryColor,
-                ),
-                onPressed: () {
-                  Get.toNamed('/filterHome');
-                },
-              ),
           ],
         ),
       ),

@@ -230,44 +230,49 @@ class ProfilePage extends GetView<ProfileController> {
     return Expanded(
       child: Column(
         children: [
-          Container(
-            margin: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(25.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  spreadRadius: 0,
-                  blurRadius: 6,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: TabBar(
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.grey,
-              labelStyle: GoogleFonts.poppins(),
-              indicator: BoxDecoration(
-                color: AppColor.secondaryColor,
+          SizedBox(
+            width: double.infinity,
+            child: Container(
+              margin:
+                  EdgeInsets.all(16.w), // Using ScreenUtil for responsiveness
+              decoration: BoxDecoration(
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(25.0),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withOpacity(0.1),
                     spreadRadius: 0,
-                    blurRadius: 14,
-                    offset: const Offset(0, 4),
+                    blurRadius: 6,
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
-              tabs: const [
-                Tab(text: 'All'),
-                Tab(text: 'Provider'),
-                Tab(text: 'Requester'),
-              ],
+              child: TabBar(
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.grey,
+                labelStyle:
+                    GoogleFonts.poppins(fontSize: 14), // Reduced font size
+                indicator: BoxDecoration(
+                  color: AppColor.secondaryColor,
+                  borderRadius: BorderRadius.circular(25.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 0,
+                      blurRadius: 14,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                tabs: const [
+                  Tab(text: 'All'),
+                  Tab(text: 'Provider'),
+                  Tab(text: 'Requester'),
+                ],
+              ),
             ),
           ),
-          const Expanded(
+          Expanded(
             child: TabBarView(
               children: [
                 ReviewsList(reviewsType: 'All'),

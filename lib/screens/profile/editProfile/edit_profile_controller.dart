@@ -6,11 +6,12 @@ import 'package:get/get.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../../../common/values/values.dart';
+import '../../../common/widgets/widgets.dart';
 import '../profile_index.dart';
 
 class EditProfileController extends GetxController {
   EditProfileController();
-
+  final editProfileFormKey = GlobalKey<FormState>();
   final usernameController = TextEditingController();
   final phoneNoController = TextEditingController();
   final emailController = TextEditingController();
@@ -132,39 +133,13 @@ class EditProfileController extends GetxController {
   Future<void> handleUpdateProfile(BuildContext context) async {
     // Store the context in a local variable before the await
     BuildContext dialogContext = context;
-
-    showDialog(
-      context: dialogContext,
-      builder: (context) => const Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+    if (!editProfileFormKey.currentState!.validate()) {
+      return;
+    }
+    appLoading(context);
 
     try {
       User? user = FirebaseAuth.instance.currentUser;
-
-      // Check if fields are not empty
-      if (emailController.text.isEmpty ||
-          usernameController.text.isEmpty ||
-          phoneNoController.text.isEmpty) {
-        throw 'Please fill in all fields';
-      }
-
-      // Check for valid email
-      if (!RegExp(r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+')
-          .hasMatch(emailController.text)) {
-        throw 'Please enter a valid email';
-      }
-
-      // Check for password update and validation
-      if (pwdController.text.isNotEmpty) {
-        if (pwdController.text == currentPwdController.text) {
-          throw 'New password cannot be the same as the current password';
-        }
-        if (pwdController.text != confirmpwdController.text) {
-          throw 'Passwords do not match';
-        }
-      }
 
       // Only reauthenticate if the email is being changed
       if (user!.email != emailController.text) {
@@ -217,8 +192,6 @@ class EditProfileController extends GetxController {
       if (dialogContext.mounted) {
         Navigator.pop(dialogContext); // Dismiss loading dialog
       }
-
-      showRoundedErrorDialog(dialogContext, error.toString());
     }
   }
 

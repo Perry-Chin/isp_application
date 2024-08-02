@@ -96,7 +96,7 @@ class _limitedservicespageState extends State<limitedservicespage> {
                         var userData = userDataMap[serviceItem.data().reqUserid];
                         return _buildServiceListItem(serviceItem, userData);
                       },
-                      childCount: 4,
+                      childCount: limitedServiceList.length,
                       findChildIndexCallback: (Key key) {
                         final serviceId = (key as ValueKey<String>).value;
                         return limitedServiceList

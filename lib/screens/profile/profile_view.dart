@@ -55,7 +55,7 @@ class ProfilePage extends GetView<ProfileController> {
           return [
             SliverToBoxAdapter(
               child: Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 alignment: Alignment.centerLeft,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -272,7 +272,7 @@ class ProfilePage extends GetView<ProfileController> {
               ),
             ),
           ),
-          Expanded(
+          const Expanded(
             child: TabBarView(
               children: [
                 ReviewsList(reviewsType: 'All'),

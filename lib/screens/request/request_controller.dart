@@ -76,6 +76,7 @@ class RequestController extends GetxController {
 
   void clearForm() {
     // Clear text fields
+    selectedService = null;
     serviceController.clear();
     descriptionController.clear();
     rateController.clear();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -21,6 +22,7 @@ class ReviewList extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
+        print(controller.userToken);
         return Obx(() {
           List<ReviewData> filteredReviews =
               controller.getFilteredReviews(tabType);
@@ -64,12 +66,21 @@ class ReviewList extends StatelessWidget {
                           // ),
                         ),
                         child: CircleAvatar(
-                          backgroundImage: userData?.photourl != null
-                              ? NetworkImage(userData!.photourl!)
-                              : null,
-                          child: userData?.photourl == null
-                              ? Text(userData?.username?[0] ?? 'A')
-                              : null,
+                          radius: 24.0,
+                          backgroundColor: Colors.transparent,
+                          child: ClipOval(
+                            child:
+                            userData?.photourl != null && userData!.photourl!.isNotEmpty
+                              ? FadeInImage.assetNetwork(
+                                  placeholder: AppImage.profile,
+                                  image: userData.photourl ?? "",
+                                  fadeInDuration: const Duration(milliseconds: 100),
+                                  fit: BoxFit.cover,
+                                  width: 44.w,
+                                  height: 44.w,
+                                )
+                              : Image.asset(AppImage.profile),
+                          ),
                         ),
                       ),
                       title: Row(

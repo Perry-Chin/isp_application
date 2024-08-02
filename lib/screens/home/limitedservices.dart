@@ -182,9 +182,15 @@ class _limitedservicespageState extends State<limitedservicespage> {
                     children: [
                       const Icon(Icons.location_on, color: Colors.grey, size: 16),
                       const SizedBox(width: 2),
-                      Text(serviceItem.data().location ?? "",
-                          style: const TextStyle(fontSize: 12)),
-                      const Spacer(),
+                      Expanded(
+                        child: Text(
+                          serviceItem.data().location ?? "",
+                          style: const TextStyle(fontSize: 12),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 2),
                       Text(
                         "\$${serviceItem.data().rate?.toString() ?? "0"}/h",
                         style: const TextStyle(

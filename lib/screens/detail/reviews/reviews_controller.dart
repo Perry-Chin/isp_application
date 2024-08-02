@@ -108,12 +108,14 @@ class DetailReviewController extends GetxController
 
   Stream<Map<String, UserData?>> getCombinedStream() {
     return getReviewStream().switchMap((reviewDocs) {
-      List<String> userIds = reviewDocs
-          .expand((doc) => [doc.data().fromUid, doc.data().toUid])
-          .whereType<String>()
-          .toSet()
-          .toList();
+      print(reviewDocs);
+      List<String> userIds = reviewDocs.expand((doc) => [doc.data().fromUid, doc.data().toUid])
+        .whereType<String>()
+        .toSet()
+        .toList();
+        
       if (userIds.isEmpty) {
+        print('Error: User ID is null or empty');
         return Stream.value({});
       }
       return getUserStream(userIds).map((userDocs) {

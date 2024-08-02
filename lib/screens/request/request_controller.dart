@@ -125,19 +125,7 @@ class RequestController extends GetxController {
         isProcessing.value = false;
         Navigator.pop(context);
         return;
-      } else if (starttimeController.text == endtimeController.text) {
-        throw Exception("Start time cannot be the same as end time");
-      }
-
-      final startDateTimeString = '2000-01-01 ${starttimeController.text}';
-      final endDateTimeString = '2000-01-01 ${endtimeController.text}';
-      final start = DateFormat('yyyy-MM-dd h:mm a').parse(startDateTimeString);
-      final end = DateFormat('yyyy-MM-dd h:mm a').parse(endDateTimeString);
-
-      if (start.isAfter(end)) {
-        print("Start time cannot be after end time");
-        throw Exception("Start time cannot be after end time");
-      }
+      } 
 
       final duration = calculateDuration(starttimeController.text, endtimeController.text);
       final amount = (double.parse(rateController.text) * duration * 100).toInt().toString();

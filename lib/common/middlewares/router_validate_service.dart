@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class RouteValidateServiceMiddleware extends GetMiddleware {
   static String? validateService(String? value) {
@@ -50,9 +51,19 @@ class RouteValidateServiceMiddleware extends GetMiddleware {
     return null;
   }
 
-  static String? validateEndTime(String? value) {
-    if (value == null || value.isEmpty) {
+  static String? validateEndTime(String? startTime, String? endTime) {
+    if (endTime == null || endTime.isEmpty) {
       return 'End time is required.';
+    }
+    if (startTime == endTime) {
+      return 'Start time cannot be same as end time';
+    }
+    final startDateTimeString = '2000-01-01 $startTime';
+    final endDateTimeString = '2000-01-01 $endTime';
+    final start = DateFormat('yyyy-MM-dd h:mm a').parse(startDateTimeString);
+    final end = DateFormat('yyyy-MM-dd h:mm a').parse(endDateTimeString);
+    if (start.isAfter(end)) {
+      return 'Start time cannot be after end time';
     }
     return null;
   }

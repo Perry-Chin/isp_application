@@ -133,7 +133,7 @@ List<Step> getSteps(int currentStep) {
             textController: controller.endtimeController,
             readOnly: true,
             onTap: () => selectTime(Get.context!, controller.endtimeController),
-            validator: (value) => RouteValidateServiceMiddleware.validateEndTime(value)
+            validator: (value) => RouteValidateServiceMiddleware.validateEndTime(controller.starttimeController.text, value)
           ),
         ]
       ) 

@@ -71,14 +71,14 @@ class HomeList extends StatelessWidget {
                     crossAxisCount: 2,
                     crossAxisSpacing: 10.w,
                     mainAxisSpacing: 10.w,
-                    childAspectRatio: 0.7,
+                    childAspectRatio: 0.85,
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
                       var serviceItem = displayedItems[index];
                       var userData = userDataMap[serviceItem.data().reqUserid];
 
-                      return _buildHomeListItem(serviceItem, userData);
+                      return _buildHomeListItem(serviceItem, userData, controller);
                     },
                     childCount: displayedItems.length,
                     findChildIndexCallback: (Key key) {
@@ -97,7 +97,7 @@ class HomeList extends StatelessWidget {
   }
 
   Widget _buildHomeListItem(
-      QueryDocumentSnapshot<ServiceData> serviceItem, UserData? userData) {
+      QueryDocumentSnapshot<ServiceData> serviceItem, UserData? userData, controller) {
     DateTime? parsedDate;
     String dateDisplay = "Invalid date";
 
@@ -139,19 +139,14 @@ class HomeList extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(15)),
-              child:
-                  userData?.photourl != null && userData!.photourl!.isNotEmpty
-                      ? FadeInImage.assetNetwork(
-                          placeholder: AppImage.profile,
-                          image: userData.photourl!,
-                          fadeInDuration: const Duration(milliseconds: 100),
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: 120,
-                        )
-                      : Image.asset(AppImage.profile),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(15),
+              ),
+              child: BackgroundImage(
+                controller: controller,
+                serviceData: serviceItem.data(),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -203,6 +198,71 @@ class HomeList extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class BackgroundImage extends StatelessWidget {
+  const BackgroundImage({
+    super.key,
+    required this.controller,
+    required this.serviceData,
+  });
+
+  final HomeController controller;
+  final ServiceData serviceData;
+
+  @override
+  Widget build(BuildContext context) {
+    if (controller.state.serviceList.isNotEmpty) {
+      String? imageUrl = serviceData.image;
+      if (imageUrl != null && imageUrl.isNotEmpty) {
+        // Load image using photourl
+        return SizedBox(
+          width: double.infinity,
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Image.asset(
+                'assets/images/default_image.jpeg', // Default image asset
+                fit: BoxFit.cover,
+                width: double.infinity,
+              );
+            },
+          ),
+        );
+      } else if (serviceData.serviceName != null) {
+        // Check service name for default image
+        switch (serviceData.serviceName) {
+          case 'Grooming':
+            return Image.asset(
+              'assets/images/grooming.jpg',
+              width: double.infinity,
+              fit: BoxFit.cover,
+            );
+          case 'Walking':
+            return Image.asset(
+              'assets/images/walking.jpeg',
+              width: double.infinity,
+              fit: BoxFit.cover,
+            );
+          // Add cases for other service names if needed
+          default:
+            // Default image if service name doesn't match predefined cases
+            return Image.asset(
+              'assets/images/walking.jpeg', // Default image asset
+              width: double.infinity,
+              fit: BoxFit.cover,
+            );
+        }
+      }
+    }
+    // Return a default image widget if no conditions are met
+    return Image.asset(
+      'assets/images/default_image.jpeg', // Default image asset
+      width: double.infinity,
+      fit: BoxFit.cover,
     );
   }
 }

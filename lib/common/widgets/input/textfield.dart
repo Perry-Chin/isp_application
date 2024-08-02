@@ -11,6 +11,7 @@ class MyTextField extends GetView {
   final bool? obscuretext;
   final bool? readOnly;
   final int? maxLines;
+  final int? minLines;
   final TextInputType? keyboardType;
   final void Function()? onTap;
   final String? Function(String?)? validator;
@@ -24,6 +25,7 @@ class MyTextField extends GetView {
     this.obscuretext,
     this.readOnly,
     this.maxLines = 1,
+    this.minLines,
     this.keyboardType,
     this.onTap,
     this.validator,
@@ -45,6 +47,7 @@ class MyTextField extends GetView {
             obscureText: isPasswordVisible.value,
             readOnly: readOnly ?? false,
             maxLines: maxLines,
+            minLines: minLines,
             keyboardType: keyboardType,
             onTap: onTap,
             validator: validator,

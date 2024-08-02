@@ -122,7 +122,9 @@ class RequestController extends GetxController {
 
       isProcessing.value = true;
       if (!requestFormKey.currentState!.validate()) {
-        throw Exception("Please fill all required fields");
+        isProcessing.value = false;
+        Navigator.pop(context);
+        return;
       } else if (starttimeController.text == endtimeController.text) {
         throw Exception("Start time cannot be the same as end time");
       }

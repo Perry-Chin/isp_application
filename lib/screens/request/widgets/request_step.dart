@@ -44,8 +44,8 @@ List<Step> getSteps(int currentStep) {
           const SizedBox(height: 20),
           // Description
           MyTextField(
-            maxLines: 8,
-            hinttext: 'Your Service',
+            maxLines: 2,
+            hinttext: '',
             labeltext: 'Description',
             prefixicon: Icons.edit_document,
             textController: controller.descriptionController,
@@ -65,7 +65,6 @@ List<Step> getSteps(int currentStep) {
           // Image (img)
           MyTextField(
             readOnly: true,
-            obscuretext: false,
             hinttext: 'Select image',
             labeltext: 'Image',
             prefixicon: Icons.image,
@@ -121,7 +120,6 @@ List<Step> getSteps(int currentStep) {
             labeltext: 'Start Time',
             prefixicon: Icons.timelapse,
             textController: controller.starttimeController,
-            obscuretext: false,
             readOnly: true,
             onTap: () => selectTime(Get.context!, controller.starttimeController),
             validator: (value) => RouteValidateServiceMiddleware.validateStartTime(value)
@@ -133,7 +131,6 @@ List<Step> getSteps(int currentStep) {
             labeltext: 'End Time',
             prefixicon: Icons.timelapse,
             textController: controller.endtimeController,
-            obscuretext: false,
             readOnly: true,
             onTap: () => selectTime(Get.context!, controller.endtimeController),
             validator: (value) => RouteValidateServiceMiddleware.validateEndTime(value)

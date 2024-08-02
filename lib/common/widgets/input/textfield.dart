@@ -29,7 +29,7 @@ class MyTextField extends GetView {
     this.validator,
   }) : super(key: key);
 
-  final RxBool isPasswordVisible = false.obs;
+  final RxBool isPasswordVisible = true.obs;
 
   void togglePasswordVisibility() {
     isPasswordVisible.toggle();
@@ -42,7 +42,7 @@ class MyTextField extends GetView {
         Obx(
           () => TextFormField(
             controller: textController,
-            obscureText: obscuretext ?? isPasswordVisible.value,
+            obscureText: isPasswordVisible.value,
             readOnly: readOnly ?? false,
             maxLines: maxLines,
             keyboardType: keyboardType,
@@ -56,8 +56,8 @@ class MyTextField extends GetView {
                 ? IconButton(
                     onPressed: togglePasswordVisibility,
                     icon: Icon(isPasswordVisible.value
-                      ? Icons.visibility
-                      : Icons.visibility_off
+                      ? Icons.visibility_off
+                      : Icons.visibility
                     ),
                   )
                 : null

@@ -62,13 +62,13 @@ class LoginPage extends GetView<LoginController> {
                     prefixicon: Icons.mail,
                     textController: controller.emailController),
                 const SizedBox(height: 30),
-                Obx(() => MyTextField(
+                MyTextField(
                       hinttext: 'Your password',
                       labeltext: 'Password',
                       prefixicon: Icons.key,
                       obscuretext: controller.isPasswordHidden.value,
                       textController: controller.pwdController
-                    )),
+                    ),
                 const SizedBox(height: 40),
                 ApplyButton(
                   onPressed: () {

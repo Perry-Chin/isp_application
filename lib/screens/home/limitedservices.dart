@@ -227,6 +227,7 @@ class BackgroundImage extends StatelessWidget {
         // Load image using photourl
         return SizedBox(
           width: double.infinity,
+          height: 126,
           child: Image.network(
             imageUrl,
             fit: BoxFit.cover,

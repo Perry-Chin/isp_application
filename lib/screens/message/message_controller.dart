@@ -20,6 +20,7 @@ class MessageController extends GetxController {
 
   // The dependency requires these 2 functions to work
   void onRefresh() {
+    print("onRefresh called");
     asyncLoadAllData().then((_) {
       refreshController.refreshCompleted(resetFooterState: true);
     }).catchError((_) {
@@ -28,6 +29,7 @@ class MessageController extends GetxController {
   }
 
   void onLoading() {
+    print("onLoading called");
     asyncLoadAllData().then((_) {
       refreshController.loadComplete();
     }).catchError((_) {
@@ -113,6 +115,7 @@ class MessageController extends GetxController {
 
   // Stream to handle data fetching
   Stream<Map<String, UserData?>> get combinedStream async* {
+    print("token changeddd");
     await asyncLoadAllData();
     yield* getCombinedStream(UserStore.to.token);
   }
@@ -120,14 +123,19 @@ class MessageController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    print("token changedss");
     asyncLoadAllData();
     // Listen to token changes and refresh data accordingly
     ever(UserStore.to.obs, (_) {
+      print("token changed");
       asyncLoadAllData();
     });
   }
 
   Future<void> asyncLoadAllData() async {
+
+    print("Fetching messages...");
+
     var fromMessages = await db.collection("message").withConverter(
         fromFirestore: Msg.fromFirestore,
         toFirestore: (Msg msg, options) => msg.toFirestore())

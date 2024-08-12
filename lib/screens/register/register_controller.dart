@@ -92,7 +92,6 @@ class RegisterController extends GetxController {
       'photourl': '',
       'email': emailController.text,
       'phone_number': phoneNoController.text,
-      'rating': 0,
       'isOnline': false,
     });
   }

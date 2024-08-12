@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../common/middlewares/middlewares.dart';
-import '../../common/routes/routes.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/widgets.dart';
 import 'register_index.dart';

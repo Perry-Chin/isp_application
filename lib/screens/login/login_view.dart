@@ -6,7 +6,6 @@ import '../../common/routes/routes.dart';
 import '../../common/values/values.dart';
 import '../../common/widgets/input/button.dart';
 import '../../common/widgets/input/textfield.dart';
-import '../register/register_index.dart';
 import 'login_index.dart';
 
 class LoginPage extends GetView<LoginController> {

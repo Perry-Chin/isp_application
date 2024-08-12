@@ -29,23 +29,19 @@ class ProfileController extends GetxController {
 
       if (doc.exists) {
         final data = doc.data()!;
-        if (data['rating'] != null) {
-          if (data['rating'] is int) {
-            rating.value = data['rating'];
-          } else {
-            rating.value = data['rating'];
-          }
-        } else {
-          rating.value = 0.0;
-        }
         user.value = UserData(
           id: doc.id,
           username: data['username'],
           email: data['email'],
           photourl: data['photourl'],
         );
-        await fetchUserReviews();
-        await updateAverageRating();
+        if (data['rating'] != null) {
+          rating.value = data['rating'];
+          await fetchUserReviews();
+          await updateAverageRating();
+        } else {
+          rating.value = 0.0;
+        }
       } else {
         print('User not found');
       }
